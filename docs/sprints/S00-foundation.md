@@ -48,3 +48,10 @@ None beyond Laravel's default tables (users, cache, jobs). The users table is re
   `composer audit` and `npm audit` in CI instead.
 - **Branch strategy:** all work is committed directly to `main` (one atomic push per sprint), as agreed.
 - **Public pages module:** the public website is its own module (`Site`), giving 13 modules rather than 12.
+
+## CI fix after first push
+
+The first CI run failed in the frontend job: the Laravel Vite plugin refuses to start when `CI=true`, and
+Vitest was loading it through `vite.config.ts`. Tests now use their own `vitest.config.ts` (React plugin and
+aliases only). Local checks now run with `CI=true` to mirror GitHub Actions. Checkout and setup-node actions
+were also moved to v5 (Node 24 runtime).

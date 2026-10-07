@@ -10,7 +10,7 @@
 
 ```bash
 composer lint && composer analyse && composer test
-npm run typecheck && npm run lint && npm run format:check && npm test && npm run build && npm run size
+CI=true npm run typecheck && npm run lint && npm run format:check && CI=true npm test && npm run build && npm run size
 ```
 
 ## Coding standards

@@ -1,4 +1,3 @@
-/// <reference types="vitest/config" />
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
@@ -23,11 +22,5 @@ export default defineConfig({
     },
     server: {
         watch: { ignored: ['**/storage/framework/views/**'] },
-    },
-    test: {
-        environment: 'jsdom',
-        globals: true,
-        setupFiles: ['./resources/js/__tests__/setup.ts'],
-        include: ['resources/js/**/*.test.{ts,tsx}', 'modules/*/resources/js/**/*.test.{ts,tsx}'],
     },
 });
