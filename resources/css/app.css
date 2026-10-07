@@ -1,10 +1,115 @@
 @import 'tailwindcss';
 
-/* Scan every module's React pages for Tailwind classes. */
+/* Self-hosted Poppins, Latin subset only (POPIA: no third-party font calls). */
+@import '@fontsource/poppins/latin-400.css';
+@import '@fontsource/poppins/latin-600.css';
+@import '@fontsource/poppins/latin-700.css';
+
+/* Scan every module's React code and shared components for Tailwind classes. */
 @source '../../modules/*/resources/js/**/*.tsx';
 @source '../js/**/*.tsx';
 
-/* Design tokens (colours, type scale, spacing) are defined in Sprint 1. */
-@theme {
-    --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+/* Dark mode follows the .dark class on <html> (set from the saved choice or the system setting). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * KasiHub design tokens (docs/design-system.md).
+ * Brand colours come from the approved prototypes. Semantic tokens (surface, text, border...)
+ * switch between light and dark themes; components only use semantic tokens.
+ */
+:root {
+    --kasi-surface: #ffffff;
+    --kasi-surface-muted: #f5f6fa;
+    --kasi-surface-raised: #ffffff;
+    --kasi-text: #16152b;
+    --kasi-text-muted: #5b5f77;
+    --kasi-border: #e3e5ee;
+    --kasi-primary: #3b34b5;
+    --kasi-primary-hover: #2f2995;
+    --kasi-primary-fg: #ffffff;
+    --kasi-primary-soft: #ecebfb;
+    --kasi-focus: #3b34b5;
+    --kasi-danger-text: #b42f2f;
+    color-scheme: light;
+}
+
+.dark {
+    --kasi-surface: #12112a;
+    --kasi-surface-muted: #0b0a1c;
+    --kasi-surface-raised: #1b1a3a;
+    --kasi-text: #f1f1f8;
+    --kasi-text-muted: #a9abc4;
+    --kasi-border: #2c2b52;
+    --kasi-primary: #9893f4;
+    --kasi-primary-hover: #aeaaf6;
+    --kasi-primary-fg: #12112a;
+    --kasi-primary-soft: #26245a;
+    --kasi-focus: #b3aef7;
+    --kasi-danger-text: #f19494;
+    color-scheme: dark;
+}
+
+@theme inline {
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+    /* Brand palette (fixed) */
+    --color-kasi-indigo: #24206b;
+    --color-kasi-action: #3b34b5;
+    --color-kasi-marigold: #f5b700;
+    --color-kasi-marigold-soft: #fff4cc;
+    --color-kasi-marigold-ink: #6b4e00;
+    --color-kasi-green: #0e9f8a;
+    --color-kasi-green-soft: #ddf6f1;
+    --color-kasi-green-ink: #0b6b5d;
+    --color-kasi-danger: #c73e3e;
+    --color-kasi-danger-soft: #fbe6e6;
+    --color-kasi-danger-ink: #9b2c2c;
+    --color-kasi-warning: #b45309;
+    --color-kasi-warning-soft: #fef3c7;
+    --color-kasi-info: #2563eb;
+    --color-kasi-info-soft: #dbeafe;
+    --color-kasi-info-ink: #1d4ed8;
+
+    /* Semantic tokens (theme-aware) */
+    --color-surface: var(--kasi-surface);
+    --color-surface-muted: var(--kasi-surface-muted);
+    --color-surface-raised: var(--kasi-surface-raised);
+    --color-fg: var(--kasi-text);
+    --color-fg-muted: var(--kasi-text-muted);
+    --color-line: var(--kasi-border);
+    --color-primary: var(--kasi-primary);
+    --color-primary-hover: var(--kasi-primary-hover);
+    --color-primary-fg: var(--kasi-primary-fg);
+    --color-primary-soft: var(--kasi-primary-soft);
+    --color-focus: var(--kasi-focus);
+    --color-danger-text: var(--kasi-danger-text);
+
+    --radius-control: 0.625rem;
+    --radius-card: 0.875rem;
+    --shadow-raised: 0 10px 30px -12px rgb(36 32 107 / 0.25);
+}
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        @apply bg-surface-muted text-fg font-sans antialiased;
+    }
+
+    :focus-visible {
+        outline: 3px solid var(--kasi-focus);
+        outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
 }

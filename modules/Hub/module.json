@@ -22,5 +22,31 @@
         "consumes": []
     },
     "impact_metrics": [],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "home",
+        "href": "/home",
+        "items": [
+            {
+                "label": "nav.hub.home",
+                "href": "/home",
+                "icon": "home"
+            },
+            {
+                "label": "nav.hub.updates",
+                "href": "/home/updates",
+                "icon": "bar-chart"
+            },
+            {
+                "label": "nav.hub.my_hub",
+                "href": "/home/hub",
+                "icon": "building"
+            },
+            {
+                "label": "nav.hub.profile",
+                "href": "/home/profile",
+                "icon": "users"
+            }
+        ]
+    }
 }

@@ -26,5 +26,16 @@
         "consumes": []
     },
     "impact_metrics": [],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "map",
+        "href": "/region",
+        "items": [
+            {
+                "label": "nav.region.overview",
+                "href": "/region",
+                "icon": "map"
+            }
+        ]
+    }
 }

@@ -20,5 +20,6 @@ export default defineConfig({
         globals: true,
         setupFiles: ['./resources/js/__tests__/setup.ts'],
         include: ['resources/js/**/*.test.{ts,tsx}', 'modules/*/resources/js/**/*.test.{ts,tsx}'],
+        env: { TZ: 'UTC' },
     },
 });

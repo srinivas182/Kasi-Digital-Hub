@@ -48,6 +48,8 @@ jobs:
               - 'modules/*/module.json'
               - 'resources/views/**'
               - 'VERSION'
+              - 'lang/**'
+              - 'tests/fixtures/**'
               - '.github/workflows/**'
             js:
               - 'resources/js/**'
@@ -60,6 +62,11 @@ jobs:
               - 'eslint.config.js'
               - '.prettierrc'
               - 'scripts/check-bundle-size.mjs'
+              - 'playwright.config.ts'
+              - 'tests/e2e/**'
+              - 'tests/fixtures/**'
+              - 'public/**'
+              - 'lang/**'
               - '.github/workflows/**'
 
   php-quality:
@@ -153,3 +160,50 @@ jobs:
       - run: npm run build
       - run: npm run size
       - run: npm audit --omit=dev --audit-level=high
+
+  e2e:
+    name: Browser tests (Playwright + axe, phone and desktop)
+    needs: changes
+    if: needs.changes.outputs.php == 'true' || needs.changes.outputs.js == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, bcmath, pdo_sqlite, zip, gd
+          coverage: none
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ hashFiles('composer.lock') }}
+      - run: composer install --no-interaction --no-progress --prefer-dist
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
+      - name: Install Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Install Chromium system dependencies
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - run: cp .env.example .env && php artisan key:generate
+      - run: npm run build
+      - run: npx playwright test
+      - name: Upload failure traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results
+          retention-days: 7

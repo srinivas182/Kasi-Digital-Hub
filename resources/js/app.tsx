@@ -19,3 +19,10 @@ void createInertiaApp({
     },
     progress: { color: '#F5B700' },
 });
+
+// Installable app + offline page (production builds only; see public/sw.js).
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => undefined);
+    });
+}

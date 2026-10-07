@@ -2,6 +2,20 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.1.0] - 2026-10-07 - Sprint 1: Design system & app shell
+
+### Added
+- Design tokens, light/dark themes and self-hosted Poppins font.
+- UI component library (28 components) on Radix UI primitives, plus platform chrome components.
+- Six layouts: public, auth, app, portal, console and kiosk (automatic sign-out when idle).
+- Module navigation (`nav` in module.json) shared with every page; portal switcher.
+- Language switching (English; isiZulu and Xitsonga draft samples, hidden in production).
+- South African formatters (money, phone, date) in PHP and TypeScript with a shared test fixture.
+- Installable web app: manifest, icons, service worker and offline page.
+- Branded error pages; internal UI kit at /ui-kit.
+- Playwright browser tests with axe accessibility scans (phone and desktop) in CI.
+- Docs: design system, content guide, ADR-007 to ADR-009.
+
 ## [0.0.1] - 2026-10-07 - Sprint 0: Project foundation
 
 ### Added

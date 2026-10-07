@@ -27,5 +27,21 @@
         "businesses_formalised",
         "bank_accounts_opened"
     ],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "rocket",
+        "href": "/start",
+        "items": [
+            {
+                "label": "nav.start.progress",
+                "href": "/start",
+                "icon": "rocket"
+            },
+            {
+                "label": "nav.start.documents",
+                "href": "/start/documents",
+                "icon": "book-open"
+            }
+        ]
+    }
 }

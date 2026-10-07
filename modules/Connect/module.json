@@ -26,5 +26,21 @@
     "impact_metrics": [
         "mentor_sessions"
     ],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "handshake",
+        "href": "/connect",
+        "items": [
+            {
+                "label": "nav.connect.mentors",
+                "href": "/connect",
+                "icon": "handshake"
+            },
+            {
+                "label": "nav.connect.sessions",
+                "href": "/connect/sessions",
+                "icon": "users"
+            }
+        ]
+    }
 }

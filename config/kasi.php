@@ -51,9 +51,25 @@ return [
         'country' => 'ZA',
         'currency' => 'ZAR',
         'phone_prefix' => '+27',
+        // Times are stored in UTC and displayed in SAST.
         'timezone' => 'Africa/Johannesburg',
-        // Interface languages planned for the platform (translations arrive from S1; full coverage in S23).
-        'languages' => ['en', 'zu', 'xh', 'af', 'nso', 'tn', 'st', 'ts', 've', 'ss', 'nr'],
+
+        /*
+         * Interface languages. 'draft' languages have machine-drafted sample strings
+         * awaiting professional review; they are hidden in production unless
+         * KASI_SHOW_DRAFT_LANGUAGES=true. Full translations are planned for S23.
+         */
+        'languages' => [
+            'en' => ['name' => 'English', 'native' => 'English', 'draft' => false],
+            'zu' => ['name' => 'isiZulu', 'native' => 'isiZulu', 'draft' => true],
+            'ts' => ['name' => 'Xitsonga', 'native' => 'Xitsonga', 'draft' => true],
+        ],
+        'show_drafts' => env('KASI_SHOW_DRAFT_LANGUAGES'),
+    ],
+
+    // Internal component catalogue at /ui-kit (never in production).
+    'ui_kit' => [
+        'enabled' => env('KASI_UI_KIT'),
     ],
 
 ];

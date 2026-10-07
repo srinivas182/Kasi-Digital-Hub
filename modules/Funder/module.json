@@ -25,5 +25,21 @@
         "consumes": []
     },
     "impact_metrics": [],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "landmark",
+        "href": "/funder",
+        "items": [
+            {
+                "label": "nav.funder.impact",
+                "href": "/funder",
+                "icon": "bar-chart"
+            },
+            {
+                "label": "nav.funder.programmes",
+                "href": "/funder/programmes",
+                "icon": "landmark"
+            }
+        ]
+    }
 }

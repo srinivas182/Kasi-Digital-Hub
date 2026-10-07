@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\VersionController;
 use Illuminate\Support\Facades\Route;
 
@@ -11,3 +12,4 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/version', VersionController::class)->name('version');
+Route::post('/locale', LocaleController::class)->middleware('throttle:20,1')->name('locale.update');

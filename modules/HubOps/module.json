@@ -29,5 +29,31 @@
         "hub_visits",
         "events_held"
     ],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "building",
+        "href": "/hub-ops",
+        "items": [
+            {
+                "label": "nav.hubops.dashboard",
+                "href": "/hub-ops",
+                "icon": "bar-chart"
+            },
+            {
+                "label": "nav.hubops.check_in",
+                "href": "/hub-ops/check-in",
+                "icon": "users"
+            },
+            {
+                "label": "nav.hubops.events",
+                "href": "/hub-ops/events",
+                "icon": "grid"
+            },
+            {
+                "label": "nav.hubops.finance",
+                "href": "/hub-ops/finance",
+                "icon": "coins"
+            }
+        ]
+    }
 }

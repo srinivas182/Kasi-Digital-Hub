@@ -30,5 +30,26 @@
         "applications",
         "hires"
     ],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "briefcase",
+        "href": "/work",
+        "items": [
+            {
+                "label": "nav.work.matches",
+                "href": "/work",
+                "icon": "briefcase"
+            },
+            {
+                "label": "nav.work.cv",
+                "href": "/work/cv",
+                "icon": "book-open"
+            },
+            {
+                "label": "nav.work.applications",
+                "href": "/work/applications",
+                "icon": "bar-chart"
+            }
+        ]
+    }
 }

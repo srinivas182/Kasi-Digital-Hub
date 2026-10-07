@@ -11,6 +11,7 @@
 ```bash
 composer lint && composer analyse && composer test
 CI=true npm run typecheck && npm run lint && npm run format:check && CI=true npm test && npm run build && npm run size
+npx playwright test          # browser tests (needs built assets)
 ```
 
 ## Coding standards
@@ -19,6 +20,8 @@ CI=true npm run typecheck && npm run lint && npm run format:check && CI=true npm
 - Thin controllers; business logic in Actions/Services inside the module's `src/Application`.
 - Modules use only the shared kernel (`App\`, `Modules\Core\`) - never another portal's classes (ADR-005).
 - TypeScript strict mode; React function components; no `any`.
+- Screens are built from `resources/js/components` and `resources/js/layouts` (docs/design-system.md) and follow
+  docs/content-guide.md.
 - External services only through drivers (ADR-004).
 - Never commit secrets or real personal data. Demo data must be fictitious.
 

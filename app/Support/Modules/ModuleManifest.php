@@ -30,6 +30,7 @@ final readonly class ModuleManifest
      * @param  list<string>  $consumes
      * @param  list<string>  $impactMetrics
      * @param  list<string>  $demoSeeders  Demo seeder class names
+     * @param  array{icon: string|null, href: string|null, items: list<array{label: string, href: string, icon: string|null, permission: string|null}>}|null  $nav
      */
     public function __construct(
         public string $name,
@@ -51,6 +52,7 @@ final readonly class ModuleManifest
         public array $consumes,
         public array $impactMetrics,
         public array $demoSeeders,
+        public ?array $nav = null,
     ) {}
 
     /**
@@ -104,12 +106,46 @@ final readonly class ModuleManifest
             consumes: self::stringList($events['consumes'] ?? []),
             impactMetrics: self::stringList($data['impact_metrics'] ?? []),
             demoSeeders: self::stringList($data['demo_seeders'] ?? []),
+            nav: self::navigation($data['nav'] ?? null, $name),
         );
     }
 
     public function path(string $relative = ''): string
     {
         return $relative === '' ? $this->path : $this->path.DIRECTORY_SEPARATOR.ltrim($relative, '/\\');
+    }
+
+    /**
+     * Navigation declared by the module: its entry point and menu items. Labels are translation keys.
+     *
+     * @return array{icon: string|null, href: string|null, items: list<array{label: string, href: string, icon: string|null, permission: string|null}>}|null
+     */
+    private static function navigation(mixed $nav, string $module): ?array
+    {
+        if (! is_array($nav)) {
+            return null;
+        }
+
+        $items = [];
+
+        foreach (is_array($nav['items'] ?? null) ? $nav['items'] : [] as $item) {
+            if (! is_array($item) || ! is_string($item['label'] ?? null) || ! is_string($item['href'] ?? null)) {
+                throw new InvalidArgumentException("Module [{$module}] has a nav item without a string label and href.");
+            }
+
+            $items[] = [
+                'label' => $item['label'],
+                'href' => $item['href'],
+                'icon' => is_string($item['icon'] ?? null) ? $item['icon'] : null,
+                'permission' => is_string($item['permission'] ?? null) ? $item['permission'] : null,
+            ];
+        }
+
+        return [
+            'icon' => is_string($nav['icon'] ?? null) ? $nav['icon'] : null,
+            'href' => is_string($nav['href'] ?? null) ? $nav['href'] : null,
+            'items' => $items,
+        ];
     }
 
     /**

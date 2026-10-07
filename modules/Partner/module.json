@@ -25,5 +25,16 @@
         "consumes": []
     },
     "impact_metrics": [],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "store",
+        "href": "/partner",
+        "items": [
+            {
+                "label": "nav.partner.referrals",
+                "href": "/partner",
+                "icon": "store"
+            }
+        ]
+    }
 }

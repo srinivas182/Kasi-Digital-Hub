@@ -31,5 +31,26 @@
         "completions",
         "certificates"
     ],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "book-open",
+        "href": "/learn",
+        "items": [
+            {
+                "label": "nav.learn.my_courses",
+                "href": "/learn",
+                "icon": "book-open"
+            },
+            {
+                "label": "nav.learn.catalogue",
+                "href": "/learn/courses",
+                "icon": "grid"
+            },
+            {
+                "label": "nav.learn.certificates",
+                "href": "/learn/certificates",
+                "icon": "shield"
+            }
+        ]
+    }
 }

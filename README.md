@@ -21,8 +21,8 @@ Later releases add KasiMarket, KasiBiz and KasiBrand as new modules - no changes
 
 ## Stack
 
-Laravel 13 (PHP 8.3+) · React + TypeScript via Inertia.js · Tailwind CSS · MySQL 8.4 · Redis + Horizon ·
-Meilisearch · Pest · Larastan (level 8) · Vite.
+Laravel 13 (PHP 8.3+) · React + TypeScript via Inertia.js · Tailwind CSS · Radix UI · MySQL 8.4 · Redis + Horizon ·
+Meilisearch · Pest · Larastan (level 8) · Vitest · Playwright + axe · Vite.
 
 ## Quick start
 
@@ -36,6 +36,7 @@ Then open http://localhost:8080. Full instructions: [docs/setup.md](docs/setup.m
 
 - [Setup guide](docs/setup.md)
 - [Architecture](docs/architecture.md) and [ADRs](docs/adr)
+- [Design system](docs/design-system.md) and [content guide](docs/content-guide.md) - live UI kit at `/ui-kit`
 - [Sprint records](docs/sprints)
 - [Contributing & definition of done](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)

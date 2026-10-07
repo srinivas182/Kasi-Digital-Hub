@@ -25,5 +25,21 @@
         "consumes": []
     },
     "impact_metrics": [],
-    "demo_seeders": []
+    "demo_seeders": [],
+    "nav": {
+        "icon": "coins",
+        "href": "/commercial",
+        "items": [
+            {
+                "label": "nav.commercial.pricing",
+                "href": "/commercial",
+                "icon": "coins"
+            },
+            {
+                "label": "nav.commercial.payouts",
+                "href": "/commercial/payouts",
+                "icon": "bar-chart"
+            }
+        ]
+    }
 }
