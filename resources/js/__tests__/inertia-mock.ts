@@ -1,7 +1,7 @@
 import type { SharedProps } from '@/types/global';
 
 /** Shared props used by component tests (mirrors HandleInertiaRequests). */
-export const sharedProps: Pick<SharedProps, 'platform' | 'i18n' | 'navigation'> = {
+export const sharedProps: Pick<SharedProps, 'platform' | 'i18n' | 'navigation' | 'auth' | 'flash'> = {
     platform: {
         brand: 'KasiHub',
         fullName: 'Kasi Digital Hub',
@@ -35,4 +35,6 @@ export const sharedProps: Pick<SharedProps, 'platform' | 'i18n' | 'navigation'> 
             },
         ],
     },
+    auth: { user: null },
+    flash: { status: null },
 };

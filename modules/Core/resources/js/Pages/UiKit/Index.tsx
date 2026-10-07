@@ -16,7 +16,10 @@ import {
     StatCard,
     Timeline,
 } from '@/components/ui/display';
-import { Checkbox, Field, Input, RadioGroup, SearchInput, Select, Switch, Textarea } from '@/components/ui/form';
+import { Field, Input, SearchInput, Select, Textarea } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/Checkbox';
+import { RadioGroup } from '@/components/ui/RadioGroup';
+import { Switch } from '@/components/ui/Switch';
 import { Breadcrumbs, Pagination, Tabs } from '@/components/ui/navigation';
 import { OtpInput } from '@/components/ui/OtpInput';
 import { BottomSheet, ConfirmDialog, Dialog } from '@/components/ui/Dialog';

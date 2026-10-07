@@ -39,6 +39,65 @@ return [
         'whatsapp' => env('KASI_WHATSAPP_DRIVER', 'log'),
         'payments' => env('KASI_PAYMENTS_DRIVER', 'fake'),
         'search' => env('KASI_SEARCH_DRIVER', 'meilisearch'),
+        'bot_check' => env('KASI_BOT_CHECK_DRIVER', 'fake'),
+    ],
+
+    /*
+    | Identity (Sprint 2): phone + PIN sign-in, one-time codes and abuse protection.
+    */
+    'identity' => [
+        'otp' => [
+            'length' => 6,
+            'ttl_minutes' => 5,
+            'max_attempts' => 5,
+            // Per phone number: 3 codes per 15 minutes and 10 per day.
+            'per_phone_15_min' => (int) env('KASI_OTP_PER_PHONE_15_MIN', 3),
+            'per_phone_day' => (int) env('KASI_OTP_PER_PHONE_DAY', 10),
+            'per_ip_hour' => (int) env('KASI_OTP_PER_IP_HOUR', 30),
+            'per_device_hour' => 10,
+            // Platform-wide daily SMS cap - a cost guard against SMS pumping fraud.
+            'daily_cap' => (int) env('KASI_SMS_DAILY_CAP', 20000),
+            // Block a number range (first 6 digits) after this many codes in an hour.
+            'per_range_hour' => (int) env('KASI_OTP_PER_RANGE_HOUR', 200),
+        ],
+        'pin' => [
+            'length' => 5,
+            'max_attempts' => 5,
+            'lockout_minutes' => 15,
+        ],
+        'remember_device_days' => 30,
+        // Raised only for automated browser tests that run many sign-ins from one IP.
+        'throttle_multiplier' => (int) env('KASI_THROTTLE_MULTIPLIER', 1),
+        'idle_minutes' => [
+            'citizen' => 120,
+            'staff' => 30,
+        ],
+        'audit_retention_days' => (int) env('KASI_AUDIT_RETENTION_DAYS', 1095),
+    ],
+
+    /*
+    | Age policy. Under minor_min_age: sign-up declined. minor_min_age to full_access_age - 1:
+    | guardian consent required and access limited to minor_modules. Configurable per programme.
+    */
+    'age' => [
+        'full_access_age' => 18,
+        'minor_min_age' => 16,
+        'minor_modules' => ['Learn'],
+    ],
+
+    /*
+    | Consent purposes (POPIA). 'platform' is required and covers the terms of use and
+    | privacy notice; all others are optional and off until the person switches them on.
+    */
+    'consent' => [
+        'purposes' => [
+            'platform' => ['required' => true, 'documents' => ['terms', 'privacy']],
+            'job_matching' => ['required' => false],
+            'learning_records' => ['required' => false],
+            'partner_sharing' => ['required' => false],
+            'whatsapp_updates' => ['required' => false],
+            'marketing' => ['required' => false],
+        ],
     ],
 
     'demo' => [

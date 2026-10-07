@@ -10,6 +10,9 @@ export interface OtpInputProps {
     label?: string;
     invalid?: boolean;
     disabled?: boolean;
+    /** Hide the digits (PIN entry). */
+    secret?: boolean;
+    autoFocus?: boolean;
 }
 
 /**
@@ -24,6 +27,8 @@ export function OtpInput({
     label = 'Verification code',
     invalid,
     disabled,
+    secret,
+    autoFocus,
 }: OtpInputProps) {
     const refs = useRef<(HTMLInputElement | null)[]>([]);
     const digits = Array.from({ length }, (_, i) => value[i] ?? '');
@@ -67,7 +72,9 @@ export function OtpInput({
                     }}
                     aria-label={`${label} digit ${index + 1} of ${length}`}
                     inputMode="numeric"
-                    autoComplete={index === 0 ? 'one-time-code' : 'off'}
+                    type={secret ? 'password' : 'text'}
+                    autoFocus={autoFocus && index === 0}
+                    autoComplete={secret ? 'off' : index === 0 ? 'one-time-code' : 'off'}
                     maxLength={index === 0 ? length : 1}
                     disabled={disabled}
                     value={digit}

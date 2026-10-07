@@ -2,6 +2,21 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.2.0] - 2026-10-07 - Sprint 2: Login & profile
+
+### Added
+- Phone + PIN sign-in with SMS codes only for new devices, PIN reset and sign-up; remembered devices.
+- Abuse protection for one-time codes (per number, IP, device and range; mobile-only; daily cap; bot check).
+- Sign-up with age policy (guardian consent for 16-17; under 16 declined), consent per purpose (POPIA).
+- Staff authenticator second step with backup codes.
+- Account settings: profile, email confirmation, PIN, phone change, devices, privacy choices, deletion request.
+- Idle timeouts, remote device sign-out, security alerts, audit log with retention.
+- Demo accounts and on-screen demo codes; docs/demo.md; ADR-010.
+
+### Changed
+- App-bar menus use a lightweight disclosure component (smaller signed-in pages).
+- Form controls split into separate files so pages only load what they use.
+
 ## [0.1.0] - 2026-10-07 - Sprint 1: Design system & app shell
 
 ### Added

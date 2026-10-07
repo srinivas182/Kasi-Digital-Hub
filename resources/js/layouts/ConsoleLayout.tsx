@@ -2,9 +2,9 @@ import { usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
 
 import { BrandMark } from '@/components/platform/BrandMark';
+import { UserMenu } from '@/components/platform/UserMenu';
 import { ThemeToggle } from '@/components/platform/chrome';
 import { PortalSwitcher, Sidebar } from '@/components/platform/nav';
-import { Avatar } from '@/components/ui/display';
 import { type Crumb, Breadcrumbs } from '@/components/ui/navigation';
 
 import { Shell } from './Shell';
@@ -50,7 +50,7 @@ export function ConsoleLayout({
                             {actions}
                             <PortalSwitcher />
                             <ThemeToggle />
-                            <Avatar name={userName} size="sm" />
+                            <UserMenu fallbackName={userName} />
                         </div>
                     </header>
                     <main id="main" className="w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">

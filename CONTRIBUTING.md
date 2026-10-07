@@ -23,6 +23,8 @@ npx playwright test          # browser tests (needs built assets)
 - Screens are built from `resources/js/components` and `resources/js/layouts` (docs/design-system.md) and follow
   docs/content-guide.md.
 - External services only through drivers (ADR-004).
+- Services must never keep the HTTP request (or user) from their constructor - resolve it per call with
+  `app('request')`. Controllers are cached per route and Octane reuses objects (an architecture test enforces this).
 - Never commit secrets or real personal data. Demo data must be fictitious.
 
 ## Definition of done (every sprint)

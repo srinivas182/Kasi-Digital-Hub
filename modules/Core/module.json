@@ -5,9 +5,11 @@
     "description": "Shared kernel: identity, tenancy, roles, consent, documents, notifications, events, drivers",
     "group": "core",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.2.0",
     "depends_on": [],
-    "providers": [],
+    "providers": [
+        "Modules\\Core\\Providers\\CoreServiceProvider"
+    ],
     "routes": {
         "web": true,
         "api": false
@@ -16,9 +18,16 @@
     "roles": [],
     "permissions": [],
     "events": {
-        "publishes": [],
+        "publishes": [
+            "auth.login",
+            "signup.completed",
+            "consent.granted",
+            "consent.withdrawn"
+        ],
         "consumes": []
     },
     "impact_metrics": [],
-    "demo_seeders": []
+    "demo_seeders": [
+        "Modules\\Core\\Database\\Seeders\\DemoUsersSeeder"
+    ]
 }

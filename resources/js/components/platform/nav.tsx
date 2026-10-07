@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import { LayoutGrid } from 'lucide-react';
 
-import { Popover } from '@/components/ui/Popover';
+import { Disclosure } from '@/components/ui/Disclosure';
 import { cn } from '@/lib/cn';
 import { useTranslation } from '@/lib/i18n';
 import { navIcon } from '@/lib/icons';
@@ -16,41 +16,45 @@ export function PortalSwitcher({ inverse }: { inverse?: boolean }) {
     const { navigation } = usePage().props;
     const { t } = useTranslation();
     return (
-        <Popover
+        <Disclosure
+            label={t('common.portals')}
+            panelClassName="w-72"
+            triggerClassName={cn(
+                'rounded-control inline-flex min-h-11 items-center gap-2 px-3 text-sm font-semibold',
+                inverse ? 'text-white hover:bg-white/10' : 'text-fg hover:bg-surface-muted',
+            )}
             trigger={
-                <button
-                    type="button"
-                    aria-label={t('common.portals')}
-                    className={cn(
-                        'rounded-control inline-flex min-h-11 items-center gap-2 px-3 text-sm font-semibold',
-                        inverse ? 'text-white hover:bg-white/10' : 'text-fg hover:bg-surface-muted',
-                    )}
-                >
+                <>
                     <LayoutGrid className="size-5" aria-hidden />
                     <span className="hidden sm:inline" aria-hidden>
                         {t('common.portals')}
                     </span>
-                </button>
+                </>
             }
         >
-            <p className="text-fg-muted mb-3 text-xs font-semibold uppercase">{t('common.portals')}</p>
-            <ul className="grid grid-cols-2 gap-2">
-                {navigation.portals.map((portal) => {
-                    const Icon = navIcon(portal.icon);
-                    return (
-                        <li key={portal.module}>
-                            <Link
-                                href={portal.href ?? '/'}
-                                className="rounded-control border-line text-fg hover:bg-surface-muted flex min-h-16 flex-col items-start gap-1 border p-2.5 text-xs font-semibold"
-                            >
-                                <Icon className="text-primary size-4" aria-hidden />
-                                {portal.title}
-                            </Link>
-                        </li>
-                    );
-                })}
-            </ul>
-        </Popover>
+            {(close) => (
+                <>
+                    <p className="text-fg-muted mb-3 text-xs font-semibold uppercase">{t('common.portals')}</p>
+                    <ul className="grid grid-cols-2 gap-2">
+                        {navigation.portals.map((portal) => {
+                            const Icon = navIcon(portal.icon);
+                            return (
+                                <li key={portal.module}>
+                                    <Link
+                                        href={portal.href ?? '/'}
+                                        onClick={close}
+                                        className="rounded-control border-line text-fg hover:bg-surface-muted flex min-h-16 flex-col items-start gap-1 border p-2.5 text-xs font-semibold"
+                                    >
+                                        <Icon className="text-primary size-4" aria-hidden />
+                                        {portal.title}
+                                    </Link>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </>
+            )}
+        </Disclosure>
     );
 }
 

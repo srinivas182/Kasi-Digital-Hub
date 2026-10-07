@@ -10,6 +10,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Modules\Core\Http\Middleware\TrackDevice;
 use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -20,7 +21,10 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['kasi_locale']);
+        $middleware->redirectGuestsTo('/login');
+        $middleware->redirectUsersTo('/home');
         $middleware->web(append: [
+            TrackDevice::class,
             SetLocale::class,
             HandleInertiaRequests::class,
             SecurityHeaders::class,

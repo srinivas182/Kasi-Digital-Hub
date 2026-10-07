@@ -2,9 +2,9 @@ import { usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
 
 import { BrandMark } from '@/components/platform/BrandMark';
+import { UserMenu } from '@/components/platform/UserMenu';
 import { ThemeToggle } from '@/components/platform/chrome';
 import { BottomNav, PortalSwitcher, Sidebar } from '@/components/platform/nav';
-import { Avatar } from '@/components/ui/display';
 
 import { Shell } from './Shell';
 
@@ -35,7 +35,7 @@ export function PortalLayout({
                     <div className="ml-auto flex items-center gap-1">
                         <PortalSwitcher />
                         <ThemeToggle />
-                        <Avatar name={userName} size="sm" />
+                        <UserMenu fallbackName={userName} />
                     </div>
                 </div>
             </header>

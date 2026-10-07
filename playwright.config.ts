@@ -1,4 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
+import { closeSync, openSync } from 'node:fs';
 
 /**
  * Browser tests (smoke level): key pages at phone and desktop sizes, keyboard use,
@@ -7,6 +8,9 @@ import { defineConfig, devices } from '@playwright/test';
  */
 const PORT = Number(process.env.E2E_PORT ?? 8123);
 const executablePath = process.env.PW_CHROMIUM_PATH || undefined;
+
+// The e2e database file must exist before migrations run.
+closeSync(openSync('database/e2e.sqlite', 'a'));
 
 export default defineConfig({
     testDir: 'tests/e2e',
@@ -34,7 +38,8 @@ export default defineConfig({
         },
     ],
     webServer: {
-        command: `php artisan serve --host=127.0.0.1 --port=${PORT}`,
+        // Fresh demo database (file-based so it persists between requests), then serve.
+        command: `php artisan cache:clear && php artisan migrate:fresh --seed --force && php artisan serve --host=127.0.0.1 --port=${PORT}`,
         url: `http://127.0.0.1:${PORT}/up`,
         reuseExistingServer: !process.env.CI,
         timeout: 60_000,
@@ -42,11 +47,15 @@ export default defineConfig({
             APP_ENV: 'local',
             APP_DEBUG: 'false',
             DB_CONNECTION: 'sqlite',
-            DB_DATABASE: ':memory:',
+            DB_DATABASE: `${process.cwd()}/database/e2e.sqlite`,
             SESSION_DRIVER: 'file',
-            CACHE_STORE: 'file',
             QUEUE_CONNECTION: 'sync',
             KASI_DEMO_MODE: 'true',
+            KASI_OTP_PER_IP_HOUR: '1000',
+            KASI_THROTTLE_MULTIPLIER: '50',
+            KASI_OTP_PER_PHONE_15_MIN: '50',
+            KASI_OTP_PER_PHONE_DAY: '200',
+            CACHE_STORE: 'file',
         },
     },
 });

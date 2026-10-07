@@ -11,7 +11,7 @@
     ],
     "providers": [],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": null,

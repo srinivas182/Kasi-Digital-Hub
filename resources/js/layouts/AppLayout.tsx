@@ -3,10 +3,10 @@ import { Bell } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import { BrandMark } from '@/components/platform/BrandMark';
+import { UserMenu } from '@/components/platform/UserMenu';
 import { LanguageSwitcher, ThemeToggle } from '@/components/platform/chrome';
 import { BottomNav, PortalSwitcher } from '@/components/platform/nav';
 import { IconButton } from '@/components/ui/Button';
-import { Avatar } from '@/components/ui/display';
 import { useTranslation } from '@/lib/i18n';
 
 import { Shell } from './Shell';
@@ -29,7 +29,7 @@ export function AppLayout({ children, userName = 'Guest' }: { children: ReactNod
                         <IconButton label={t('common.notifications')} className="text-white hover:bg-white/10">
                             <Bell className="size-5" aria-hidden />
                         </IconButton>
-                        <Avatar name={userName} size="sm" />
+                        <UserMenu fallbackName={userName} />
                     </div>
                 </div>
             </header>

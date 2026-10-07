@@ -38,10 +38,20 @@ export interface NavPortal {
     items: NavItem[];
 }
 
+export interface AuthUser {
+    id: string;
+    name: string;
+    displayName: string;
+    ageBand: 'adult' | 'minor';
+    staff: boolean;
+}
+
 export interface SharedProps extends InertiaPageProps {
     platform: PlatformProps;
     i18n: I18nProps;
     navigation: { portals: NavPortal[] };
+    auth: { user: AuthUser | null };
+    flash: { status: string | null };
 }
 
 declare module '@inertiajs/core' {

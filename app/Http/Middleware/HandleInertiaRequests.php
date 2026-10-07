@@ -8,6 +8,7 @@ use App\Support\Locale\Languages;
 use App\Support\Navigation\NavigationBuilder;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Modules\Core\Identity\Models\User;
 
 /**
  * Shares platform-wide props with every Inertia page.
@@ -48,6 +49,33 @@ final class HandleInertiaRequests extends Middleware
                 ),
             ],
             'navigation' => fn (): array => ['portals' => app(NavigationBuilder::class)->portals()],
+            'auth' => fn (): array => ['user' => $this->userSummary($request)],
+            'flash' => fn (): array => [
+                'status' => $request->hasSession() ? $request->session()->get('status') : null,
+            ],
+        ];
+    }
+
+    /**
+     * Minimal signed-in user details for the interface. Never include PINs, codes or full ID data.
+     *
+     * @return array{id: string, name: string, displayName: string, ageBand: string, staff: bool}|null
+     */
+    private function userSummary(Request $request): ?array
+    {
+        // Errors such as "page not found" render before the session starts.
+        $user = $request->hasSession() ? $request->user() : null;
+
+        if (! $user instanceof User) {
+            return null;
+        }
+
+        return [
+            'id' => $user->id,
+            'name' => $user->fullName(),
+            'displayName' => $user->displayName(),
+            'ageBand' => $user->age_band,
+            'staff' => $user->two_factor_required,
         ];
     }
 }
