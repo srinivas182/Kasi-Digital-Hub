@@ -1,0 +1,154 @@
+# Kasi Digital Hub CI
+#
+# Runs once per push to main (one push per sprint), with:
+#   - path filters: PHP checks only when PHP changes, JS checks only when JS changes,
+#     nothing for docs-only changes
+#   - parallel jobs so the whole run stays under ~10 minutes
+#   - superseded runs cancelled automatically
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      php: ${{ steps.filter.outputs.php }}
+      js: ${{ steps.filter.outputs.js }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            php:
+              - '**/*.php'
+              - 'composer.*'
+              - 'phpunit.xml'
+              - 'phpstan.neon'
+              - 'pint.json'
+              - 'modules/*/module.json'
+              - 'resources/views/**'
+              - 'VERSION'
+              - '.github/workflows/**'
+            js:
+              - 'resources/js/**'
+              - 'resources/css/**'
+              - 'modules/*/resources/js/**'
+              - 'package*.json'
+              - 'vite.config.ts'
+              - 'tsconfig.json'
+              - 'eslint.config.js'
+              - '.prettierrc'
+              - 'scripts/check-bundle-size.mjs'
+              - '.github/workflows/**'
+
+  php-quality:
+    name: PHP quality (Pint, Larastan L8, audit)
+    needs: changes
+    if: needs.changes.outputs.php == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, bcmath, pdo_mysql, zip, gd, redis, pcntl
+          coverage: none
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ hashFiles('composer.lock') }}
+      - run: composer install --no-interaction --no-progress --prefer-dist
+      - run: vendor/bin/pint --test
+      - name: Cache PHPStan
+        uses: actions/cache@v4
+        with:
+          path: storage/framework/cache/phpstan
+          key: phpstan-${{ github.sha }}
+          restore-keys: phpstan-
+      - run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+      - run: composer audit --no-interaction
+
+  php-tests:
+    name: PHP tests (Pest on MySQL)
+    needs: changes
+    if: needs.changes.outputs.php == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: kasi_test
+          MYSQL_ROOT_PASSWORD: root
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -proot" --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: kasi_test
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, bcmath, pdo_mysql, zip, gd, redis, pcntl
+          coverage: none
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ hashFiles('composer.lock') }}
+      - run: composer install --no-interaction --no-progress --prefer-dist
+      - run: cp .env.example .env && php artisan key:generate
+      - name: Pest (parallel)
+        run: vendor/bin/pest --parallel
+        env:
+          DB_CONNECTION: mysql
+          DB_DATABASE: kasi_test
+
+  js:
+    name: Frontend (types, lint, tests, build, bundle budget)
+    needs: changes
+    if: needs.changes.outputs.js == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm run build
+      - run: npm run size
+      - run: npm audit --omit=dev --audit-level=high

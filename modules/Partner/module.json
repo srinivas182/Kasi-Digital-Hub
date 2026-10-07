@@ -1,0 +1,29 @@
+{
+    "name": "Partner",
+    "slug": "partner",
+    "title": "Partner portal",
+    "description": "Banks, insurers, funding agencies and corporate buyers: referrals and offers",
+    "group": "operations",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": null,
+    "roles": [
+        "partner_admin",
+        "partner_agent"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [],
+    "demo_seeders": []
+}

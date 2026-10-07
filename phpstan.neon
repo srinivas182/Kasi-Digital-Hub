@@ -1,0 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - app
+        - modules
+        - config
+        - database
+        - routes
+    excludePaths:
+        - modules/*/tests/*
+    tmpDir: storage/framework/cache/phpstan

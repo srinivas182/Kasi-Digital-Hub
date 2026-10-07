@@ -1,0 +1,31 @@
+{
+    "name": "Admin",
+    "slug": "admin",
+    "title": "National admin console",
+    "description": "Hubs, module switches, verification, moderation, support, AI controls, audit",
+    "group": "national",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": null,
+    "roles": [
+        "super_admin",
+        "operations_admin",
+        "support_agent",
+        "content_reviewer"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [],
+    "demo_seeders": []
+}

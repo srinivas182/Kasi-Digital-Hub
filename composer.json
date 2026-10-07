@@ -1,0 +1,128 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "mcs/kasi-digital-hub",
+    "type": "project",
+    "description": "Kasi Digital Hub platform - jobs, skills and enterprise portals for South African digital hubs",
+    "keywords": [
+        "laravel",
+        "inertia",
+        "react",
+        "kasihub"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.3",
+        "inertiajs/inertia-laravel": "^3.5",
+        "laravel/framework": "^13.17",
+        "laravel/horizon": "^5.50",
+        "laravel/tinker": "^3.0"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.13",
+        "laravel/pail": "^1.2.5",
+        "laravel/pao": "^1.0.6",
+        "laravel/pint": "^1.27",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^4.7",
+        "pestphp/pest-plugin-laravel": "^4.1",
+        "phpunit/phpunit": "^12.5.12"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/",
+            "Modules\\Admin\\": "modules/Admin/src/",
+            "Modules\\Commercial\\": "modules/Commercial/src/",
+            "Modules\\Connect\\": "modules/Connect/src/",
+            "Modules\\Core\\": "modules/Core/src/",
+            "Modules\\Funder\\": "modules/Funder/src/",
+            "Modules\\Hub\\": "modules/Hub/src/",
+            "Modules\\HubOps\\": "modules/HubOps/src/",
+            "Modules\\Learn\\": "modules/Learn/src/",
+            "Modules\\Partner\\": "modules/Partner/src/",
+            "Modules\\Region\\": "modules/Region/src/",
+            "Modules\\Site\\": "modules/Site/src/",
+            "Modules\\Start\\": "modules/Start/src/",
+            "Modules\\Work\\": "modules/Work/src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Modules\\Admin\\Tests\\": "modules/Admin/tests/",
+            "Modules\\Commercial\\Tests\\": "modules/Commercial/tests/",
+            "Modules\\Connect\\Tests\\": "modules/Connect/tests/",
+            "Modules\\Core\\Tests\\": "modules/Core/tests/",
+            "Modules\\Funder\\Tests\\": "modules/Funder/tests/",
+            "Modules\\Hub\\Tests\\": "modules/Hub/tests/",
+            "Modules\\HubOps\\Tests\\": "modules/HubOps/tests/",
+            "Modules\\Learn\\Tests\\": "modules/Learn/tests/",
+            "Modules\\Partner\\Tests\\": "modules/Partner/tests/",
+            "Modules\\Region\\Tests\\": "modules/Region/tests/",
+            "Modules\\Site\\Tests\\": "modules/Site/tests/",
+            "Modules\\Start\\Tests\\": "modules/Start/tests/",
+            "Modules\\Work\\Tests\\": "modules/Work/tests/"
+        }
+    },
+    "scripts": {
+        "setup": [
+            "composer install",
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+            "@php artisan key:generate",
+            "@php artisan migrate --force",
+            "npm install --ignore-scripts",
+            "npm run build"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php artisan dev"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "pest --parallel"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "pre-package-uninstall": [
+            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        ],
+        "lint": [
+            "pint --test"
+        ],
+        "analyse": [
+            "phpstan analyse --memory-limit=1G"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

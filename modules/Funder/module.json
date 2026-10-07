@@ -1,0 +1,29 @@
+{
+    "name": "Funder",
+    "slug": "funder",
+    "title": "Funder & Programme portal",
+    "description": "Programmes, targets, impact dashboards and exports for funders",
+    "group": "operations",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": null,
+    "roles": [
+        "funder_manager",
+        "funder_viewer"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [],
+    "demo_seeders": []
+}

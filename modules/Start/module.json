@@ -1,0 +1,31 @@
+{
+    "name": "Start",
+    "slug": "start",
+    "title": "KasiStart",
+    "description": "Business registration and formalisation: guided registration, compliance, bank and insurance referrals",
+    "group": "service",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": "start",
+    "roles": [
+        "entrepreneur"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [
+        "businesses_formalised",
+        "bank_accounts_opened"
+    ],
+    "demo_seeders": []
+}

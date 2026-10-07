@@ -1,0 +1,33 @@
+{
+    "name": "HubOps",
+    "slug": "hub-ops",
+    "title": "KasiHub Ops",
+    "description": "Hub setup, check-in, facilitator assisted mode, events, bookings, hub finance",
+    "group": "operations",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": "hub_ops",
+    "roles": [
+        "hub_owner",
+        "hub_manager",
+        "hub_facilitator"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [
+        "hub_visits",
+        "events_held"
+    ],
+    "demo_seeders": []
+}

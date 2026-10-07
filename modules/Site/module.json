@@ -1,0 +1,28 @@
+{
+    "name": "Site",
+    "slug": "site",
+    "title": "Public website",
+    "description": "Public pages, hub finder, public jobs and course catalogue, sign-up entry",
+    "group": "front",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": true,
+        "api": false
+    },
+    "entitlement": null,
+    "roles": [
+        "visitor"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [],
+    "demo_seeders": []
+}

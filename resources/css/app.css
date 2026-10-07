@@ -1,0 +1,10 @@
+@import 'tailwindcss';
+
+/* Scan every module's React pages for Tailwind classes. */
+@source '../../modules/*/resources/js/**/*.tsx';
+@source '../js/**/*.tsx';
+
+/* Design tokens (colours, type scale, spacing) are defined in Sprint 1. */
+@theme {
+    --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}

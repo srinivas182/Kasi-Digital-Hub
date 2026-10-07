@@ -1,0 +1,30 @@
+{
+    "name": "Region",
+    "slug": "region",
+    "title": "Regional console",
+    "description": "City and provincial oversight across hubs",
+    "group": "operations",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core",
+        "HubOps"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": null,
+    "roles": [
+        "city_coordinator",
+        "provincial_coordinator"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [],
+    "demo_seeders": []
+}

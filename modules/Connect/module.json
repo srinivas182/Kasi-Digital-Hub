@@ -1,0 +1,30 @@
+{
+    "name": "Connect",
+    "slug": "connect",
+    "title": "KasiConnect",
+    "description": "Mentors, networks and funding",
+    "group": "service",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": "connect",
+    "roles": [
+        "mentor"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [
+        "mentor_sessions"
+    ],
+    "demo_seeders": []
+}

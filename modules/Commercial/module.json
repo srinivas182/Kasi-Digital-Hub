@@ -1,0 +1,29 @@
+{
+    "name": "Commercial",
+    "slug": "commercial",
+    "title": "Commercial & finance console",
+    "description": "Price list, packages, royalties, attribution, split settlement, payouts",
+    "group": "national",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": null,
+    "roles": [
+        "commercial_admin",
+        "finance_admin"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [],
+    "demo_seeders": []
+}

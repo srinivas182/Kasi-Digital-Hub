@@ -1,0 +1,24 @@
+{
+    "name": "Core",
+    "slug": "core",
+    "title": "Core",
+    "description": "Shared kernel: identity, tenancy, roles, consent, documents, notifications, events, drivers",
+    "group": "core",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": null,
+    "roles": [],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [],
+    "demo_seeders": []
+}

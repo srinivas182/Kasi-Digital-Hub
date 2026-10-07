@@ -1,0 +1,26 @@
+{
+    "name": "Hub",
+    "slug": "hub",
+    "title": "Hub home",
+    "description": "Single login front door: next steps, updates feed, roles, consent, document vault",
+    "group": "front",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": null,
+    "roles": [],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [],
+    "demo_seeders": []
+}

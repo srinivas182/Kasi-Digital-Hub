@@ -1,0 +1,35 @@
+{
+    "name": "Learn",
+    "slug": "learn",
+    "title": "KasiLearn",
+    "description": "Learning and skills: courses, assessments, certificates, cohorts, AI tutor",
+    "group": "service",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": "learn",
+    "roles": [
+        "learner",
+        "provider_admin",
+        "course_author",
+        "assessor_moderator"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [
+        "enrolments",
+        "completions",
+        "certificates"
+    ],
+    "demo_seeders": []
+}

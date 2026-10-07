@@ -1,0 +1,34 @@
+{
+    "name": "Work",
+    "slug": "work",
+    "title": "KasiWork",
+    "description": "Jobs and AI matching: AI CVs, 0-10 matching, employers, hiring pipeline",
+    "group": "service",
+    "release": "r1",
+    "version": "0.0.1",
+    "depends_on": [
+        "Core"
+    ],
+    "providers": [],
+    "routes": {
+        "web": false,
+        "api": false
+    },
+    "entitlement": "work",
+    "roles": [
+        "job_seeker",
+        "employer_admin",
+        "recruiter"
+    ],
+    "permissions": [],
+    "events": {
+        "publishes": [],
+        "consumes": []
+    },
+    "impact_metrics": [
+        "cvs_completed",
+        "applications",
+        "hires"
+    ],
+    "demo_seeders": []
+}
