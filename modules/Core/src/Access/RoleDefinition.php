@@ -11,6 +11,7 @@ final readonly class RoleDefinition
 {
     /**
      * @param  array<string, AccessLevel>  $access  Portal (module name) => level
+     * @param  list<string>  $permissions  Fine-grained permissions ("admin.documents.verify", "admin.*")
      */
     public function __construct(
         public string $key,
@@ -20,5 +21,6 @@ final readonly class RoleDefinition
         public string $scope,
         public bool $staff,
         public array $access,
+        public array $permissions = [],
     ) {}
 }

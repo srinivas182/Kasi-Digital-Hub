@@ -43,6 +43,7 @@ final class RoleRegistry
                     scope: $role['scope'],
                     staff: $role['staff'],
                     access: array_map(AccessLevel::fromName(...), $role['access']),
+                    permissions: $role['permissions'],
                 );
             }
         }

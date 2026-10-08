@@ -4,7 +4,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-    { ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'storage'] },
+    { ignores: ['vendor', 'node_modules', 'public', 'bootstrap/ssr', 'storage', 'test-results', 'playwright-report'] },
     js.configs.recommended,
     ...tseslint.configs.recommended,
     {

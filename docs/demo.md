@@ -31,6 +31,8 @@ All demo accounts use PIN **24680**.
 | 072 000 0030 | Naledi Khumalo | Funder manager - Limpopo Youth Skills Programme (staff) | - |
 | 072 000 0040 | Lucky Siwela | Super admin - national (staff) | - |
 | 072 000 0041 | Zanele Dlamini | Finance admin - national (staff) | - |
+| 072 000 0042 | Ayanda Zwane | Operations admin - national (staff) | - |
+| 072 000 0043 | Bheki Mthethwa | Support agent - national (staff) | - |
 | 072 000 0050 | Karabo Molefe | Partner admin - Ubuntu Community Bank (demo) (staff) | - |
 
 Plus **500 demo citizens** (+27 84 000 0001 to 0500, PIN 24680) spread across all hubs.
@@ -59,6 +61,16 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Lwazi (072 000 0002): a proof of address that was not accepted (blurry photo) - shows the "why" in his feed.
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
+
+## Demo script - admin console (5 minutes)
+
+1. Sign in as Lucky (072 000 0040) and open "All services" -> National admin console.
+2. Overview: numbers and the 12-week registrations chart.
+3. Verification: preview a waiting document, verify one and reject one ("blurry") - the person is told why.
+4. People: search "Thandi", open her page, give a role with a reason; show the audit trail.
+5. Hubs: open Nkowankowa, switch on KasiLearn as an add-on.
+6. Organisations: verify "Giyani Spar Express (demo)". Enquiries: mark one handled. Audit log: filter by "role.".
+7. Sign in as Bheki (072 000 0043, support agent) to show the smaller menu.
 
 ## Demo script - public website (3 minutes)
 

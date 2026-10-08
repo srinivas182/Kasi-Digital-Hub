@@ -33,7 +33,35 @@ final readonly class NavigationBuilder
 
         $levels = $this->access->levels($user);
 
-        return $this->build(static fn (ModuleManifest $module): bool => $module->name === 'Hub' || isset($levels[$module->name]));
+        $portals = $this->build(static fn (ModuleManifest $module): bool => $module->name === 'Hub' || isset($levels[$module->name]));
+
+        // Menu items that need a fine-grained permission are only shown to people who have it.
+        $required = $this->itemPermissions();
+
+        return array_map(fn (array $portal): array => [
+            ...$portal,
+            'items' => array_values(array_filter(
+                $portal['items'],
+                fn (array $item): bool => ($permission = $required[$portal['module'].'|'.$item['href']] ?? null) === null
+                    || $this->access->hasPermission($user, $permission),
+            )),
+        ], $portals);
+    }
+
+    /** @return array<string, string> "Module|href" => permission */
+    private function itemPermissions(): array
+    {
+        $map = [];
+
+        foreach ($this->registry->enabled() as $module) {
+            foreach ($module->nav['items'] ?? [] as $item) {
+                if ($item['permission'] !== null) {
+                    $map[$module->name.'|'.$item['href']] = $item['permission'];
+                }
+            }
+        }
+
+        return $map;
     }
 
     /**

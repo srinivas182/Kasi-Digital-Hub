@@ -2,14 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Modules\Site\Models;
+namespace Modules\Core\Platform\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Core\Access\BelongsToHub;
 
 /**
- * A message from the website's contact, employer or funder forms.
+ * A message from the website's contact, employer or funder forms (sent on the Site,
+ * handled in the admin console).
  *
  * @property string $id
  * @property string $kind
@@ -21,6 +23,7 @@ use Modules\Core\Access\BelongsToHub;
  * @property string|null $hub_id
  * @property string $message
  * @property string $status
+ * @property CarbonImmutable|null $created_at
  */
 final class Enquiry extends Model
 {

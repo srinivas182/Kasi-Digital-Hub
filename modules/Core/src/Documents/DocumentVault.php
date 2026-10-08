@@ -155,22 +155,31 @@ final readonly class DocumentVault
     }
 
     /** A short-lived signed link; the permission check happens again when it is opened. */
-    public function temporaryUrl(Document $document): string
+    /** @param bool $inline Show in the browser (reviewer preview) instead of downloading. */
+    public function temporaryUrl(Document $document, bool $inline = false): string
     {
-        return URL::temporarySignedRoute('documents.download', now()->addMinutes((int) config('kasi.documents.link_minutes')), ['document' => $document->id]);
+        return URL::temporarySignedRoute('documents.download', now()->addMinutes((int) config('kasi.documents.link_minutes')), array_filter(['document' => $document->id, 'inline' => $inline ? 1 : null]));
     }
 
-    public function download(Document $document, User $by): StreamedResponse
+    public function download(Document $document, User $by, bool $inline = false): StreamedResponse
     {
-        $this->audit->record('document.downloaded', $document->owner, meta: ['document' => $document->id], actor: $by->id === $document->user_id ? null : $by);
+        $this->audit->record($inline ? 'document.viewed' : 'document.downloaded', $document->owner, meta: ['document' => $document->id], actor: $by->id === $document->user_id ? null : $by);
 
         $name = Str::slug(pathinfo($document->original_name, PATHINFO_FILENAME)).'.'.pathinfo($document->path, PATHINFO_EXTENSION);
-
-        return Storage::disk($document->disk)->download($document->path, $name, [
+        $headers = [
             'Content-Type' => $document->mime_type,
             'Cache-Control' => 'private, no-store',
             'X-Content-Type-Options' => 'nosniff',
-        ]);
+        ];
+
+        // Never let an uploaded file run scripts. Only PDFs and images are accepted (checked by
+        // content on upload) and nosniff stops browsers guessing; images are also sandboxed.
+        // PDFs are left without a sandbox so the browser's PDF viewer can show them.
+        if ($document->mime_type !== 'application/pdf') {
+            $headers['Content-Security-Policy'] = "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox";
+        }
+
+        return Storage::disk($document->disk)->response($document->path, $name, $headers, $inline ? 'inline' : 'attachment');
     }
 
     /** Phone photos of documents are often 4-12 MB; shrink to a readable size to save data and storage. */

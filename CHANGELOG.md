@@ -2,6 +2,19 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.6.0] - 2026-10-08 - Sprint 6: National admin console, part 1
+
+### Added
+- Admin console: overview, people (search, roles, suspension), hubs (create, edit, packages), organisations
+  (verification, members), document verification queue, enquiries inbox, audit log with CSV export.
+- Fine-grained permissions declared in module manifests; permission-filtered menus (ADR-014).
+- Mandatory reasons for sensitive actions; national roles only by super admins.
+- Demo operations admin and support agent; demo verification queue, pending organisations and enquiries.
+
+### Fixed
+- Roles can no longer be given with an empty or non-existent scope.
+- Sign-in code limits now tell shared hub computers apart (anonymous browser id) and allow trusted hub IPs.
+
 ## [0.5.0] - 2026-10-08 - Sprint 5: Hub home & public website
 
 ### Added

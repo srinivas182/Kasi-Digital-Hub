@@ -48,6 +48,7 @@ use Modules\Core\Structure\Models\RoleAssignment;
  * @property int|null $municipality_id
  * @property string|null $place_name
  * @property int $access_version
+ * @property CarbonImmutable|null $created_at
  */
 final class User extends Authenticatable
 {

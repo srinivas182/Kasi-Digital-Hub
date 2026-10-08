@@ -58,6 +58,27 @@ final readonly class AccessResolver
         return in_array('*', $scopes, true) ? '*' : array_values(array_unique($scopes));
     }
 
+    /**
+     * Fine-grained permission check, e.g. "admin.documents.verify". A role holding "admin.*"
+     * has every admin permission.
+     */
+    public function hasPermission(User $user, string $permission): bool
+    {
+        foreach ($this->resolved($user)['permissions'] as $granted) {
+            if ($granted === $permission || (str_ends_with($granted, '.*') && str_starts_with($permission, substr($granted, 0, -1)))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** @return list<string> */
+    public function permissions(User $user): array
+    {
+        return $this->resolved($user)['permissions'];
+    }
+
     /** @return list<string> Role keys the person holds (any scope). */
     public function roleKeys(User $user): array
     {
@@ -70,22 +91,23 @@ final readonly class AccessResolver
     }
 
     /**
-     * @return array{levels: array<string, int>, hubs: array<string, list<string>>, assignments: list<array{role: string, scope_type: string, scope_id: string|null}>}
+     * @return array{levels: array<string, int>, hubs: array<string, list<string>>, assignments: list<array{role: string, scope_type: string, scope_id: string|null}>, permissions: list<string>}
      */
     private function resolved(User $user): array
     {
-        /** @var array{levels: array<string, int>, hubs: array<string, list<string>>, assignments: list<array{role: string, scope_type: string, scope_id: string|null}>} */
+        /** @var array{levels: array<string, int>, hubs: array<string, list<string>>, assignments: list<array{role: string, scope_type: string, scope_id: string|null}>, permissions: list<string>} */
         return Cache::remember($this->cacheKey($user), now()->addMinutes(30), fn (): array => $this->compute($user));
     }
 
     /**
-     * @return array{levels: array<string, int>, hubs: array<string, list<string>>, assignments: list<array{role: string, scope_type: string, scope_id: string|null}>}
+     * @return array{levels: array<string, int>, hubs: array<string, list<string>>, assignments: list<array{role: string, scope_type: string, scope_id: string|null}>, permissions: list<string>}
      */
     private function compute(User $user): array
     {
         $levels = [];
         $hubs = [];
         $assignments = [];
+        $permissions = [];
 
         $rows = RoleAssignment::query()->where('user_id', $user->id)->active()->get(['role', 'scope_type', 'scope_id']);
 
@@ -96,6 +118,7 @@ final readonly class AccessResolver
             }
 
             $assignments[] = ['role' => $row->role, 'scope_type' => $row->scope_type, 'scope_id' => $row->scope_id];
+            array_push($permissions, ...$role->permissions);
             $scopeHubs = $this->hubsInScope($row->scope_type, $row->scope_id);
 
             foreach ($role->access as $module => $level) {
@@ -109,7 +132,7 @@ final readonly class AccessResolver
             }
         }
 
-        return ['levels' => $levels, 'hubs' => $hubs, 'assignments' => $assignments];
+        return ['levels' => $levels, 'hubs' => $hubs, 'assignments' => $assignments, 'permissions' => array_values(array_unique($permissions))];
     }
 
     /** @return list<string> */

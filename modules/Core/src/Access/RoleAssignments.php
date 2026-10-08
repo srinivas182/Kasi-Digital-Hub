@@ -24,12 +24,16 @@ final readonly class RoleAssignments
         private AuditLogger $audit,
     ) {}
 
-    public function assign(User $user, string $roleKey, Scope $scope, ?User $by = null, ?\DateTimeInterface $expiresAt = null): RoleAssignment
+    public function assign(User $user, string $roleKey, Scope $scope, ?User $by = null, ?\DateTimeInterface $expiresAt = null, ?string $reason = null): RoleAssignment
     {
         $role = $this->roles->get($roleKey);
 
         if ($role->scope !== $scope->type) {
             throw new InvalidArgumentException("Role [{$roleKey}] must be given at {$role->scope} level, not {$scope->type}.");
+        }
+
+        if (! $scope->exists()) {
+            throw new InvalidArgumentException('That place or organisation does not exist.');
         }
 
         if ($user->isMinor() && ($role->staff || ! in_array($role->module, (array) config('kasi.age.minor_modules'), true))) {
@@ -42,13 +46,13 @@ final readonly class RoleAssignments
         );
 
         $this->refresh($user);
-        $this->audit->record('role.assigned', $user, meta: ['role' => $roleKey, 'scope' => $scope->type, 'scope_id' => $scope->id], actor: $by);
+        $this->audit->record('role.assigned', $user, meta: array_filter(['role' => $roleKey, 'scope' => $scope->type, 'scope_id' => $scope->id, 'reason' => $reason]), actor: $by);
         event(new RoleAssigned($user, $roleKey, $scope->type, $scope->id, $by?->id));
 
         return $assignment;
     }
 
-    public function revoke(User $user, string $roleKey, Scope $scope, ?User $by = null): bool
+    public function revoke(User $user, string $roleKey, Scope $scope, ?User $by = null, ?string $reason = null): bool
     {
         $deleted = RoleAssignment::query()
             ->where('user_id', $user->id)->where('role', $roleKey)
@@ -57,7 +61,7 @@ final readonly class RoleAssignments
 
         if ($deleted) {
             $this->refresh($user);
-            $this->audit->record('role.revoked', $user, meta: ['role' => $roleKey, 'scope' => $scope->type, 'scope_id' => $scope->id], actor: $by);
+            $this->audit->record('role.revoked', $user, meta: array_filter(['role' => $roleKey, 'scope' => $scope->type, 'scope_id' => $scope->id, 'reason' => $reason]), actor: $by);
             event(new RoleRevoked($user, $roleKey, $scope->type, $scope->id, $by?->id));
         }
 

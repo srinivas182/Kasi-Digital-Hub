@@ -7,7 +7,7 @@ namespace Modules\Site\Http\Controllers;
 use App\Support\Seo\Seo;
 use Inertia\Inertia;
 use Inertia\Response;
-use Modules\Site\Models\Enquiry;
+use Modules\Core\Platform\Models\Enquiry;
 use Modules\Site\Support\PublicHubs;
 
 /**

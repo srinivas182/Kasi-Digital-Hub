@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 use Modules\Core\Identity\Contracts\BotCheck;
 use Modules\Core\Identity\Services\AuditLogger;
+use Modules\Core\Platform\Models\Enquiry;
 use Modules\Core\Structure\Models\Hub;
-use Modules\Site\Models\Enquiry;
 use Throwable;
 
 /**

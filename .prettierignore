@@ -6,3 +6,5 @@ storage
 *.md
 composer.lock
 package-lock.json
+test-results
+playwright-report

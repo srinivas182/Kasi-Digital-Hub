@@ -61,6 +61,14 @@ final class SaFormat
         return substr($local, 0, 3).' '.substr($local, 3, 3).' '.substr($local, 6);
     }
 
+    /** +27724183390 -> 072 *** 3390 (for lists; full numbers only on detail pages) */
+    public static function maskedPhone(string $e164): string
+    {
+        $display = self::phone($e164);
+
+        return strlen($display) === 12 ? substr($display, 0, 3).' *** '.substr($display, -4) : '***';
+    }
+
     /** 7 Oct 2026 (SAST) */
     public static function date(DateTimeInterface|string $value): string
     {

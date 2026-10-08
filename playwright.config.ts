@@ -55,6 +55,7 @@ export default defineConfig({
             KASI_OTP_PER_IP_HOUR: '1000',
             KASI_THROTTLE_MULTIPLIER: '50',
             KASI_OTP_PER_PHONE_15_MIN: '50',
+            KASI_OTP_PER_DEVICE_HOUR: '1000',
             KASI_OTP_PER_PHONE_DAY: '200',
             CACHE_STORE: 'file',
         },

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Cache;
 use Modules\Core\Identity\Models\OtpChallenge;
+use Modules\Core\Identity\Services\DeviceManager;
 use Modules\Core\Identity\Services\OtpService;
 use Modules\Core\Tests\Helpers;
 
@@ -85,4 +86,21 @@ it('limits code requests per IP address', function (): void {
 
     expect($service->request('+27821234567', 'login', '9.9.9.9', 'x3')['reason'])->toBe('rate_limited');
     Cache::flush();
+});
+
+it('gives hub internet connections a higher per-IP limit', function (): void {
+    config(['kasi.identity.otp.per_ip_hour' => 2, 'kasi.identity.otp.trusted_ips' => ['196.25.0.0/16']]);
+    $service = app(OtpService::class);
+
+    foreach (['+27724183390', '+27731234567', '+27821234567'] as $i => $phone) {
+        expect($service->request($phone, 'login', '196.25.10.4', "hub-pc-{$i}")['sent'])->toBeTrue();
+    }
+
+    $service->request('+27721111111', 'login', '41.1.1.1', 'a');
+    $service->request('+27722222222', 'login', '41.1.1.1', 'b');
+    expect($service->request('+27723333333', 'login', '41.1.1.1', 'c')['reason'])->toBe('rate_limited');
+});
+
+it('gives every browser an anonymous id so shared hub computers are told apart', function (): void {
+    $this->get('/login')->assertCookie(DeviceManager::BROWSER_COOKIE);
 });

@@ -28,11 +28,30 @@ final readonly class DeviceManager
     }
 
     /** Stable fingerprint of this browser for rate limiting (not identifying). */
+    public const BROWSER_COOKIE = 'kasi_browser';
+
+    /**
+     * Identifies this browser for rate limiting: the remembered-device token, else an anonymous
+     * browser id cookie (so the identical computers in a hub are told apart), else IP + user agent.
+     */
     public function fingerprint(): string
     {
-        $token = $this->request()->cookie(self::COOKIE);
+        foreach ([self::COOKIE, self::BROWSER_COOKIE] as $cookie) {
+            $token = $this->request()->cookie($cookie);
+            if (is_string($token) && $token !== '') {
+                return hash('sha256', $cookie.'|'.$token);
+            }
+        }
 
-        return hash('sha256', is_string($token) && $token !== '' ? $token : $this->request()->ip().'|'.$this->request()->userAgent());
+        return hash('sha256', $this->request()->ip().'|'.$this->request()->userAgent());
+    }
+
+    /** Give the browser an anonymous id (no personal data) the first time it opens sign-in. */
+    public function ensureBrowserId(): void
+    {
+        if (! is_string($this->request()->cookie(self::BROWSER_COOKIE))) {
+            Cookie::queue(Cookie::make(self::BROWSER_COOKIE, Str::random(40), 60 * 24 * 365, httpOnly: true, sameSite: 'lax'));
+        }
     }
 
     public function rememberedDeviceFor(User $user): ?UserDevice

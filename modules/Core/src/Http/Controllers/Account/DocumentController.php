@@ -40,7 +40,7 @@ final class DocumentController
         abort_unless($request->hasValidSignature(), 403);
         abort_unless($this->vault->canOpen($this->user($request), $document), 403);
 
-        return $this->vault->download($document, $this->user($request));
+        return $this->vault->download($document, $this->user($request), $request->boolean('inline'));
     }
 
     public function destroy(Request $request, Document $document): RedirectResponse

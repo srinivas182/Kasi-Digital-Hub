@@ -24,6 +24,7 @@ use Modules\Core\Identity\Models\User;
  * @property string|null $contact_phone
  * @property int|null $municipality_id
  * @property string|null $address
+ * @property CarbonImmutable|null $created_at
  */
 final class Organisation extends Model
 {

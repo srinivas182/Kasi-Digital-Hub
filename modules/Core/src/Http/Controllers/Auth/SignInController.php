@@ -35,6 +35,8 @@ final class SignInController
 
     public function showPhone(Request $request): Response
     {
+        $this->devices->ensureBrowserId();
+
         return Inertia::render('Core/Auth/Phone', [
             'expired' => $request->boolean('expired'),
             'signedOut' => $request->session()->get('signed_out_reason'),

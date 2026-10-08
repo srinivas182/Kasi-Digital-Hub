@@ -131,3 +131,9 @@ it('ignores expired roles', function (): void {
 
     expect(app(AccessResolver::class)->levels($person->refresh()))->toBe([]);
 });
+
+it('rejects roles for places or organisations that do not exist', function (): void {
+    expect(fn () => app(RoleAssignments::class)->assign(User::factory()->create(), 'hub_facilitator', new Scope('hub', '01JNOTAREALHUBIDXXXXXXXXXX')))
+        ->toThrow(InvalidArgumentException::class, 'does not exist')
+        ->and(fn () => new Scope('hub', ''))->toThrow(InvalidArgumentException::class);
+});

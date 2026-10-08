@@ -5,13 +5,15 @@
     "description": "Hubs, module switches, verification, moderation, support, AI controls, audit",
     "group": "national",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.6.0",
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Admin\\Providers\\AdminServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": null,
@@ -33,7 +35,10 @@
                 "Partner": "manage",
                 "Admin": "manage",
                 "Commercial": "manage"
-            }
+            },
+            "permissions": [
+                "admin.*"
+            ]
         },
         {
             "key": "operations_admin",
@@ -51,7 +56,21 @@
                 "Funder": "view",
                 "Partner": "manage",
                 "Admin": "manage"
-            }
+            },
+            "permissions": [
+                "admin.dashboard.view",
+                "admin.people.view",
+                "admin.people.suspend",
+                "admin.roles.assign",
+                "admin.hubs.view",
+                "admin.hubs.manage",
+                "admin.organisations.view",
+                "admin.organisations.manage",
+                "admin.organisations.verify",
+                "admin.documents.verify",
+                "admin.enquiries.handle",
+                "admin.audit.view"
+            ]
         },
         {
             "key": "support_agent",
@@ -66,7 +85,15 @@
                 "Connect": "assist",
                 "HubOps": "view",
                 "Admin": "view"
-            }
+            },
+            "permissions": [
+                "admin.dashboard.view",
+                "admin.people.view",
+                "admin.hubs.view",
+                "admin.organisations.view",
+                "admin.documents.verify",
+                "admin.enquiries.handle"
+            ]
         },
         {
             "key": "content_reviewer",
@@ -79,16 +106,44 @@
                 "Learn": "view",
                 "Connect": "view",
                 "Admin": "view"
-            }
+            },
+            "permissions": [
+                "admin.dashboard.view",
+                "admin.people.view",
+                "admin.hubs.view",
+                "admin.organisations.view"
+            ]
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "admin.dashboard.view",
+        "admin.people.view",
+        "admin.people.suspend",
+        "admin.roles.assign",
+        "admin.roles.assign_national",
+        "admin.hubs.view",
+        "admin.hubs.manage",
+        "admin.organisations.view",
+        "admin.organisations.manage",
+        "admin.organisations.verify",
+        "admin.documents.verify",
+        "admin.enquiries.handle",
+        "admin.audit.view",
+        "admin.audit.export"
+    ],
     "events": {
-        "publishes": [],
+        "publishes": [
+            "admin.organisation.verified",
+            "admin.organisation.rejected",
+            "admin.account.suspended",
+            "admin.account.reactivated"
+        ],
         "consumes": []
     },
     "impact_metrics": [],
-    "demo_seeders": [],
+    "demo_seeders": [
+        "Modules\\Admin\\Database\\Seeders\\DemoAdminQueueSeeder"
+    ],
     "nav": {
         "icon": "shield",
         "href": "/admin",
@@ -96,22 +151,44 @@
             {
                 "label": "nav.admin.overview",
                 "href": "/admin",
-                "icon": "bar-chart"
+                "icon": "bar-chart",
+                "permission": "admin.dashboard.view"
+            },
+            {
+                "label": "nav.admin.people",
+                "href": "/admin/people",
+                "icon": "users",
+                "permission": "admin.people.view"
             },
             {
                 "label": "nav.admin.hubs",
                 "href": "/admin/hubs",
-                "icon": "building"
+                "icon": "building",
+                "permission": "admin.hubs.view"
+            },
+            {
+                "label": "nav.admin.organisations",
+                "href": "/admin/organisations",
+                "icon": "landmark",
+                "permission": "admin.organisations.view"
             },
             {
                 "label": "nav.admin.verification",
                 "href": "/admin/verification",
-                "icon": "shield"
+                "icon": "shield",
+                "permission": "admin.documents.verify"
             },
             {
-                "label": "nav.admin.settings",
-                "href": "/admin/settings",
-                "icon": "settings"
+                "label": "nav.admin.enquiries",
+                "href": "/admin/enquiries",
+                "icon": "handshake",
+                "permission": "admin.enquiries.handle"
+            },
+            {
+                "label": "nav.admin.audit",
+                "href": "/admin/audit",
+                "icon": "book-open",
+                "permission": "admin.audit.view"
             }
         ]
     }

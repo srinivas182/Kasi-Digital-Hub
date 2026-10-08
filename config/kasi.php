@@ -59,8 +59,12 @@ return [
             // Per phone number: 3 codes per 15 minutes and 10 per day.
             'per_phone_15_min' => (int) env('KASI_OTP_PER_PHONE_15_MIN', 3),
             'per_phone_day' => (int) env('KASI_OTP_PER_PHONE_DAY', 10),
-            'per_ip_hour' => (int) env('KASI_OTP_PER_IP_HOUR', 30),
-            'per_device_hour' => 10,
+            'per_ip_hour' => (int) env('KASI_OTP_PER_IP_HOUR', 60),
+            'per_device_hour' => (int) env('KASI_OTP_PER_DEVICE_HOUR', 20),
+            // Hubs share one internet connection, so many people sign in from the same IP address.
+            // Hub IP addresses / ranges (comma separated, CIDR allowed) get a much higher per-IP limit.
+            'trusted_ips' => array_values(array_filter(array_map('trim', explode(',', (string) env('KASI_OTP_TRUSTED_IPS', ''))))),
+            'per_trusted_ip_hour' => (int) env('KASI_OTP_PER_TRUSTED_IP_HOUR', 1000),
             // Platform-wide daily SMS cap - a cost guard against SMS pumping fraud.
             'daily_cap' => (int) env('KASI_SMS_DAILY_CAP', 20000),
             // Block a number range (first 6 digits) after this many codes in an hour.

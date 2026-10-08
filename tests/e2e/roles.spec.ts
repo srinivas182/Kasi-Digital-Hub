@@ -33,8 +33,10 @@ for (const person of CASES) {
         if (person.hub) await expect(page.getByText(person.hub, { exact: true })).toBeVisible();
 
         await page.getByRole('button', { name: 'All services' }).click();
-        for (const portal of person.sees) await expect(page.getByRole('link', { name: portal })).toBeVisible();
-        for (const portal of person.hidden) await expect(page.getByRole('link', { name: portal })).toHaveCount(0);
+        for (const portal of person.sees)
+            await expect(page.getByRole('link', { name: portal, exact: true })).toBeVisible();
+        for (const portal of person.hidden)
+            await expect(page.getByRole('link', { name: portal, exact: true })).toHaveCount(0);
     });
 }
 

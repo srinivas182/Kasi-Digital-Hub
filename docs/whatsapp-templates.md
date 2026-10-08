@@ -8,9 +8,12 @@ Until a template is approved, the platform falls back to SMS for important messa
 
 | Template | Meta category | Notification | Category | Body (English) |
 |---|---|---|---|---|
+| `kasihub_account_status` | utility | account_status | security | KasiHub account notice: {{1}} |
 | `kasihub_document_expiring` | utility | document_expiring | account | Reminder from KasiHub: your {{1}} expires on {{2}}. Upload a new one so your applications are not held up. |
 | `kasihub_document_rejected` | utility | document_rejected | account | We couldn't accept your {{1}} on KasiHub. Reason: {{2}}. Please upload a clear copy, or ask your hub facilitator for help. |
 | `kasihub_document_verified` | utility | document_verified | account | Good news: your {{1}} has been verified on KasiHub. You won't need to upload it again - every KasiHub service can use it. |
+| `kasihub_organisation_rejected` | utility | organisation_rejected | account | We could not verify {{1}} on KasiHub. Reason: {{2}}. Please contact us to complete the check. |
+| `kasihub_organisation_verified` | utility | organisation_verified | account | {{1}} is now verified on KasiHub. You can start posting opportunities for young people. |
 | `kasihub_role_assigned` | utility | role_assigned | account | You now have the {{1}} role on KasiHub ({{2}}). Sign in to see your new tools. |
 | `kasihub_security_alert` | utility | security_alert | security | KasiHub security alert: {{1}}. If this was not you, change your PIN now or visit your hub. |
 | `kasihub_welcome` | utility | welcome | account | Welcome to KasiHub, {{1}}! Your account is ready. Find jobs, courses and business support - and visit your nearest Kasi Digital Hub if you need help. |

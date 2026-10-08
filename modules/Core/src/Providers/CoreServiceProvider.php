@@ -26,6 +26,7 @@ use Modules\Core\Home\HomeRegistry;
 use Modules\Core\Home\ProfileHomeContributor;
 use Modules\Core\Http\Middleware\EnsureAccountReady;
 use Modules\Core\Http\Middleware\EnsureAdult;
+use Modules\Core\Http\Middleware\EnsurePermission;
 use Modules\Core\Http\Middleware\EnsurePortalAccess;
 use Modules\Core\Identity\Contracts\BotCheck;
 use Modules\Core\Identity\Contracts\SmsSender;
@@ -87,9 +88,12 @@ final class CoreServiceProvider extends ServiceProvider
         $router->aliasMiddleware('account.ready', EnsureAccountReady::class);
         $router->aliasMiddleware('adult', EnsureAdult::class);
         $router->aliasMiddleware('portal', EnsurePortalAccess::class);
+        $router->aliasMiddleware('permission', EnsurePermission::class);
 
         // @can('portal', ['Work', 'assist']) / Gate::allows('portal', ['HubOps', 'manage'])
         Gate::define('portal', static fn (User $user, string $module, string $level = 'view'): bool => app(AccessResolver::class)->can($user, $module, AccessLevel::fromName($level)));
+        // Gate::allows('permission', 'admin.documents.verify')
+        Gate::define('permission', static fn (User $user, string $permission): bool => app(AccessResolver::class)->hasPermission($user, $permission));
 
         // Per-IP route throttles for sign-in steps (a first line of defence; OtpService adds
         // per-number, per-device and range limits). The multiplier is raised only for automated tests.

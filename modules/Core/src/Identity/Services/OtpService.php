@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Modules\Core\Identity\Contracts\SmsSender;
 use Modules\Core\Identity\Models\OtpChallenge;
+use Symfony\Component\HttpFoundation\IpUtils;
 
 /**
  * Issues and checks one-time SMS codes with layered abuse protection:
@@ -36,7 +37,7 @@ final readonly class OtpService
         $limits = [
             ['otp:phone15:'.$this->key($phone), (int) config('kasi.identity.otp.per_phone_15_min'), 900],
             ['otp:phoneday:'.$this->key($phone), (int) config('kasi.identity.otp.per_phone_day'), 86400],
-            ['otp:ip:'.($ip ?? 'none'), (int) config('kasi.identity.otp.per_ip_hour'), 3600],
+            ['otp:ip:'.($ip ?? 'none'), $this->ipLimit($ip), 3600],
             ['otp:device:'.($deviceHash ?? 'none'), (int) config('kasi.identity.otp.per_device_hour'), 3600],
         ];
 
@@ -122,6 +123,18 @@ final readonly class OtpService
         $challenge->update(['consumed_at' => now()]);
 
         return true;
+    }
+
+    /** Hub connections (trusted IPs) are shared by many people and get a higher limit. */
+    private function ipLimit(?string $ip): int
+    {
+        $trusted = (array) config('kasi.identity.otp.trusted_ips');
+
+        if ($ip !== null && $trusted !== [] && IpUtils::checkIp($ip, $trusted)) {
+            return (int) config('kasi.identity.otp.per_trusted_ip_hour');
+        }
+
+        return (int) config('kasi.identity.otp.per_ip_hour');
     }
 
     private function generateCode(): string

@@ -21,6 +21,10 @@ final readonly class Scope
             throw new InvalidArgumentException("Invalid scope type [{$type}].");
         }
 
+        if ($id === '') {
+            throw new InvalidArgumentException("Scope [{$type}] needs an id.");
+        }
+
         if (in_array($type, ['self', 'national'], true) !== ($id === null)) {
             throw new InvalidArgumentException("Scope [{$type}] ".($id === null ? 'needs an id.' : 'takes no id.'));
         }
@@ -74,6 +78,19 @@ final readonly class Scope
             'province' => self::province(Province::query()->where('code', $key)->firstOrFail()),
             'organisation', 'org' => self::organisation(Organisation::query()->where('id', $key)->orWhere('name', $key)->firstOrFail()),
             default => throw new InvalidArgumentException("Invalid scope [{$value}]."),
+        };
+    }
+
+    /** Whether the hub, city, province or organisation this scope points at exists. */
+    public function exists(): bool
+    {
+        return match ($this->type) {
+            'self', 'national' => true,
+            'hub' => Hub::query()->whereKey($this->id)->exists(),
+            'municipality' => Municipality::query()->whereKey($this->id)->exists(),
+            'province' => Province::query()->whereKey($this->id)->exists(),
+            'organisation' => Organisation::query()->whereKey($this->id)->exists(),
+            default => false,
         };
     }
 

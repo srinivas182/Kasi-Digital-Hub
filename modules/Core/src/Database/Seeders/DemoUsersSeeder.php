@@ -38,6 +38,8 @@ final class DemoUsersSeeder extends Seeder
         ['phone' => '+27720000030', 'first' => 'Naledi', 'last' => 'Khumalo', 'dob' => '1984-12-05', 'staff' => true, 'story' => 'Funder programme manager'],
         ['phone' => '+27720000040', 'first' => 'Lucky', 'last' => 'Siwela', 'dob' => '1980-06-18', 'staff' => true, 'story' => 'National super admin (Ku Tirhisana)'],
         ['phone' => '+27720000041', 'first' => 'Zanele', 'last' => 'Dlamini', 'dob' => '1991-03-27', 'staff' => true, 'story' => 'Finance admin (Ku Tirhisana)'],
+        ['phone' => '+27720000042', 'first' => 'Ayanda', 'last' => 'Zwane', 'dob' => '1988-11-02', 'staff' => true, 'story' => 'Operations admin (Ku Tirhisana)'],
+        ['phone' => '+27720000043', 'first' => 'Bheki', 'last' => 'Mthethwa', 'dob' => '1995-07-19', 'staff' => true, 'story' => 'Support agent (Ku Tirhisana)'],
         ['phone' => '+27720000050', 'first' => 'Karabo', 'last' => 'Molefe', 'dob' => '1989-09-14', 'staff' => true, 'story' => 'Partner admin - Ubuntu Community Bank (demo bank)'],
     ];
 

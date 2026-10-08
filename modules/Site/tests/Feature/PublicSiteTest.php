@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\Mail;
 use Inertia\Testing\AssertableInertia as Assert;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\ConsentService;
+use Modules\Core\Platform\Models\Enquiry;
 use Modules\Core\Structure\Models\Hub;
 use Modules\Core\Tests\Helpers;
 use Modules\Core\Tests\Structure;
 use Modules\Site\Http\Controllers\SeoController;
-use Modules\Site\Models\Enquiry;
 
 beforeEach(fn () => Structure::seed($this));
 

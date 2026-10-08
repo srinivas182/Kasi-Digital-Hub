@@ -24,7 +24,7 @@ final readonly class ModuleManifest
     /**
      * @param  list<string>  $dependsOn
      * @param  list<string>  $providers  Service provider class names
-     * @param  list<array{key: string, label: string, category: string, scope: string, staff: bool, access: array<string, string>}>  $roles
+     * @param  list<array{key: string, label: string, category: string, scope: string, staff: bool, access: array<string, string>, permissions: list<string>}>  $roles
      * @param  list<string>  $permissions
      * @param  list<string>  $publishes
      * @param  list<string>  $consumes
@@ -122,7 +122,7 @@ final readonly class ModuleManifest
     /**
      * Roles the module defines. Each role grants access levels to portals (by module name).
      *
-     * @return list<array{key: string, label: string, category: string, scope: string, staff: bool, access: array<string, string>}>
+     * @return list<array{key: string, label: string, category: string, scope: string, staff: bool, access: array<string, string>, permissions: list<string>}>
      */
     private static function roles(mixed $roles, string $module): array
     {
@@ -157,6 +157,8 @@ final readonly class ModuleManifest
                 'scope' => $scope,
                 'staff' => (bool) ($role['staff'] ?? false),
                 'access' => $access,
+                // Fine-grained permissions inside portals, e.g. "admin.documents.verify"; "admin.*" = all in that portal.
+                'permissions' => self::stringList($role['permissions'] ?? []),
             ];
         }
 

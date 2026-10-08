@@ -33,6 +33,8 @@ final class DemoRolesSeeder extends Seeder
         ['phone' => '+27720000030', 'hub' => null, 'org' => 'Limpopo Youth Skills Programme (sample funder)', 'roles' => [['funder_manager', 'organisation:Limpopo Youth Skills Programme (sample funder)']]],
         ['phone' => '+27720000040', 'hub' => null, 'org' => 'Ku Tirhisana Consultancy (Pty) Ltd', 'roles' => [['super_admin', 'national']]],
         ['phone' => '+27720000041', 'hub' => null, 'org' => 'Ku Tirhisana Consultancy (Pty) Ltd', 'roles' => [['finance_admin', 'national']]],
+        ['phone' => '+27720000042', 'hub' => null, 'org' => 'Ku Tirhisana Consultancy (Pty) Ltd', 'roles' => [['operations_admin', 'national']]],
+        ['phone' => '+27720000043', 'hub' => null, 'org' => 'Ku Tirhisana Consultancy (Pty) Ltd', 'roles' => [['support_agent', 'national']]],
         ['phone' => '+27720000050', 'hub' => null, 'org' => 'Ubuntu Community Bank (demo)', 'roles' => [['partner_admin', 'organisation:Ubuntu Community Bank (demo)']]],
     ];
 
