@@ -307,10 +307,15 @@ final class AccountController
     {
         $url = URL::temporarySignedRoute('account.email.verify', now()->addDay(), ['id' => $user->id, 'hash' => sha1((string) $user->email)]);
 
-        Mail::raw(
-            "Hi {$user->displayName()},\n\nPlease confirm your email address for KasiHub by opening this link:\n{$url}\n\nIf you did not add this email address, you can ignore this message.",
-            static fn ($message) => $message->to((string) $user->email)->subject('Confirm your email address'),
-        );
+        // A mail outage must not break saving the profile; the person can ask for a new link.
+        try {
+            Mail::raw(
+                "Hi {$user->displayName()},\n\nPlease confirm your email address for KasiHub by opening this link:\n{$url}\n\nIf you did not add this email address, you can ignore this message.",
+                static fn ($message) => $message->to((string) $user->email)->subject('Confirm your email address'),
+            );
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 
     private function user(Request $request): User

@@ -40,6 +40,12 @@ sitemap, robots, enquiries incl. validation, honeypot and rate limit, page count
 extension point). Frontend 44. Browser 74 (every public page on phone and desktop with accessibility scans,
 "near me" with a simulated location, hub search, FAQ, contact form, sign-up call to action, next steps).
 
+## Issues found and fixed during the sprint
+
+- CI's browser tests showed the contact form failing when the mail server is unreachable. The enquiry is
+  saved first, and a mail outage is now logged instead of showing the visitor an error (the same protection
+  was added to email-confirmation links).
+
 ## Notes
 
 - Public first load is 126 KB against the 130 KB budget; Sprint 22 (performance) will trim the shared bundle.

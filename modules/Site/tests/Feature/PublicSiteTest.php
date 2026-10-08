@@ -135,3 +135,12 @@ it('counts page views per page per day without storing anything personal', funct
         ->and(DB::table('page_views')->where('page', 'site.hubs')->value('views'))->toBe(1)
         ->and(array_keys((array) DB::table('page_views')->first()))->toBe(['id', 'day', 'page', 'views']);
 });
+
+it('keeps the enquiry even when email delivery fails', function (): void {
+    config(['mail.default' => 'smtp', 'mail.mailers.smtp.host' => '127.0.0.1', 'mail.mailers.smtp.port' => 1]);
+
+    $this->post('/enquiries/contact', ['name' => 'Ayanda', 'email' => 'a@example.co.za', 'message' => 'Where is my nearest hub?', 'consent' => true])
+        ->assertSessionHasNoErrors()->assertSessionHas('status');
+
+    expect(Enquiry::query()->count())->toBe(1);
+});

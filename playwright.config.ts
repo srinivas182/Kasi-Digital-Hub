@@ -50,6 +50,7 @@ export default defineConfig({
             DB_DATABASE: `${process.cwd()}/database/e2e.sqlite`,
             SESSION_DRIVER: 'file',
             QUEUE_CONNECTION: 'sync',
+            MAIL_MAILER: 'log',
             KASI_DEMO_MODE: 'true',
             KASI_OTP_PER_IP_HOUR: '1000',
             KASI_THROTTLE_MULTIPLIER: '50',

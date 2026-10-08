@@ -13,6 +13,7 @@ use Modules\Core\Identity\Contracts\BotCheck;
 use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Structure\Models\Hub;
 use Modules\Site\Models\Enquiry;
+use Throwable;
 
 /**
  * Stores website enquiries (contact, employer interest, funder/partner enquiry) and emails
@@ -62,12 +63,17 @@ final class EnquiryController
             'ip_hash' => hash_hmac('sha256', (string) $request->ip(), (string) config('app.key')),
         ]);
 
-        Mail::raw(
-            "New {$kind} enquiry on the KasiHub website\n\nFrom: {$enquiry->name}\nOrganisation: ".($enquiry->organisation ?? '-')
-            ."\nPhone: ".($enquiry->phone ?? '-')."\nEmail: ".($enquiry->email ?? '-')."\nTopic: ".($enquiry->topic ?? '-')
-            ."\n\n{$enquiry->message}\n\nReference: {$enquiry->id}",
-            static fn ($message) => $message->to((string) config('kasi.brand.contact_email'))->subject("Website {$kind} enquiry from {$enquiry->name}"),
-        );
+        // The enquiry is already saved; a mail outage must never lose it or show the visitor an error.
+        try {
+            Mail::raw(
+                "New {$kind} enquiry on the KasiHub website\n\nFrom: {$enquiry->name}\nOrganisation: ".($enquiry->organisation ?? '-')
+                ."\nPhone: ".($enquiry->phone ?? '-')."\nEmail: ".($enquiry->email ?? '-')."\nTopic: ".($enquiry->topic ?? '-')
+                ."\n\n{$enquiry->message}\n\nReference: {$enquiry->id}",
+                static fn ($message) => $message->to((string) config('kasi.brand.contact_email'))->subject("Website {$kind} enquiry from {$enquiry->name}"),
+            );
+        } catch (Throwable $e) {
+            report($e);
+        }
 
         $audit->record('site.enquiry_received', meta: ['enquiry' => $enquiry->id, 'kind' => $kind]);
 
