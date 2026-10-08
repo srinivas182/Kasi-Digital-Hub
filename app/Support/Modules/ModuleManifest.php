@@ -24,7 +24,7 @@ final readonly class ModuleManifest
     /**
      * @param  list<string>  $dependsOn
      * @param  list<string>  $providers  Service provider class names
-     * @param  list<string>  $roles
+     * @param  list<array{key: string, label: string, category: string, scope: string, staff: bool, access: array<string, string>}>  $roles
      * @param  list<string>  $permissions
      * @param  list<string>  $publishes
      * @param  list<string>  $consumes
@@ -100,7 +100,7 @@ final readonly class ModuleManifest
             webRoutes: (bool) ($routes['web'] ?? false),
             apiRoutes: (bool) ($routes['api'] ?? false),
             entitlement: is_string($entitlement) ? $entitlement : null,
-            roles: self::stringList($data['roles'] ?? []),
+            roles: self::roles($data['roles'] ?? [], $name),
             permissions: self::stringList($data['permissions'] ?? []),
             publishes: self::stringList($events['publishes'] ?? []),
             consumes: self::stringList($events['consumes'] ?? []),
@@ -113,6 +113,54 @@ final readonly class ModuleManifest
     public function path(string $relative = ''): string
     {
         return $relative === '' ? $this->path : $this->path.DIRECTORY_SEPARATOR.ltrim($relative, '/\\');
+    }
+
+    public const ROLE_SCOPES = ['self', 'organisation', 'hub', 'municipality', 'province', 'national'];
+
+    public const ACCESS_LEVELS = ['view', 'use', 'assist', 'manage'];
+
+    /**
+     * Roles the module defines. Each role grants access levels to portals (by module name).
+     *
+     * @return list<array{key: string, label: string, category: string, scope: string, staff: bool, access: array<string, string>}>
+     */
+    private static function roles(mixed $roles, string $module): array
+    {
+        if (! is_array($roles)) {
+            return [];
+        }
+
+        $parsed = [];
+
+        foreach ($roles as $role) {
+            if (! is_array($role) || ! is_string($role['key'] ?? null) || ! is_string($role['label'] ?? null)) {
+                throw new InvalidArgumentException("Module [{$module}] has a role without a string key and label.");
+            }
+
+            $scope = $role['scope'] ?? null;
+            if (! in_array($scope, self::ROLE_SCOPES, true)) {
+                throw new InvalidArgumentException("Role [{$role['key']}] in module [{$module}] has an invalid scope.");
+            }
+
+            $access = [];
+            foreach (is_array($role['access'] ?? null) ? $role['access'] : [] as $portal => $level) {
+                if (! is_string($portal) || ! in_array($level, self::ACCESS_LEVELS, true)) {
+                    throw new InvalidArgumentException("Role [{$role['key']}] in module [{$module}] has an invalid access level.");
+                }
+                $access[$portal] = $level;
+            }
+
+            $parsed[] = [
+                'key' => $role['key'],
+                'label' => $role['label'],
+                'category' => is_string($role['category'] ?? null) ? $role['category'] : 'individual',
+                'scope' => $scope,
+                'staff' => (bool) ($role['staff'] ?? false),
+                'access' => $access,
+            ];
+        }
+
+        return $parsed;
     }
 
     /**

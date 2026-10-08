@@ -5,7 +5,7 @@
     "description": "Hubs, module switches, verification, moderation, support, AI controls, audit",
     "group": "national",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "depends_on": [
         "Core"
     ],
@@ -16,10 +16,71 @@
     },
     "entitlement": null,
     "roles": [
-        "super_admin",
-        "operations_admin",
-        "support_agent",
-        "content_reviewer"
+        {
+            "key": "super_admin",
+            "label": "Super admin",
+            "category": "national",
+            "scope": "national",
+            "staff": true,
+            "access": {
+                "Work": "manage",
+                "Learn": "manage",
+                "Start": "manage",
+                "Connect": "manage",
+                "HubOps": "manage",
+                "Region": "manage",
+                "Funder": "manage",
+                "Partner": "manage",
+                "Admin": "manage",
+                "Commercial": "manage"
+            }
+        },
+        {
+            "key": "operations_admin",
+            "label": "Operations admin",
+            "category": "national",
+            "scope": "national",
+            "staff": true,
+            "access": {
+                "Work": "manage",
+                "Learn": "manage",
+                "Start": "manage",
+                "Connect": "manage",
+                "HubOps": "manage",
+                "Region": "view",
+                "Funder": "view",
+                "Partner": "manage",
+                "Admin": "manage"
+            }
+        },
+        {
+            "key": "support_agent",
+            "label": "Support agent",
+            "category": "national",
+            "scope": "national",
+            "staff": true,
+            "access": {
+                "Work": "assist",
+                "Learn": "assist",
+                "Start": "assist",
+                "Connect": "assist",
+                "HubOps": "view",
+                "Admin": "view"
+            }
+        },
+        {
+            "key": "content_reviewer",
+            "label": "Content reviewer",
+            "category": "national",
+            "scope": "national",
+            "staff": true,
+            "access": {
+                "Work": "view",
+                "Learn": "view",
+                "Connect": "view",
+                "Admin": "view"
+            }
+        }
     ],
     "permissions": [],
     "events": {

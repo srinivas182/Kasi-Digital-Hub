@@ -30,3 +30,4 @@ Thumbs.db
 /test-results
 /playwright-report
 /database/e2e.sqlite
+/database/demo.sqlite

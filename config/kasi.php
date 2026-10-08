@@ -100,6 +100,22 @@ return [
         ],
     ],
 
+    /*
+    | Hub packages (Sprint 3). A package switches on the portals a hub may deliver locally
+    | (assisted onboarding, cohorts, local events). National services - the job pool, course
+    | catalogue and mentors - stay open to everyone online. Prices are set in the Commercial
+    | console (S19); add-ons can switch on single portals for one hub.
+    */
+    'hubs' => [
+        'delivered_modules' => ['HubOps', 'Work', 'Learn', 'Start', 'Connect'],
+        'packages' => [
+            'base' => ['HubOps', 'Work'],
+            'growth' => ['HubOps', 'Work', 'Learn'],
+            'enterprise' => ['HubOps', 'Work', 'Learn', 'Start'],
+            'full' => ['HubOps', 'Work', 'Learn', 'Start', 'Connect'],
+        ],
+    ],
+
     'demo' => [
         // Demo mode enables the demo banner, role switcher and demo reset command.
         // It must never be enabled in production.

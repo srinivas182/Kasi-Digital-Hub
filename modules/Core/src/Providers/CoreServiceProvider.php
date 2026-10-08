@@ -7,15 +7,23 @@ namespace Modules\Core\Providers;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use InvalidArgumentException;
+use Modules\Core\Access\AccessLevel;
+use Modules\Core\Access\AccessResolver;
+use Modules\Core\Access\RoleRegistry;
+use Modules\Core\Console\GeographyImportCommand;
+use Modules\Core\Console\RoleCommand;
 use Modules\Core\Http\Middleware\EnsureAccountReady;
 use Modules\Core\Http\Middleware\EnsureAdult;
+use Modules\Core\Http\Middleware\EnsurePortalAccess;
 use Modules\Core\Identity\Contracts\BotCheck;
 use Modules\Core\Identity\Contracts\SmsSender;
 use Modules\Core\Identity\Drivers\FakeBotCheck;
 use Modules\Core\Identity\Drivers\LogSmsSender;
+use Modules\Core\Identity\Models\User;
 
 /**
  * Shared kernel services: identity drivers and middleware used by every portal.
@@ -24,6 +32,8 @@ final class CoreServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->singleton(RoleRegistry::class);
+
         $this->app->singleton(SmsSender::class, fn (): SmsSender => match (config('kasi.drivers.sms')) {
             'log' => new LogSmsSender,
             default => throw new InvalidArgumentException('Unknown SMS driver ['.config('kasi.drivers.sms').']. Real gateway drivers are added at deployment (S24).'),
@@ -37,8 +47,16 @@ final class CoreServiceProvider extends ServiceProvider
 
     public function boot(Router $router): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([RoleCommand::class, GeographyImportCommand::class]);
+        }
+
         $router->aliasMiddleware('account.ready', EnsureAccountReady::class);
         $router->aliasMiddleware('adult', EnsureAdult::class);
+        $router->aliasMiddleware('portal', EnsurePortalAccess::class);
+
+        // @can('portal', ['Work', 'assist']) / Gate::allows('portal', ['HubOps', 'manage'])
+        Gate::define('portal', static fn (User $user, string $module, string $level = 'view'): bool => app(AccessResolver::class)->can($user, $module, AccessLevel::fromName($level)));
 
         // Per-IP route throttles for sign-in steps (a first line of defence; OtpService adds
         // per-number, per-device and range limits). The multiplier is raised only for automated tests.

@@ -1,0 +1,24 @@
+code,name,category,province_code,district_code,latitude,longitude
+BUF,Buffalo City,metro,EC,,-32.980000,27.870000
+NMA,Nelson Mandela Bay,metro,EC,,-33.960000,25.600000
+MAN,Mangaung,metro,FS,,-29.120000,26.210000
+EKU,City of Ekurhuleni,metro,GP,,-26.170000,28.330000
+JHB,City of Johannesburg,metro,GP,,-26.200000,28.050000
+TSH,City of Tshwane,metro,GP,,-25.750000,28.190000
+ETH,eThekwini,metro,KZN,,-29.860000,31.020000
+CPT,City of Cape Town,metro,WC,,-33.920000,18.420000
+DC33,Mopani,district,LP,,-23.700000,30.700000
+LIM331,Greater Giyani,local,LP,DC33,-23.310000,30.720000
+LIM332,Greater Letaba,local,LP,DC33,-23.630000,30.400000
+LIM333,Greater Tzaneen,local,LP,DC33,-23.830000,30.160000
+LIM334,Ba-Phalaborwa,local,LP,DC33,-23.940000,31.140000
+LIM335,Maruleng,local,LP,DC33,-24.330000,30.830000
+DC34,Vhembe,district,LP,,-22.900000,30.300000
+LIM341,Musina,local,LP,DC34,-22.350000,30.040000
+LIM343,Thulamela,local,LP,DC34,-22.950000,30.480000
+LIM344,Makhado,local,LP,DC34,-23.040000,29.900000
+LIM345,Collins Chabane,local,LP,DC34,-23.000000,30.690000
+DC35,Capricorn,district,LP,,-23.750000,29.200000
+LIM354,Polokwane,local,LP,DC35,-23.900000,29.450000
+DC22,uMgungundlovu,district,KZN,,-29.600000,30.380000
+KZN225,Msunduzi,local,KZN,DC22,-29.620000,30.390000

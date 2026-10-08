@@ -5,7 +5,7 @@
     "description": "Public pages, hub finder, public jobs and course catalogue, sign-up entry",
     "group": "front",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "depends_on": [
         "Core"
     ],
@@ -15,9 +15,7 @@
         "api": false
     },
     "entitlement": null,
-    "roles": [
-        "visitor"
-    ],
+    "roles": [],
     "permissions": [],
     "events": {
         "publishes": [],

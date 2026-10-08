@@ -5,7 +5,7 @@
     "description": "Business registration and formalisation: guided registration, compliance, bank and insurance referrals",
     "group": "service",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "depends_on": [
         "Core"
     ],
@@ -16,7 +16,18 @@
     },
     "entitlement": "start",
     "roles": [
-        "entrepreneur"
+        {
+            "key": "entrepreneur",
+            "label": "Entrepreneur",
+            "category": "individual",
+            "scope": "self",
+            "staff": false,
+            "access": {
+                "Learn": "use",
+                "Start": "use",
+                "Connect": "use"
+            }
+        }
     ],
     "permissions": [],
     "events": {

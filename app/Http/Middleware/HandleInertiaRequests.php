@@ -8,6 +8,7 @@ use App\Support\Locale\Languages;
 use App\Support\Navigation\NavigationBuilder;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Modules\Core\Access\AccessResolver;
 use Modules\Core\Identity\Models\User;
 
 /**
@@ -48,7 +49,7 @@ final class HandleInertiaRequests extends Middleware
                     Languages::available(),
                 ),
             ],
-            'navigation' => fn (): array => ['portals' => app(NavigationBuilder::class)->portals()],
+            'navigation' => fn (): array => ['portals' => app(NavigationBuilder::class)->portals($this->currentUser($request))],
             'auth' => fn (): array => ['user' => $this->userSummary($request)],
             'flash' => fn (): array => [
                 'status' => $request->hasSession() ? $request->session()->get('status') : null,
@@ -59,14 +60,13 @@ final class HandleInertiaRequests extends Middleware
     /**
      * Minimal signed-in user details for the interface. Never include PINs, codes or full ID data.
      *
-     * @return array{id: string, name: string, displayName: string, ageBand: string, staff: bool}|null
+     * @return array{id: string, name: string, displayName: string, ageBand: string, staff: bool, homeHub: string|null, access: array<string, string>}|null
      */
     private function userSummary(Request $request): ?array
     {
-        // Errors such as "page not found" render before the session starts.
-        $user = $request->hasSession() ? $request->user() : null;
+        $user = $this->currentUser($request);
 
-        if (! $user instanceof User) {
+        if ($user === null) {
             return null;
         }
 
@@ -76,6 +76,16 @@ final class HandleInertiaRequests extends Middleware
             'displayName' => $user->displayName(),
             'ageBand' => $user->age_band,
             'staff' => $user->two_factor_required,
+            'homeHub' => $user->homeHub?->name,
+            'access' => app(AccessResolver::class)->levels($user),
         ];
+    }
+
+    private function currentUser(Request $request): ?User
+    {
+        // Errors such as "page not found" render before the session starts.
+        $user = $request->hasSession() ? $request->user() : null;
+
+        return $user instanceof User ? $user : null;
     }
 }

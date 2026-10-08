@@ -29,6 +29,9 @@ export default function Home({ welcome }: { welcome: boolean }) {
                     <Alert tone="success" title={t('hub.home.welcome')} />
                 </div>
             )}
+            {auth.user?.homeHub && (
+                <p className="text-fg mt-2 font-semibold">{t('hub.home.your_hub', { hub: auth.user.homeHub })}</p>
+            )}
             <p className="text-fg-muted mt-3 max-w-2xl">{t('hub.home.coming')}</p>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {COMING.map(({ icon: Icon, title, text }) => (

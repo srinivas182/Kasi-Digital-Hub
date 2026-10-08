@@ -16,6 +16,7 @@ import { formatDate, formatDateTime, formatPhone } from '@/lib/format';
 import { useTranslation } from '@/lib/i18n';
 
 import { DemoCode } from '../../components/DemoCode';
+import { type HubOption, HubSelect } from '../../components/HubSelect';
 import { PinFields } from '../../components/PinFields';
 
 interface AccountProps {
@@ -30,14 +31,26 @@ interface AccountProps {
         preferredLocale: string;
         deletionRequested: boolean;
         twoFactor: boolean;
+        homeHubId: string | null;
+        provinceId: number | null;
+        municipalityId: number | null;
+        placeName: string | null;
     };
+    roles: { role: string; where: string }[];
+    hubOptions: HubOption[];
+    locations: { id: number; name: string; cities: { id: number; name: string }[] }[];
     consents: { purpose: string; granted: boolean; required: boolean }[];
     devices: { id: string; name: string; lastSeen: string | null; remembered: boolean; current: boolean }[];
     phoneChangePending: boolean;
     demoCode?: string | null;
 }
 
-function ProfileTab({ profile }: Pick<AccountProps, 'profile'>) {
+function ProfileTab({
+    profile,
+    roles,
+    hubOptions,
+    locations,
+}: Pick<AccountProps, 'profile' | 'roles' | 'hubOptions' | 'locations'>) {
     const { t, languages } = useTranslation();
     const form = useForm({
         first_name: profile.firstName,
@@ -45,7 +58,12 @@ function ProfileTab({ profile }: Pick<AccountProps, 'profile'>) {
         preferred_name: profile.preferredName ?? '',
         preferred_locale: profile.preferredLocale,
         email: profile.email ?? '',
+        home_hub_id: profile.homeHubId ?? '',
+        province_id: profile.provinceId ? String(profile.provinceId) : '',
+        municipality_id: profile.municipalityId ? String(profile.municipalityId) : '',
+        place_name: profile.placeName ?? '',
     });
+    const cities = locations.find((province) => String(province.id) === form.data.province_id)?.cities ?? [];
 
     const submit = (event: FormEvent) => {
         event.preventDefault();
@@ -53,52 +71,119 @@ function ProfileTab({ profile }: Pick<AccountProps, 'profile'>) {
     };
 
     return (
-        <form onSubmit={submit} className="grid gap-5 md:grid-cols-2">
-            <Field label={t('auth.signup.first_name')} error={form.errors.first_name} required>
-                <Input value={form.data.first_name} onChange={(e) => form.setData('first_name', e.target.value)} />
-            </Field>
-            <Field label={t('auth.signup.last_name')} error={form.errors.last_name} required>
-                <Input value={form.data.last_name} onChange={(e) => form.setData('last_name', e.target.value)} />
-            </Field>
-            <Field label={t('auth.signup.preferred_name')} error={form.errors.preferred_name}>
-                <Input
-                    value={form.data.preferred_name}
-                    onChange={(e) => form.setData('preferred_name', e.target.value)}
-                />
-            </Field>
-            <Field label={t('account.language')} error={form.errors.preferred_locale}>
-                <Select
-                    value={form.data.preferred_locale}
-                    onChange={(e) => form.setData('preferred_locale', e.target.value)}
+        <div className="flex flex-col gap-8">
+            <form onSubmit={submit} className="grid gap-5 md:grid-cols-2">
+                <Field label={t('auth.signup.first_name')} error={form.errors.first_name} required>
+                    <Input value={form.data.first_name} onChange={(e) => form.setData('first_name', e.target.value)} />
+                </Field>
+                <Field label={t('auth.signup.last_name')} error={form.errors.last_name} required>
+                    <Input value={form.data.last_name} onChange={(e) => form.setData('last_name', e.target.value)} />
+                </Field>
+                <Field label={t('auth.signup.preferred_name')} error={form.errors.preferred_name}>
+                    <Input
+                        value={form.data.preferred_name}
+                        onChange={(e) => form.setData('preferred_name', e.target.value)}
+                    />
+                </Field>
+                <Field label={t('account.language')} error={form.errors.preferred_locale}>
+                    <Select
+                        value={form.data.preferred_locale}
+                        onChange={(e) => form.setData('preferred_locale', e.target.value)}
+                    >
+                        {languages.map((language) => (
+                            <option key={language.code} value={language.code}>
+                                {language.name}
+                            </option>
+                        ))}
+                    </Select>
+                </Field>
+                <Field
+                    label={t('account.email')}
+                    hint={
+                        profile.email && !profile.emailVerified
+                            ? t('account.email_unverified')
+                            : t('account.email_hint')
+                    }
+                    error={form.errors.email}
                 >
-                    {languages.map((language) => (
-                        <option key={language.code} value={language.code}>
-                            {language.name}
-                        </option>
-                    ))}
-                </Select>
-            </Field>
-            <Field
-                label={t('account.email')}
-                hint={profile.email && !profile.emailVerified ? t('account.email_unverified') : t('account.email_hint')}
-                error={form.errors.email}
-            >
-                <Input
-                    type="email"
-                    autoComplete="email"
-                    value={form.data.email}
-                    onChange={(e) => form.setData('email', e.target.value)}
-                />
-            </Field>
-            <Field label={t('account.date_of_birth')}>
-                <Input value={formatDate(profile.dateOfBirth)} disabled readOnly />
-            </Field>
-            <div className="md:col-span-2">
-                <Button type="submit" loading={form.processing}>
-                    {t('account.save')}
-                </Button>
-            </div>
-        </form>
+                    <Input
+                        type="email"
+                        autoComplete="email"
+                        value={form.data.email}
+                        onChange={(e) => form.setData('email', e.target.value)}
+                    />
+                </Field>
+                <Field label={t('account.date_of_birth')}>
+                    <Input value={formatDate(profile.dateOfBirth)} disabled readOnly />
+                </Field>
+                <Field
+                    label={t('profile.home_hub')}
+                    hint={t('profile.home_hub_hint')}
+                    error={form.errors.home_hub_id}
+                    className="md:col-span-2"
+                >
+                    <HubSelect
+                        hubs={hubOptions}
+                        value={form.data.home_hub_id}
+                        onChange={(id) => form.setData('home_hub_id', id)}
+                    />
+                </Field>
+                <Field label={t('profile.province')} error={form.errors.province_id}>
+                    <Select
+                        value={form.data.province_id}
+                        onChange={(e) =>
+                            form.setData((data) => ({ ...data, province_id: e.target.value, municipality_id: '' }))
+                        }
+                    >
+                        <option value="">{t('profile.choose')}</option>
+                        {locations.map((province) => (
+                            <option key={province.id} value={province.id}>
+                                {province.name}
+                            </option>
+                        ))}
+                    </Select>
+                </Field>
+                <Field label={t('profile.city')} error={form.errors.municipality_id}>
+                    <Select
+                        value={form.data.municipality_id}
+                        onChange={(e) => form.setData('municipality_id', e.target.value)}
+                        disabled={cities.length === 0}
+                    >
+                        <option value="">{t('profile.choose')}</option>
+                        {cities.map((city) => (
+                            <option key={city.id} value={city.id}>
+                                {city.name}
+                            </option>
+                        ))}
+                    </Select>
+                </Field>
+                <Field label={t('profile.place')} error={form.errors.place_name}>
+                    <Input value={form.data.place_name} onChange={(e) => form.setData('place_name', e.target.value)} />
+                </Field>
+                <div className="md:col-span-2">
+                    <Button type="submit" loading={form.processing}>
+                        {t('account.save')}
+                    </Button>
+                </div>
+            </form>
+            <Card>
+                <CardTitle>{t('profile.roles')}</CardTitle>
+                <p className="text-fg-muted mt-1 text-sm">{t('profile.roles_hint')}</p>
+                {roles.length === 0 ? (
+                    <p className="text-fg-muted mt-3 text-sm">{t('profile.roles_none')}</p>
+                ) : (
+                    <ul className="mt-3 flex flex-wrap gap-2">
+                        {roles.map((role) => (
+                            <li key={`${role.role}-${role.where}`}>
+                                <Badge tone="primary">
+                                    {role.role} · {role.where}
+                                </Badge>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </Card>
+        </div>
     );
 }
 
@@ -386,7 +471,14 @@ export default function AccountIndex(props: AccountProps) {
                         {
                             value: 'profile',
                             label: t('account.tab_profile'),
-                            content: <ProfileTab profile={props.profile} />,
+                            content: (
+                                <ProfileTab
+                                    profile={props.profile}
+                                    roles={props.roles}
+                                    hubOptions={props.hubOptions}
+                                    locations={props.locations}
+                                />
+                            ),
                         },
                         {
                             value: 'security',

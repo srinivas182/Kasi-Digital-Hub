@@ -5,7 +5,7 @@
     "description": "City and provincial oversight across hubs",
     "group": "operations",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "depends_on": [
         "Core",
         "HubOps"
@@ -17,8 +17,38 @@
     },
     "entitlement": null,
     "roles": [
-        "city_coordinator",
-        "provincial_coordinator"
+        {
+            "key": "city_coordinator",
+            "label": "City coordinator",
+            "category": "regional",
+            "scope": "municipality",
+            "staff": true,
+            "access": {
+                "Work": "view",
+                "Learn": "view",
+                "Start": "view",
+                "Connect": "view",
+                "HubOps": "view",
+                "Region": "manage",
+                "Funder": "view"
+            }
+        },
+        {
+            "key": "provincial_coordinator",
+            "label": "Provincial coordinator",
+            "category": "regional",
+            "scope": "province",
+            "staff": true,
+            "access": {
+                "Work": "view",
+                "Learn": "view",
+                "Start": "view",
+                "Connect": "view",
+                "HubOps": "view",
+                "Region": "manage",
+                "Funder": "view"
+            }
+        }
     ],
     "permissions": [],
     "events": {

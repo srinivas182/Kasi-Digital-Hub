@@ -1,20 +1,12 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 
-const DEMO_PIN = '24680';
+import { DEMO_PIN, demoCode } from './support/auth';
 
 async function expectAccessible(page: Page) {
     const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
     const serious = results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact ?? ''));
     expect(serious.map((violation) => `${violation.id}: ${violation.help} (${violation.nodes.length})`)).toEqual([]);
-}
-
-/** Demo mode shows the SMS / authenticator code on screen. */
-async function demoCode(page: Page): Promise<string> {
-    const text = (await page.getByTestId('demo-code').textContent()) ?? '';
-    const match = text.match(/(\d{6})/);
-    expect(match, 'demo code shown on screen').not.toBeNull();
-    return match![1]!;
 }
 
 async function enterPhone(page: Page, phone: string) {

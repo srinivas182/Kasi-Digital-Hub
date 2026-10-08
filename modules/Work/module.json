@@ -5,7 +5,7 @@
     "description": "Jobs and AI matching: AI CVs, 0-10 matching, employers, hiring pipeline",
     "group": "service",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "depends_on": [
         "Core"
     ],
@@ -16,9 +16,39 @@
     },
     "entitlement": "work",
     "roles": [
-        "job_seeker",
-        "employer_admin",
-        "recruiter"
+        {
+            "key": "job_seeker",
+            "label": "Job seeker",
+            "category": "individual",
+            "scope": "self",
+            "staff": false,
+            "access": {
+                "Work": "use",
+                "Learn": "use"
+            }
+        },
+        {
+            "key": "employer_admin",
+            "label": "Employer admin",
+            "category": "organisation",
+            "scope": "organisation",
+            "staff": true,
+            "access": {
+                "Work": "manage",
+                "Learn": "use",
+                "Connect": "use"
+            }
+        },
+        {
+            "key": "recruiter",
+            "label": "Recruiter",
+            "category": "organisation",
+            "scope": "organisation",
+            "staff": true,
+            "access": {
+                "Work": "use"
+            }
+        }
     ],
     "permissions": [],
     "events": {

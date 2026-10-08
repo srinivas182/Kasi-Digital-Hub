@@ -12,23 +12,45 @@ All people, numbers and figures are fictitious.
 
 ## Demo accounts
 
-All demo accounts use PIN **24680**. Roles are attached in Sprint 3.
+All demo accounts use PIN **24680**.
 
-| Phone | Person | Story |
+| Phone | Person | Role(s) and where | Home hub |
+|---|---|---|---|
+| 072 000 0001 | Thandi Mabasa | Job seeker + learner (own account) | Tsutsumani |
+| 072 000 0002 | Lwazi Chauke | Learner + job seeker | Giyani Central |
+| 072 000 0003 | Nomsa Mthembu | Entrepreneur | Soweto |
+| 072 000 0004 | Kurhula Mabunda | Learner, 17 (guardian consent given) | Malamulele |
+| 072 000 0010 | Sipho Nkuna | Employer admin - Mopani Fresh Market (staff) | - |
+| 072 000 0011 | Palesa Molefe | Mentor | Tsutsumani |
+| 072 000 0012 | Herman Moolman | Training provider admin - HBM EduTech (staff) | - |
+| 072 000 0020 | Rhulani Baloyi | Hub facilitator - Tsutsumani (staff) | Tsutsumani |
+| 072 000 0021 | Tsakani Mathebula | Hub manager - Tsutsumani (staff) | Tsutsumani |
+| 072 000 0022 | Vusi Ngobeni | City coordinator - Greater Giyani (staff) | - |
+| 072 000 0023 | Lerato Mokoena | Provincial coordinator - Limpopo (staff) | - |
+| 072 000 0024 | Bongani Nkosi | Hub owner - Tsutsumani (staff) | Tsutsumani |
+| 072 000 0030 | Naledi Khumalo | Funder manager - Limpopo Youth Skills Programme (staff) | - |
+| 072 000 0040 | Lucky Siwela | Super admin - national (staff) | - |
+| 072 000 0041 | Zanele Dlamini | Finance admin - national (staff) | - |
+| 072 000 0050 | Karabo Molefe | Partner admin - Ubuntu Community Bank (demo) (staff) | - |
+
+Plus **500 demo citizens** (+27 84 000 0001 to 0500, PIN 24680) spread across all hubs.
+
+## Demo structure
+
+| Province | City | Hubs (package) |
 |---|---|---|
-| 072 000 0001 | Thandi Mabasa | Job seeker, learner, later trader (Tsutsumani) |
-| 072 000 0002 | Lwazi Chauke | Learner on a sponsored retail learnership |
-| 072 000 0003 | Nomsa Mthembu | Entrepreneur - catering and baking |
-| 072 000 0004 | Kurhula Mabunda | 17-year-old learner (guardian consent given) |
-| 072 000 0010 | Sipho Nkuna | Employer - Mopani Fresh Market (staff sign-in) |
-| 072 000 0011 | Palesa Molefe | Business mentor (staff sign-in) |
-| 072 000 0012 | Herman Moolman | Training provider - HBM EduTech (staff sign-in) |
-| 072 000 0020 | Rhulani Baloyi | Hub facilitator - Tsutsumani (staff sign-in) |
-| 072 000 0021 | Tsakani Mathebula | Hub manager - Tsutsumani (staff sign-in) |
-| 072 000 0030 | Naledi Khumalo | Funder programme manager (staff sign-in) |
-| 072 000 0040 | Lucky Siwela | National super admin (staff sign-in) |
+| Limpopo | Greater Giyani | Tsutsumani (Full), Giyani Central (Enterprise) |
+| Limpopo | Collins Chabane | Malamulele (Growth) |
+| Limpopo | Greater Tzaneen | Nkowankowa (Base) |
+| Gauteng | City of Johannesburg | Soweto (Full), Alexandra (Growth), Diepsloot (Base) |
+| Gauteng | City of Ekurhuleni | Tembisa (Enterprise), Katlehong (Growth) |
+| KwaZulu-Natal | eThekwini | Umlazi (Full), KwaMashu (Enterprise), Inanda (Base, planned) |
 
-"Staff sign-in" accounts set up an authenticator on first sign-in; in demo mode the code is shown on screen.
+Organisations (all fictitious or marked sample): Ku Tirhisana (platform), Tsutsumani Youth Development
+Co-operative (hub operator), Mopani Fresh Market and Baloyi Wholesalers (employers), HBM EduTech (provider),
+Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample funders.
+
+"Staff sign-in" accounts already have the authenticator step set up; in demo mode the current code is shown on screen.
 
 ## Demo script - sign-up and sign-in (5 minutes)
 
@@ -36,4 +58,5 @@ All demo accounts use PIN **24680**. Roles are attached in Sprint 3.
 2. Choose a PIN, date of birth (try 17 years ago to see guardian consent), name and consent choices.
 3. Sign out, sign in again as 072 000 0001 - code, then PIN.
 4. Show **My account**: devices, privacy choices, PIN and phone change.
-5. Sign in as 072 000 0040 to show the staff authenticator step.
+5. Sign in as 072 000 0040 to show the staff authenticator step and the full list of portals.
+6. Compare "All services" for Thandi (job seeker), Rhulani (facilitator) and Lucky (super admin).

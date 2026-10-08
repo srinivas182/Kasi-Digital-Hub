@@ -5,7 +5,7 @@
     "description": "Shared kernel: identity, tenancy, roles, consent, documents, notifications, events, drivers",
     "group": "core",
     "release": "r1",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "depends_on": [],
     "providers": [
         "Modules\\Core\\Providers\\CoreServiceProvider"
@@ -28,6 +28,9 @@
     },
     "impact_metrics": [],
     "demo_seeders": [
-        "Modules\\Core\\Database\\Seeders\\DemoUsersSeeder"
+        "Modules\\Core\\Database\\Seeders\\DemoUsersSeeder",
+        "Modules\\Core\\Database\\Seeders\\DemoHierarchySeeder",
+        "Modules\\Core\\Database\\Seeders\\DemoRolesSeeder",
+        "Modules\\Core\\Database\\Seeders\\DemoCitizensSeeder"
     ]
 }

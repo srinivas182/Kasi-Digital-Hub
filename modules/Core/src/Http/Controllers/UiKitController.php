@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Core\Http\Controllers;
 
+use App\Support\Navigation\NavigationBuilder;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -14,6 +15,12 @@ use Inertia\Response;
 final class UiKitController
 {
     public const LAYOUTS = ['public', 'auth', 'app', 'portal', 'console', 'kiosk'];
+
+    public function __construct(NavigationBuilder $navigation)
+    {
+        // Previews show every portal's menu, whoever is looking.
+        Inertia::share('navigation', ['portals' => $navigation->allPortals()]);
+    }
 
     public function index(): Response
     {

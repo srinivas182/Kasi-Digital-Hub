@@ -5,7 +5,7 @@
     "description": "Programmes, targets, impact dashboards and exports for funders",
     "group": "operations",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "depends_on": [
         "Core"
     ],
@@ -16,8 +16,27 @@
     },
     "entitlement": null,
     "roles": [
-        "funder_manager",
-        "funder_viewer"
+        {
+            "key": "funder_manager",
+            "label": "Funder programme manager",
+            "category": "organisation",
+            "scope": "organisation",
+            "staff": true,
+            "access": {
+                "Learn": "view",
+                "Funder": "manage"
+            }
+        },
+        {
+            "key": "funder_viewer",
+            "label": "Funder viewer",
+            "category": "organisation",
+            "scope": "organisation",
+            "staff": true,
+            "access": {
+                "Funder": "view"
+            }
+        }
     ],
     "permissions": [],
     "events": {

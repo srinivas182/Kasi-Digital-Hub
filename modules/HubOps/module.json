@@ -5,7 +5,7 @@
     "description": "Hub setup, check-in, facilitator assisted mode, events, bookings, hub finance",
     "group": "operations",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "depends_on": [
         "Core"
     ],
@@ -16,9 +16,50 @@
     },
     "entitlement": "hub_ops",
     "roles": [
-        "hub_owner",
-        "hub_manager",
-        "hub_facilitator"
+        {
+            "key": "hub_owner",
+            "label": "Hub owner",
+            "category": "hub",
+            "scope": "hub",
+            "staff": true,
+            "access": {
+                "Work": "view",
+                "Learn": "view",
+                "Start": "view",
+                "Connect": "view",
+                "HubOps": "manage",
+                "Funder": "view"
+            }
+        },
+        {
+            "key": "hub_manager",
+            "label": "Hub manager",
+            "category": "hub",
+            "scope": "hub",
+            "staff": true,
+            "access": {
+                "Work": "assist",
+                "Learn": "assist",
+                "Start": "assist",
+                "Connect": "assist",
+                "HubOps": "manage",
+                "Funder": "view"
+            }
+        },
+        {
+            "key": "hub_facilitator",
+            "label": "Hub facilitator",
+            "category": "hub",
+            "scope": "hub",
+            "staff": true,
+            "access": {
+                "Work": "assist",
+                "Learn": "assist",
+                "Start": "assist",
+                "Connect": "assist",
+                "HubOps": "use"
+            }
+        }
     ],
     "permissions": [],
     "events": {

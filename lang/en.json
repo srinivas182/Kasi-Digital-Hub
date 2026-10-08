@@ -217,5 +217,16 @@
     "hub.home.welcome": "Your account is ready.",
     "hub.home.coming": "Your jobs, courses, business support and mentors will appear here as each service goes live.",
     "hub.home.account": "Go to my account",
-    "legal.version": "Version :version, published :date"
+    "legal.version": "Version :version, published :date",
+    "profile.home_hub": "Your nearest hub (optional)",
+    "profile.home_hub_hint": "Your hub can help you in person - with your CV, courses and business registration.",
+    "profile.home_hub_none": "I'm not sure yet",
+    "profile.province": "Province",
+    "profile.city": "City or municipality",
+    "profile.place": "Village, township or suburb",
+    "profile.choose": "Choose...",
+    "profile.roles": "My roles",
+    "profile.roles_hint": "What you can do on KasiHub, and where.",
+    "profile.roles_none": "You haven't started using any service yet.",
+    "hub.home.your_hub": "Your hub: :hub"
 }

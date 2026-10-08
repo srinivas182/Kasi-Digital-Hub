@@ -6,13 +6,16 @@ namespace Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Core\Identity\Models\GuardianConsent;
+use Modules\Core\Identity\Models\StaffTwoFactor;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\ConsentService;
+use PragmaRX\Google2FA\Google2FA;
 
 /**
  * Demo accounts - one per main role, all fictitious. All demo accounts use PIN 24680
  * (12345 is rejected by the PIN rules as too simple). Roles are attached in Sprint 3.
- * Staff accounts use the authenticator step; in demo mode the current code is shown on screen.
+ * Staff accounts already have the authenticator step set up (so demos go straight to the
+ * code); in demo mode the current authenticator code is shown on screen.
  */
 final class DemoUsersSeeder extends Seeder
 {
@@ -29,11 +32,16 @@ final class DemoUsersSeeder extends Seeder
         ['phone' => '+27720000012', 'first' => 'Herman', 'last' => 'Moolman', 'dob' => '1960-04-02', 'staff' => true, 'story' => 'Training provider (HBM EduTech)'],
         ['phone' => '+27720000020', 'first' => 'Rhulani', 'last' => 'Baloyi', 'dob' => '1993-03-12', 'staff' => true, 'story' => 'Hub facilitator - Tsutsumani'],
         ['phone' => '+27720000021', 'first' => 'Tsakani', 'last' => 'Mathebula', 'dob' => '1990-08-25', 'staff' => true, 'story' => 'Hub manager - Tsutsumani'],
+        ['phone' => '+27720000022', 'first' => 'Vusi', 'last' => 'Ngobeni', 'dob' => '1987-02-11', 'staff' => true, 'story' => 'City coordinator - Greater Giyani'],
+        ['phone' => '+27720000023', 'first' => 'Lerato', 'last' => 'Mokoena', 'dob' => '1983-10-30', 'staff' => true, 'story' => 'Provincial coordinator - Limpopo'],
+        ['phone' => '+27720000024', 'first' => 'Bongani', 'last' => 'Nkosi', 'dob' => '1979-05-08', 'staff' => true, 'story' => 'Hub owner (operator) - Tsutsumani'],
         ['phone' => '+27720000030', 'first' => 'Naledi', 'last' => 'Khumalo', 'dob' => '1984-12-05', 'staff' => true, 'story' => 'Funder programme manager'],
         ['phone' => '+27720000040', 'first' => 'Lucky', 'last' => 'Siwela', 'dob' => '1980-06-18', 'staff' => true, 'story' => 'National super admin (Ku Tirhisana)'],
+        ['phone' => '+27720000041', 'first' => 'Zanele', 'last' => 'Dlamini', 'dob' => '1991-03-27', 'staff' => true, 'story' => 'Finance admin (Ku Tirhisana)'],
+        ['phone' => '+27720000050', 'first' => 'Karabo', 'last' => 'Molefe', 'dob' => '1989-09-14', 'staff' => true, 'story' => 'Partner admin - Ubuntu Community Bank (demo bank)'],
     ];
 
-    public function run(ConsentService $consents): void
+    public function run(ConsentService $consents, Google2FA $google2fa): void
     {
         $this->call(ConsentDocumentSeeder::class);
 
@@ -53,6 +61,15 @@ final class DemoUsersSeeder extends Seeder
 
             if ($consents->state($user)['platform'] === null) {
                 $consents->record($user, ['platform' => true, 'job_matching' => true, 'learning_records' => true, 'whatsapp_updates' => true]);
+            }
+
+            if (($person['staff'] ?? false) && ! StaffTwoFactor::query()->where('user_id', $user->id)->exists()) {
+                StaffTwoFactor::query()->create([
+                    'user_id' => $user->id,
+                    'secret' => $google2fa->generateSecretKey(32),
+                    'recovery_codes' => [],
+                    'confirmed_at' => now(),
+                ]);
             }
 
             if (($person['minor'] ?? false) && ! $user->guardianConsents()->exists()) {

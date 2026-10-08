@@ -14,13 +14,13 @@ it('shares platform, language and navigation props with every page', function ()
             ->where('i18n.locale', 'en')
             ->has('i18n.strings')
             ->has('i18n.languages', 3)
-            ->has('navigation.portals', 11)
+            ->has('navigation.portals', 0) // guests see no portal menus
         );
 });
 
 it('orders portals: front doors, services, operations, national', function (): void {
     $order = ['front' => 0, 'service' => 1, 'operations' => 2, 'national' => 3];
-    $ranks = array_map(static fn (array $portal): int => $order[$portal['group']], app(NavigationBuilder::class)->portals());
+    $ranks = array_map(static fn (array $portal): int => $order[$portal['group']], app(NavigationBuilder::class)->allPortals());
     $sorted = $ranks;
     sort($sorted);
 
@@ -30,7 +30,7 @@ it('orders portals: front doors, services, operations, national', function (): v
 it('has an English string for every navigation label', function (): void {
     $english = json_decode((string) file_get_contents(lang_path('en.json')), true);
 
-    foreach (app(NavigationBuilder::class)->portals() as $portal) {
+    foreach (app(NavigationBuilder::class)->allPortals() as $portal) {
         foreach ($portal['items'] as $item) {
             expect($english)->toHaveKey($item['label']);
         }

@@ -5,7 +5,7 @@
     "description": "Single login front door: next steps, updates feed, roles, consent, document vault",
     "group": "front",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "depends_on": [
         "Core"
     ],

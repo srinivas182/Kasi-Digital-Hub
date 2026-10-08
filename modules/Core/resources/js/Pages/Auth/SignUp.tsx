@@ -9,6 +9,7 @@ import { Stepper } from '@/components/ui/Stepper';
 import { AuthLayout } from '@/layouts/AuthLayout';
 import { useTranslation } from '@/lib/i18n';
 
+import { type HubOption, HubSelect } from '../../components/HubSelect';
 import { PinFields } from '../../components/PinFields';
 
 interface LegalDocument {
@@ -22,6 +23,7 @@ interface SignUpProps {
     phone: string;
     purposes: string[];
     documents: LegalDocument[];
+    hubOptions: HubOption[];
 }
 
 const STEP_FIELDS: Record<string, number> = {
@@ -33,7 +35,7 @@ const STEP_FIELDS: Record<string, number> = {
     accept_terms: 3,
 };
 
-export default function SignUp({ phone, purposes, documents }: SignUpProps) {
+export default function SignUp({ phone, purposes, documents, hubOptions }: SignUpProps) {
     const { t } = useTranslation();
     const [step, setStep] = useState(0);
     const form = useForm({
@@ -43,6 +45,7 @@ export default function SignUp({ phone, purposes, documents }: SignUpProps) {
         first_name: '',
         last_name: '',
         preferred_name: '',
+        home_hub_id: '',
         accept_terms: false,
         consents: Object.fromEntries(purposes.map((purpose) => [purpose, false])) as Record<string, boolean>,
         remember: false,
@@ -128,6 +131,17 @@ export default function SignUp({ phone, purposes, documents }: SignUpProps) {
                                 value={form.data.preferred_name}
                                 onChange={(e) => form.setData('preferred_name', e.target.value)}
                                 autoComplete="nickname"
+                            />
+                        </Field>
+                        <Field
+                            label={t('profile.home_hub')}
+                            hint={t('profile.home_hub_hint')}
+                            error={form.errors.home_hub_id}
+                        >
+                            <HubSelect
+                                hubs={hubOptions}
+                                value={form.data.home_hub_id}
+                                onChange={(id) => form.setData('home_hub_id', id)}
                             />
                         </Field>
                     </>

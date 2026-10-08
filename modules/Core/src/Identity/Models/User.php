@@ -7,12 +7,18 @@ namespace Modules\Core\Identity\Models;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Modules\Core\Access\BelongsToHub;
 use Modules\Core\Database\Factories\UserFactory;
+use Modules\Core\Structure\Models\Hub;
+use Modules\Core\Structure\Models\Municipality;
+use Modules\Core\Structure\Models\Province;
+use Modules\Core\Structure\Models\RoleAssignment;
 
 /**
  * A person's single account across every portal (phone + PIN; staff add an authenticator).
@@ -36,9 +42,16 @@ use Modules\Core\Database\Factories\UserFactory;
  * @property bool $two_factor_required
  * @property CarbonImmutable|null $last_login_at
  * @property CarbonImmutable|null $deletion_requested_at
+ * @property string|null $home_hub_id
+ * @property int|null $province_id
+ * @property int|null $municipality_id
+ * @property string|null $place_name
+ * @property int $access_version
  */
 final class User extends Authenticatable
 {
+    use BelongsToHub;
+
     /** @use HasFactory<UserFactory> */
     use HasFactory;
 
@@ -57,6 +70,7 @@ final class User extends Authenticatable
     protected $fillable = [
         'phone', 'phone_verified_at', 'email', 'email_verified_at', 'first_name', 'last_name', 'preferred_name',
         'date_of_birth', 'preferred_locale', 'pin', 'status', 'age_band', 'whatsapp_opt_in', 'two_factor_required',
+        'home_hub_id', 'province_id', 'municipality_id', 'place_name',
     ];
 
     protected $hidden = ['pin', 'remember_token'];
@@ -137,6 +151,36 @@ final class User extends Authenticatable
     public function guardianConsents(): HasMany
     {
         return $this->hasMany(GuardianConsent::class);
+    }
+
+    /** @return BelongsTo<Hub, $this> */
+    public function homeHub(): BelongsTo
+    {
+        return $this->belongsTo(Hub::class, 'home_hub_id');
+    }
+
+    /** @return BelongsTo<Province, $this> */
+    public function province(): BelongsTo
+    {
+        return $this->belongsTo(Province::class);
+    }
+
+    /** @return BelongsTo<Municipality, $this> */
+    public function municipality(): BelongsTo
+    {
+        return $this->belongsTo(Municipality::class);
+    }
+
+    /** @return HasMany<RoleAssignment, $this> */
+    public function roleAssignments(): HasMany
+    {
+        return $this->hasMany(RoleAssignment::class);
+    }
+
+    /** People are scoped to staff through their home hub. */
+    protected function hubColumn(): string
+    {
+        return 'home_hub_id';
     }
 
     protected static function newFactory(): UserFactory

@@ -5,7 +5,7 @@
     "description": "Price list, packages, royalties, attribution, split settlement, payouts",
     "group": "national",
     "release": "r1",
-    "version": "0.0.1",
+    "version": "0.3.0",
     "depends_on": [
         "Core"
     ],
@@ -16,8 +16,44 @@
     },
     "entitlement": null,
     "roles": [
-        "commercial_admin",
-        "finance_admin"
+        {
+            "key": "commercial_admin",
+            "label": "Commercial admin",
+            "category": "national",
+            "scope": "national",
+            "staff": true,
+            "access": {
+                "Work": "view",
+                "Learn": "view",
+                "Start": "view",
+                "Connect": "view",
+                "HubOps": "view",
+                "Region": "view",
+                "Funder": "view",
+                "Partner": "view",
+                "Admin": "view",
+                "Commercial": "manage"
+            }
+        },
+        {
+            "key": "finance_admin",
+            "label": "Finance admin",
+            "category": "national",
+            "scope": "national",
+            "staff": true,
+            "access": {
+                "Work": "view",
+                "Learn": "view",
+                "Start": "view",
+                "Connect": "view",
+                "HubOps": "view",
+                "Region": "view",
+                "Funder": "view",
+                "Partner": "view",
+                "Admin": "view",
+                "Commercial": "manage"
+            }
+        }
     ],
     "permissions": [],
     "events": {

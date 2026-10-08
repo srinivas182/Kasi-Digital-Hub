@@ -44,6 +44,8 @@ export interface AuthUser {
     displayName: string;
     ageBand: 'adult' | 'minor';
     staff: boolean;
+    homeHub: string | null;
+    access: Record<string, 'view' | 'use' | 'assist' | 'manage'>;
 }
 
 export interface SharedProps extends InertiaPageProps {

@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Core\Access\RoleAssignments;
+use Modules\Core\Access\RoleRegistry;
+use Modules\Core\Access\Scope;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Models\UserDevice;
 use Modules\Core\Identity\Services\AuditLogger;
@@ -23,6 +26,10 @@ use Modules\Core\Identity\Services\OtpService;
 use Modules\Core\Identity\Services\PhoneNumbers;
 use Modules\Core\Identity\Services\PinPolicy;
 use Modules\Core\Identity\Services\SecurityAlerts;
+use Modules\Core\Structure\Models\Hub;
+use Modules\Core\Structure\Models\Municipality;
+use Modules\Core\Structure\Models\RoleAssignment;
+use Modules\Core\Structure\Options;
 
 /**
  * Account settings: profile, email, PIN, phone number, devices, consent and deletion request.
@@ -31,7 +38,7 @@ final class AccountController
 {
     public function __construct(private readonly AuditLogger $audit) {}
 
-    public function show(Request $request, ConsentService $consents): Response
+    public function show(Request $request, ConsentService $consents, RoleAssignments $roleAssignments, RoleRegistry $roles): Response
     {
         $user = $this->user($request);
         $currentDevice = $request->session()->get('device_id');
@@ -48,7 +55,17 @@ final class AccountController
                 'preferredLocale' => $user->preferred_locale,
                 'deletionRequested' => $user->deletion_requested_at !== null,
                 'twoFactor' => $user->two_factor_required,
+                'homeHubId' => $user->home_hub_id,
+                'provinceId' => $user->province_id,
+                'municipalityId' => $user->municipality_id,
+                'placeName' => $user->place_name,
             ],
+            'roles' => $roleAssignments->for($user)->map(static fn (RoleAssignment $a): array => [
+                'role' => $roles->find($a->role)->label ?? $a->role,
+                'where' => (new Scope($a->scope_type, $a->scope_id))->describe(),
+            ])->values(),
+            'hubOptions' => Options::hubs(),
+            'locations' => Options::locations(),
             'consents' => collect($consents->state($user))->map(fn (?bool $granted, string $purpose): array => [
                 'purpose' => $purpose,
                 'granted' => (bool) $granted,
@@ -76,6 +93,10 @@ final class AccountController
             'preferred_name' => ['nullable', 'string', 'max:80'],
             'preferred_locale' => ['required', Rule::in(array_keys(Languages::available()))],
             'email' => ['nullable', 'email:rfc', 'max:190', Rule::unique('users', 'email')->ignore($user->id)],
+            'home_hub_id' => ['nullable', 'string', Rule::exists(Hub::class, 'id')->where('status', 'live')],
+            'province_id' => ['nullable', 'integer', 'exists:provinces,id'],
+            'municipality_id' => ['nullable', 'integer', Rule::exists(Municipality::class, 'id')->where('province_id', $request->integer('province_id'))],
+            'place_name' => ['nullable', 'string', 'max:120'],
         ]);
 
         $emailChanged = ($validated['email'] ?? null) !== $user->email;
@@ -86,6 +107,10 @@ final class AccountController
             'preferred_name' => isset($validated['preferred_name']) ? trim($validated['preferred_name']) : null,
             'preferred_locale' => $validated['preferred_locale'],
             'email' => $validated['email'] ?? null,
+            'home_hub_id' => $validated['home_hub_id'] ?? null,
+            'province_id' => $validated['province_id'] ?? null,
+            'municipality_id' => $validated['municipality_id'] ?? null,
+            'place_name' => isset($validated['place_name']) ? trim($validated['place_name']) : null,
         ]);
 
         if ($emailChanged) {

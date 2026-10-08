@@ -2,6 +2,18 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.3.0] - 2026-10-07 - Sprint 3: Hierarchy, organisations & roles
+
+### Added
+- South African geography: 9 provinces, 8 metros and pilot municipalities; CSV importer for the official list.
+- National structure: province -> city -> hub; places (villages, townships); organisations and members.
+- 24 scoped roles declared in module manifests, held through role assignments (ADR-011).
+- Access resolver with caching, hub data scoping (`visibleTo`), `portal` middleware and gate.
+- Hub packages (Base, Growth, Enterprise, Full) and add-ons, audited.
+- Role-filtered portal menus; home hub and location on sign-up and profile; "My roles" on the account page.
+- `kasi:roles` and `kasi:geography:import` commands.
+- Demo structure: 12 hubs, 10 organisations, 16 demo staff and citizens with roles, 500 demo citizens.
+
 ## [0.2.0] - 2026-10-07 - Sprint 2: Login & profile
 
 ### Added

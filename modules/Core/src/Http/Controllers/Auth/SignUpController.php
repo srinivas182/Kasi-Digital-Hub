@@ -8,6 +8,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Http\Controllers\Auth\Concerns\InteractsWithAuthFlow;
@@ -18,6 +19,8 @@ use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Identity\Services\Authenticator;
 use Modules\Core\Identity\Services\ConsentService;
 use Modules\Core\Identity\Services\PinPolicy;
+use Modules\Core\Structure\Models\Hub;
+use Modules\Core\Structure\Options;
 
 /**
  * New account after the phone number is verified: PIN, date of birth (age policy),
@@ -40,6 +43,7 @@ final class SignUpController
                 'key' => $d->key, 'version' => $d->version, 'title' => $d->title, 'summary' => $d->summary,
             ])->values(),
             'age' => ['fullAccess' => (int) config('kasi.age.full_access_age'), 'minorMin' => (int) config('kasi.age.minor_min_age')],
+            'hubOptions' => Options::hubs(),
         ]);
     }
 
@@ -55,6 +59,7 @@ final class SignUpController
             'first_name' => ['required', 'string', 'max:80'],
             'last_name' => ['required', 'string', 'max:80'],
             'preferred_name' => ['nullable', 'string', 'max:80'],
+            'home_hub_id' => ['nullable', 'string', Rule::exists(Hub::class, 'id')->where('status', 'live')],
             'accept_terms' => ['accepted'],
             'consents' => ['array'],
             'consents.*' => ['boolean'],
@@ -87,6 +92,15 @@ final class SignUpController
                 'status' => $band === AgePolicy::MINOR ? User::STATUS_PENDING_GUARDIAN : User::STATUS_ACTIVE,
                 'age_band' => $band,
             ]);
+
+            if (! empty($validated['home_hub_id'])) {
+                $hub = Hub::query()->with('municipality')->whereKey($validated['home_hub_id'])->firstOrFail();
+                $user->forceFill([
+                    'home_hub_id' => $hub->id,
+                    'municipality_id' => $hub->municipality_id,
+                    'province_id' => $hub->municipality->province_id,
+                ])->save();
+            }
 
             /** @var array<string, bool> $optional */
             $optional = $validated['consents'] ?? [];

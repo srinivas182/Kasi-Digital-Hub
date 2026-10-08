@@ -46,6 +46,21 @@ switched off with `KASI_MODULES_DISABLED`. Per-hub switches (entitlements) arriv
 Adding a module: create the folder and `module.json`, add its two PSR-4 lines to `composer.json` (a test
 fails if they are missing), and add it to the architecture test list.
 
+## National structure and access (ADR-011)
+
+```
+National -> Province -> City (metro or local municipality) -> Hub
+Organisations: employers, training providers, partners, funders, hub operators, platform
+```
+
+- **Roles** are declared in module manifests (scope + access level per portal) and held through **role
+  assignments** with a scope. `AccessResolver` gives the level per portal and the hubs a person may see.
+- **Hub packages** (`config/kasi.php` -> `hubs`) switch on the portals a hub may deliver locally; national
+  services stay open to everyone.
+- **Guards:** `->middleware('portal:HubOps,manage')`, `Gate::allows('portal', ['Work', 'assist'])`, and
+  `Model::query()->visibleTo($user, 'Work')` for hub-owned data (models with a hub column use `BelongsToHub`).
+- **Commands:** `kasi:roles assign|revoke|list|available`, `kasi:geography:import`.
+
 ## Key conventions
 
 - **Tenancy (ADR-003):** single database, every tenant-owned row scoped by the national → province → city →
