@@ -52,6 +52,14 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 
 "Staff sign-in" accounts already have the authenticator step set up; in demo mode the current code is shown on screen.
 
+## Demo documents and updates
+
+- Thandi (072 000 0001): ID and matric verified (matric shared with Mopani Fresh Market), a qualification awaiting
+  review, and an updates feed with a hub event.
+- Lwazi (072 000 0002): a proof of address that was not accepted (blurry photo) - shows the "why" in his feed.
+- Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
+  expiring soon.
+
 ## Demo script - sign-up and sign-in (5 minutes)
 
 1. Open `/login`, enter any new mobile number (e.g. 083 555 0101), use the demo code.

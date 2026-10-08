@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Identity\Services;
 
 use Illuminate\Support\Collection;
+use Modules\Core\Events\ConsentChanged;
 use Modules\Core\Identity\Models\Consent;
 use Modules\Core\Identity\Models\ConsentDocument;
 use Modules\Core\Identity\Models\User;
@@ -75,6 +76,7 @@ final readonly class ConsentService
             ]);
 
             $this->audit->record($granted ? 'consent.granted' : 'consent.withdrawn', $user, meta: ['purpose' => $purpose, 'channel' => $channel], actor: $assistedBy);
+            event(new ConsentChanged($user, $purpose, $granted, $assistedBy?->id));
         }
 
         if (array_key_exists('whatsapp_updates', $choices)) {

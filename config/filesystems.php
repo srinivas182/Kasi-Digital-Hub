@@ -40,6 +40,23 @@ return [
             'report' => false,
         ],
 
+        // Private document vault - never served directly; downloads use signed, permission-checked links.
+        'documents' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/documents'),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => false,
+        ],
+
+        'quarantine' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/quarantine'),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

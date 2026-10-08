@@ -1,10 +1,12 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { LogOut, Smartphone } from 'lucide-react';
+import { FileText, LogOut, Smartphone } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 
 import { Alert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
-import { Badge, Card, CardTitle } from '@/components/ui/display';
+import { Button, buttonVariants } from '@/components/ui/Button';
+import { ConfirmDialog } from '@/components/ui/Dialog';
+import { FileInput } from '@/components/ui/FileInput';
+import { Badge, Card, CardTitle, EmptyState } from '@/components/ui/display';
 import { Field, Input, Select } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Switch } from '@/components/ui/Switch';
@@ -43,6 +45,254 @@ interface AccountProps {
     devices: { id: string; name: string; lastSeen: string | null; remembered: boolean; current: boolean }[];
     phoneChangePending: boolean;
     demoCode?: string | null;
+    documents: DocumentItem[];
+    documentTypes: string[];
+    notificationPreferences: { category: string; channels: Record<string, { enabled: boolean; locked: boolean }> }[];
+    whatsappOptIn: boolean;
+    tab: string | null;
+}
+
+interface DocumentItem {
+    id: string;
+    type: string;
+    name: string;
+    status: string;
+    reason: string | null;
+    expiresOn: string | null;
+    expired: boolean;
+    uploadedAt: string;
+    url: string | null;
+    sharedWith: string[];
+}
+
+const STATUS_TONES: Record<string, 'neutral' | 'success' | 'warning' | 'danger' | 'info'> = {
+    pending_scan: 'info',
+    uploaded: 'neutral',
+    verified: 'success',
+    rejected: 'warning',
+    quarantined: 'danger',
+};
+
+function DocumentsTab({ documents, documentTypes }: Pick<AccountProps, 'documents' | 'documentTypes'>) {
+    const { t } = useTranslation();
+    const [deleting, setDeleting] = useState<DocumentItem | null>(null);
+    const form = useForm<{ type: string; file: File | null; expires_on: string }>({
+        type: documentTypes[0] ?? 'other',
+        file: null,
+        expires_on: '',
+    });
+
+    return (
+        <div className="grid gap-6 lg:grid-cols-[1fr_22rem]">
+            <div className="flex flex-col gap-3">
+                <p className="text-fg-muted text-sm">{t('documents.description')}</p>
+                {documents.length === 0 ? (
+                    <EmptyState
+                        icon={<FileText className="size-8" aria-hidden />}
+                        title={t('documents.none')}
+                        description={t('documents.none_hint')}
+                    />
+                ) : (
+                    <ul className="flex flex-col gap-3" aria-label={t('documents.title')}>
+                        {documents.map((document) => (
+                            <li key={document.id}>
+                                <Card className="flex flex-wrap items-center gap-4">
+                                    <FileText className="text-fg-muted size-6 shrink-0" aria-hidden />
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-fg font-semibold">{t(`documents.type.${document.type}`)}</p>
+                                        <p className="text-fg-muted truncate text-sm">{document.name}</p>
+                                        <div className="mt-1 flex flex-wrap gap-2">
+                                            <Badge tone={STATUS_TONES[document.status] ?? 'neutral'}>
+                                                {t(`documents.status.${document.status}`)}
+                                            </Badge>
+                                            {document.expiresOn && (
+                                                <Badge tone={document.expired ? 'danger' : 'neutral'}>
+                                                    {document.expired
+                                                        ? t('documents.expired')
+                                                        : t('documents.expires', {
+                                                              date: formatDate(document.expiresOn),
+                                                          })}
+                                                </Badge>
+                                            )}
+                                        </div>
+                                        {document.reason && (
+                                            <p className="text-fg-muted mt-1 text-sm">{document.reason}</p>
+                                        )}
+                                        {document.sharedWith.length > 0 && (
+                                            <p className="text-fg-muted mt-1 text-xs">
+                                                {t('documents.shared_with', { names: document.sharedWith.join(', ') })}
+                                            </p>
+                                        )}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        {document.url && (
+                                            <a
+                                                href={document.url}
+                                                className={buttonVariants({ variant: 'secondary', size: 'sm' })}
+                                            >
+                                                {t('documents.open')}
+                                            </a>
+                                        )}
+                                        <Button variant="ghost" size="sm" onClick={() => setDeleting(document)}>
+                                            {t('documents.delete')}
+                                        </Button>
+                                    </div>
+                                </Card>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+                <ConfirmDialog
+                    open={deleting !== null}
+                    onOpenChange={(open) => !open && setDeleting(null)}
+                    danger
+                    title={t('documents.delete_confirm_title')}
+                    description={t('documents.delete_confirm_body')}
+                    confirmLabel={t('documents.delete')}
+                    cancelLabel={t('common.cancel')}
+                    onConfirm={() =>
+                        deleting && router.delete(`/account/documents/${deleting.id}`, { preserveScroll: true })
+                    }
+                />
+            </div>
+            <Card>
+                <CardTitle>{t('documents.upload')}</CardTitle>
+                <form
+                    className="mt-4 flex flex-col gap-5"
+                    onSubmit={(event) => {
+                        event.preventDefault();
+                        form.post('/account/documents', {
+                            preserveScroll: true,
+                            forceFormData: true,
+                            onSuccess: () => form.reset(),
+                        });
+                    }}
+                >
+                    <Field label={t('documents.type')} error={form.errors.type} required>
+                        <Select value={form.data.type} onChange={(e) => form.setData('type', e.target.value)}>
+                            {documentTypes.map((type) => (
+                                <option key={type} value={type}>
+                                    {t(`documents.type.${type}`)}
+                                </option>
+                            ))}
+                        </Select>
+                    </Field>
+                    <Field
+                        label={t('documents.file')}
+                        hint={t('documents.file_hint')}
+                        error={form.errors.file}
+                        required
+                    >
+                        <FileInput
+                            file={form.data.file}
+                            onChange={(file) => form.setData('file', file)}
+                            chooseLabel={t('documents.file')}
+                            photoLabel={t('documents.take_photo')}
+                        />
+                    </Field>
+                    <Field label={t('documents.expires_on')} error={form.errors.expires_on}>
+                        <Input
+                            type="date"
+                            value={form.data.expires_on}
+                            onChange={(e) => form.setData('expires_on', e.target.value)}
+                        />
+                    </Field>
+                    <Button type="submit" loading={form.processing} disabled={!form.data.file}>
+                        {t('documents.save')}
+                    </Button>
+                </form>
+            </Card>
+        </div>
+    );
+}
+
+function NotificationsTab({
+    notificationPreferences,
+    whatsappOptIn,
+}: Pick<AccountProps, 'notificationPreferences' | 'whatsappOptIn'>) {
+    const { t } = useTranslation();
+    const channels = ['whatsapp', 'sms', 'email'];
+    const form = useForm({
+        preferences: Object.fromEntries(
+            notificationPreferences.map((row) => [
+                row.category,
+                Object.fromEntries(channels.map((c) => [c, row.channels[c]?.enabled ?? false])),
+            ]),
+        ) as Record<string, Record<string, boolean>>,
+    });
+
+    return (
+        <form
+            className="flex flex-col gap-4"
+            onSubmit={(event) => {
+                event.preventDefault();
+                form.put('/account/notifications', { preserveScroll: true });
+            }}
+        >
+            <p className="text-fg-muted text-sm">{t('notifications.description')}</p>
+            <Alert tone="info" title={t('notifications.quiet_hours')} />
+            {!whatsappOptIn && <Alert tone="warning" title={t('notifications.whatsapp_consent')} />}
+            <div className="border-line rounded-card bg-surface overflow-x-auto border">
+                <table className="w-full text-sm">
+                    <caption className="sr-only">{t('notifications.title')}</caption>
+                    <thead className="bg-surface-muted text-fg-muted text-left text-xs font-semibold uppercase">
+                        <tr>
+                            <th scope="col" className="px-4 py-3">
+                                &nbsp;
+                            </th>
+                            {channels.map((channel) => (
+                                <th key={channel} scope="col" className="px-3 py-3 text-center">
+                                    {t(`notifications.channel.${channel}`)}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {notificationPreferences.map((row) => (
+                            <tr key={row.category} className="border-line border-t">
+                                <th scope="row" className="text-fg px-4 py-3 text-left font-medium">
+                                    {t(`notifications.category.${row.category}`)}
+                                </th>
+                                {channels.map((channel) => {
+                                    const locked = row.channels[channel]?.locked ?? false;
+                                    const label = `${t(`notifications.category.${row.category}`)} - ${t(`notifications.channel.${channel}`)}`;
+                                    return (
+                                        <td key={channel} className="px-3 py-2 text-center">
+                                            <input
+                                                type="checkbox"
+                                                aria-label={label}
+                                                className="accent-primary size-5"
+                                                checked={
+                                                    locked
+                                                        ? true
+                                                        : (form.data.preferences[row.category]?.[channel] ?? false)
+                                                }
+                                                disabled={locked || (channel === 'whatsapp' && !whatsappOptIn)}
+                                                onChange={(e) =>
+                                                    form.setData('preferences', {
+                                                        ...form.data.preferences,
+                                                        [row.category]: {
+                                                            ...form.data.preferences[row.category],
+                                                            [channel]: e.target.checked,
+                                                        },
+                                                    })
+                                                }
+                                            />
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                <Button type="submit" loading={form.processing}>
+                    {t('account.save')}
+                </Button>
+            </div>
+        </form>
+    );
 }
 
 function ProfileTab({
@@ -443,7 +693,7 @@ function DeleteTab({ profile }: Pick<AccountProps, 'profile'>) {
 export default function AccountIndex(props: AccountProps) {
     const { t } = useTranslation();
     const { auth, flash } = usePage().props;
-    const [tab] = useState(props.phoneChangePending ? 'security' : 'profile');
+    const [tab] = useState(props.tab ?? (props.phoneChangePending ? 'security' : 'profile'));
 
     return (
         <AppLayout userName={auth.user?.name}>
@@ -488,6 +738,21 @@ export default function AccountIndex(props: AccountProps) {
                                     profile={props.profile}
                                     phoneChangePending={props.phoneChangePending}
                                     demoCode={props.demoCode}
+                                />
+                            ),
+                        },
+                        {
+                            value: 'documents',
+                            label: t('account.tab_documents'),
+                            content: <DocumentsTab documents={props.documents} documentTypes={props.documentTypes} />,
+                        },
+                        {
+                            value: 'notifications',
+                            label: t('account.tab_notifications'),
+                            content: (
+                                <NotificationsTab
+                                    notificationPreferences={props.notificationPreferences}
+                                    whatsappOptIn={props.whatsappOptIn}
                                 />
                             ),
                         },

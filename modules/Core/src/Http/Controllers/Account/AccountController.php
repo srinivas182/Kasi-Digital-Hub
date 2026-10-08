@@ -17,6 +17,8 @@ use Inertia\Response;
 use Modules\Core\Access\RoleAssignments;
 use Modules\Core\Access\RoleRegistry;
 use Modules\Core\Access\Scope;
+use Modules\Core\Documents\DocumentVault;
+use Modules\Core\Documents\Models\Document;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Models\UserDevice;
 use Modules\Core\Identity\Services\AuditLogger;
@@ -26,6 +28,7 @@ use Modules\Core\Identity\Services\OtpService;
 use Modules\Core\Identity\Services\PhoneNumbers;
 use Modules\Core\Identity\Services\PinPolicy;
 use Modules\Core\Identity\Services\SecurityAlerts;
+use Modules\Core\Notifications\NotificationPreferences;
 use Modules\Core\Structure\Models\Hub;
 use Modules\Core\Structure\Models\Municipality;
 use Modules\Core\Structure\Models\RoleAssignment;
@@ -38,7 +41,7 @@ final class AccountController
 {
     public function __construct(private readonly AuditLogger $audit) {}
 
-    public function show(Request $request, ConsentService $consents, RoleAssignments $roleAssignments, RoleRegistry $roles): Response
+    public function show(Request $request, ConsentService $consents, RoleAssignments $roleAssignments, RoleRegistry $roles, DocumentVault $vault, NotificationPreferences $preferences): Response
     {
         $user = $this->user($request);
         $currentDevice = $request->session()->get('device_id');
@@ -66,6 +69,22 @@ final class AccountController
             ])->values(),
             'hubOptions' => Options::hubs(),
             'locations' => Options::locations(),
+            'documents' => Document::query()->where('user_id', $user->id)->with('shares.organisation')->latest()->get()->map(static fn (Document $d): array => [
+                'id' => $d->id,
+                'type' => $d->type,
+                'name' => $d->original_name,
+                'status' => $d->status,
+                'reason' => $d->rejection_reason,
+                'expiresOn' => $d->expires_on?->toDateString(),
+                'expired' => $d->isExpired(),
+                'uploadedAt' => $d->created_at->toIso8601String(),
+                'url' => $d->canBeOpened() ? $vault->temporaryUrl($d) : null,
+                'sharedWith' => $d->shares->filter->isActive()->map(static fn ($share): string => (string) $share->organisation?->name)->values(),
+            ]),
+            'documentTypes' => config('kasi.documents.types'),
+            'notificationPreferences' => $preferences->matrix($user),
+            'whatsappOptIn' => $user->whatsapp_opt_in,
+            'tab' => $request->query('tab'),
             'consents' => collect($consents->state($user))->map(fn (?bool $granted, string $purpose): array => [
                 'purpose' => $purpose,
                 'granted' => (bool) $granted,
@@ -260,6 +279,17 @@ final class AccountController
         $consents->record($user, $choices);
 
         return back()->with('status', __('account.saved'));
+    }
+
+    public function updateNotifications(Request $request, NotificationPreferences $preferences): RedirectResponse
+    {
+        $validated = $request->validate(['preferences' => ['required', 'array'], 'preferences.*' => ['array'], 'preferences.*.*' => ['boolean']]);
+
+        /** @var array<string, array<string, bool>> $choices */
+        $choices = $validated['preferences'];
+        $preferences->update($this->user($request), $choices);
+
+        return back()->with('status', __('notifications.saved'));
     }
 
     public function requestDeletion(Request $request): RedirectResponse

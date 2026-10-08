@@ -37,9 +37,12 @@ return [
         'ai' => env('KASI_AI_DRIVER', 'fake'),
         'sms' => env('KASI_SMS_DRIVER', 'log'),
         'whatsapp' => env('KASI_WHATSAPP_DRIVER', 'log'),
+        'whatsapp_fail_numbers' => [], // test hook: numbers the log driver treats as undeliverable
         'payments' => env('KASI_PAYMENTS_DRIVER', 'fake'),
         'search' => env('KASI_SEARCH_DRIVER', 'meilisearch'),
         'bot_check' => env('KASI_BOT_CHECK_DRIVER', 'fake'),
+        'virus_scan' => env('KASI_VIRUS_SCAN_DRIVER', 'fake'),
+        'clamav_socket' => env('KASI_CLAMAV_SOCKET', '/var/run/clamav/clamd.ctl'),
     ],
 
     /*
@@ -114,6 +117,36 @@ return [
             'enterprise' => ['HubOps', 'Work', 'Learn', 'Start'],
             'full' => ['HubOps', 'Work', 'Learn', 'Start', 'Connect'],
         ],
+    ],
+
+    /*
+    | Document vault (Sprint 4). Files live on a private disk and are only reachable
+    | through short-lived signed links checked against permissions.
+    */
+    'documents' => [
+        'disk' => env('KASI_DOCUMENTS_DISK', 'documents'),
+        'max_kb' => 10240,
+        'mimes' => ['pdf', 'jpg', 'jpeg', 'png'],
+        'image_max_px' => 2000,
+        'link_minutes' => 5,
+        'types' => [
+            'id_document', 'matric_certificate', 'qualification', 'cipc_certificate',
+            'proof_of_address', 'bank_confirmation', 'tax_clearance', 'other',
+        ],
+        'expiry_reminder_days' => 30,
+    ],
+
+    /*
+    | Notifications (Sprint 4). Security messages ignore preferences and quiet hours.
+    | Costs are estimates in ZAR cents for the delivery log and cost dashboard (S21).
+    */
+    'notifications' => [
+        'categories' => ['security', 'account', 'jobs', 'learning', 'business', 'mentoring', 'hub_news', 'marketing'],
+        'channels' => ['in_app', 'whatsapp', 'sms', 'email'],
+        'quiet_hours' => ['start' => 20, 'end' => 7],
+        'max_messages_per_day' => (int) env('KASI_MAX_MESSAGES_PER_DAY', 6),
+        'dedupe_hours' => 24,
+        'cost_cents' => ['whatsapp' => 35, 'sms' => 30, 'email' => 0, 'in_app' => 0],
     ],
 
     'demo' => [

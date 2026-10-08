@@ -2,6 +2,7 @@ import { usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
 
 import { BrandMark } from '@/components/platform/BrandMark';
+import { UpdatesBell } from '@/components/platform/UpdatesBell';
 import { UserMenu } from '@/components/platform/UserMenu';
 import { ThemeToggle } from '@/components/platform/chrome';
 import { PortalSwitcher, Sidebar } from '@/components/platform/nav';
@@ -50,6 +51,7 @@ export function ConsoleLayout({
                             {actions}
                             <PortalSwitcher />
                             <ThemeToggle />
+                            <UpdatesBell />
                             <UserMenu fallbackName={userName} />
                         </div>
                     </header>

@@ -51,6 +51,7 @@ it('measures distances between places', function (): void {
 });
 
 it('builds the full demo structure with every demo account in its role', function (): void {
+    Illuminate\Support\Facades\Storage::fake('documents');
     config(['kasi.demo.enabled' => true]);
     $this->seed(DemoSeeder::class);
 
@@ -58,5 +59,7 @@ it('builds the full demo structure with every demo account in its role', functio
         ->and(User::query()->where('phone', 'like', '+2784000%')->count())->toBe(500)
         ->and(User::query()->where('phone', '+27720000020')->first()->roleAssignments()->value('role'))->toBe('hub_facilitator')
         ->and(User::query()->where('phone', '+27720000040')->first()->two_factor_required)->toBeTrue()
-        ->and(User::query()->whereNull('home_hub_id')->where('phone', 'like', '+2784000%')->count())->toBe(0);
+        ->and(User::query()->whereNull('home_hub_id')->where('phone', 'like', '+2784000%')->count())->toBe(0)
+        ->and(Modules\Core\Documents\Models\Document::query()->where('status', 'verified')->count())->toBeGreaterThan(3)
+        ->and(Modules\Core\Platform\Models\PlatformEventRecord::query()->where('name', 'core.user.registered')->count())->toBeGreaterThanOrEqual(500);
 });

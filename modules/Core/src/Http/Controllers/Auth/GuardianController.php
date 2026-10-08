@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Core\Events\UserRegistered;
 use Modules\Core\Http\Controllers\Auth\Concerns\InteractsWithAuthFlow;
 use Modules\Core\Identity\Models\GuardianConsent;
 use Modules\Core\Identity\Models\User;
@@ -105,6 +106,7 @@ final class GuardianController
         GuardianConsent::query()->whereKey($flow['guardian_consent_id'] ?? null)->update(['verified_at' => now()]);
         $user->forceFill(['status' => User::STATUS_ACTIVE])->save();
         $audit->record('signup.guardian_verified', $user);
+        event(new UserRegistered($user));
 
         $authenticator->login($user, false);
 

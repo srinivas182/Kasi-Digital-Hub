@@ -6,6 +6,8 @@ namespace Modules\Core\Access;
 
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
+use Modules\Core\Events\RoleAssigned;
+use Modules\Core\Events\RoleRevoked;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Structure\Models\RoleAssignment;
@@ -41,6 +43,7 @@ final readonly class RoleAssignments
 
         $this->refresh($user);
         $this->audit->record('role.assigned', $user, meta: ['role' => $roleKey, 'scope' => $scope->type, 'scope_id' => $scope->id], actor: $by);
+        event(new RoleAssigned($user, $roleKey, $scope->type, $scope->id, $by?->id));
 
         return $assignment;
     }
@@ -55,6 +58,7 @@ final readonly class RoleAssignments
         if ($deleted) {
             $this->refresh($user);
             $this->audit->record('role.revoked', $user, meta: ['role' => $roleKey, 'scope' => $scope->type, 'scope_id' => $scope->id], actor: $by);
+            event(new RoleRevoked($user, $roleKey, $scope->type, $scope->id, $by?->id));
         }
 
         return $deleted;

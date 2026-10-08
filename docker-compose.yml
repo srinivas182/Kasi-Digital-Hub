@@ -37,6 +37,25 @@ services:
       - app
       - redis
 
+  scheduler:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    command: php artisan schedule:work
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - app
+      - redis
+
+  # Virus scanning for the document vault (optional locally - KASI_VIRUS_SCAN_DRIVER=clamav).
+  # Start with: docker compose --profile scanning up -d clamav
+  clamav:
+    image: clamav/clamav:stable
+    profiles: ["scanning"]
+    volumes:
+      - clamav-socket:/run/clamav
+
   vite:
     image: node:22-alpine
     working_dir: /var/www/html
@@ -86,3 +105,4 @@ services:
 volumes:
   mysql-data:
   meili-data:
+  clamav-socket:

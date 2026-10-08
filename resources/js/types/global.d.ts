@@ -46,6 +46,7 @@ export interface AuthUser {
     staff: boolean;
     homeHub: string | null;
     access: Record<string, 'view' | 'use' | 'assist' | 'manage'>;
+    unreadUpdates: number;
 }
 
 export interface SharedProps extends InertiaPageProps {

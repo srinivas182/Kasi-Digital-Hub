@@ -5,7 +5,7 @@
     "description": "Shared kernel: identity, tenancy, roles, consent, documents, notifications, events, drivers",
     "group": "core",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "depends_on": [],
     "providers": [
         "Modules\\Core\\Providers\\CoreServiceProvider"
@@ -19,18 +19,31 @@
     "permissions": [],
     "events": {
         "publishes": [
-            "auth.login",
-            "signup.completed",
-            "consent.granted",
-            "consent.withdrawn"
+            "core.user.registered",
+            "core.consent.changed",
+            "core.role.assigned",
+            "core.role.revoked",
+            "core.hub.package_changed",
+            "core.document.uploaded",
+            "core.document.verified",
+            "core.document.rejected",
+            "core.document.quarantined",
+            "core.notification.failed"
         ],
-        "consumes": []
+        "consumes": [
+            "core.user.registered",
+            "core.role.assigned",
+            "core.document.verified",
+            "core.document.rejected"
+        ]
     },
     "impact_metrics": [],
     "demo_seeders": [
         "Modules\\Core\\Database\\Seeders\\DemoUsersSeeder",
         "Modules\\Core\\Database\\Seeders\\DemoHierarchySeeder",
         "Modules\\Core\\Database\\Seeders\\DemoRolesSeeder",
-        "Modules\\Core\\Database\\Seeders\\DemoCitizensSeeder"
+        "Modules\\Core\\Database\\Seeders\\DemoCitizensSeeder",
+        "Modules\\Core\\Database\\Seeders\\DemoDocumentsSeeder",
+        "Modules\\Core\\Database\\Seeders\\DemoActivitySeeder"
     ]
 }

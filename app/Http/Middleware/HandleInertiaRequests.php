@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Modules\Core\Access\AccessResolver;
 use Modules\Core\Identity\Models\User;
+use Modules\Core\Platform\Models\Update;
 
 /**
  * Shares platform-wide props with every Inertia page.
@@ -60,7 +61,7 @@ final class HandleInertiaRequests extends Middleware
     /**
      * Minimal signed-in user details for the interface. Never include PINs, codes or full ID data.
      *
-     * @return array{id: string, name: string, displayName: string, ageBand: string, staff: bool, homeHub: string|null, access: array<string, string>}|null
+     * @return array{id: string, name: string, displayName: string, ageBand: string, staff: bool, homeHub: string|null, access: array<string, string>, unreadUpdates: int}|null
      */
     private function userSummary(Request $request): ?array
     {
@@ -78,6 +79,7 @@ final class HandleInertiaRequests extends Middleware
             'staff' => $user->two_factor_required,
             'homeHub' => $user->homeHub?->name,
             'access' => app(AccessResolver::class)->levels($user),
+            'unreadUpdates' => Update::query()->where('user_id', $user->id)->whereNull('read_at')->count(),
         ];
     }
 

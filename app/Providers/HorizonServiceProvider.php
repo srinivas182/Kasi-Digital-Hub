@@ -7,6 +7,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Horizon\Horizon;
 use Laravel\Horizon\HorizonApplicationServiceProvider;
+use Modules\Core\Access\AccessResolver;
+use Modules\Core\Identity\Models\User;
 
 class HorizonServiceProvider extends HorizonApplicationServiceProvider
 {
@@ -29,10 +31,8 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      */
     protected function gate(): void
     {
-        Gate::define('viewHorizon', function ($user = null) {
-            return in_array(optional($user)->email, [
-                //
-            ]);
-        });
+        // Queue dashboard: national super admins and operations admins only.
+        Gate::define('viewHorizon', static fn ($user = null): bool => $user instanceof User
+            && array_intersect(app(AccessResolver::class)->roleKeys($user), ['super_admin', 'operations_admin']) !== []);
     }
 }

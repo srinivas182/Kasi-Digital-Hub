@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Core\Events\UserRegistered;
 use Modules\Core\Http\Controllers\Auth\Concerns\InteractsWithAuthFlow;
 use Modules\Core\Identity\Models\ConsentDocument;
 use Modules\Core\Identity\Models\User;
@@ -116,6 +117,7 @@ final class SignUpController
             return to_route('signup.guardian');
         }
 
+        event(new UserRegistered($user));
         $authenticator->login($user, $request->boolean('remember'));
 
         return to_route('hub.home')->with('welcome', true);

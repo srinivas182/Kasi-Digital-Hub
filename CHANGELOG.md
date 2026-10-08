@@ -2,6 +2,22 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.4.0] - 2026-10-07 - Sprint 4: Documents, notifications & events
+
+### Added
+- Private document vault: virus scanning, signed short-lived links, consent-based sharing, audited access,
+  photo shrinking, expiry reminders, "Documents" account tab.
+- Notifications over in-app, WhatsApp, SMS and email with preferences, consent rules, quiet hours, duplicate
+  suppression, daily caps, SMS fallback and cost logging; "Notifications" account tab.
+- Platform events (after-commit) with an append-only event log and listeners; generated event catalogue and
+  WhatsApp template list.
+- "What changed and why" updates feed with a bell and unread count.
+- Horizon queue priorities, scheduler with heartbeats, Docker scheduler and optional ClamAV services.
+- Demo documents, events, deliveries and feeds; ADR-012.
+
+### Fixed
+- Server messages in partly translated languages fall back to English instead of showing raw keys.
+
 ## [0.3.0] - 2026-10-07 - Sprint 3: Hierarchy, organisations & roles
 
 ### Added

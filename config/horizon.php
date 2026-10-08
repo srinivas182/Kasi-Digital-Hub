@@ -199,9 +199,11 @@ return [
     */
 
     'defaults' => [
+        // Queues in priority order: security alerts first, then notifications, documents
+        // (virus scanning), cross-portal event listeners, and everything else.
         'supervisor-1' => [
             'connection' => 'redis',
-            'queue' => ['default'],
+            'queue' => ['security', 'notifications', 'documents', 'events', 'default'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 1,

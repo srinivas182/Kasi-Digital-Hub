@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Modules\Core\Http\Controllers\Account\AccountController;
 use Modules\Core\Http\Controllers\Account\ConsentReviewController;
+use Modules\Core\Http\Controllers\Account\DocumentController;
 use Modules\Core\Http\Controllers\Account\LegalDocumentController;
 use Modules\Core\Http\Controllers\Auth\CodeController;
 use Modules\Core\Http\Controllers\Auth\GuardianController;
@@ -12,6 +13,7 @@ use Modules\Core\Http\Controllers\Auth\NewPinController;
 use Modules\Core\Http\Controllers\Auth\SignInController;
 use Modules\Core\Http\Controllers\Auth\SignUpController;
 use Modules\Core\Http\Controllers\Auth\TwoFactorController;
+use Modules\Core\Http\Controllers\Platform\UpdatesController;
 use Modules\Core\Http\Controllers\UiKitController;
 
 /*
@@ -59,7 +61,18 @@ Route::middleware(['auth', 'account.ready'])->group(function (): void {
     Route::post('/account/devices/sign-out-others', [AccountController::class, 'revokeOtherDevices'])->name('account.devices.revoke-others');
     Route::put('/account/consents', [AccountController::class, 'updateConsents'])->name('account.consents');
     Route::post('/account/deletion', [AccountController::class, 'requestDeletion'])->name('account.deletion');
+    Route::put('/account/notifications', [AccountController::class, 'updateNotifications'])->name('account.notifications');
+
+    Route::post('/account/documents', [DocumentController::class, 'store'])->middleware('throttle:20,1')->name('documents.store');
+    Route::delete('/account/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
+
+    Route::get('/home/updates', [UpdatesController::class, 'index'])->name('hub.updates');
+    Route::get('/home/updates/{update}', [UpdatesController::class, 'open'])->name('hub.updates.open');
+    Route::post('/home/updates/read', [UpdatesController::class, 'markAllRead'])->name('hub.updates.read');
 });
+
+// Signed, short-lived document links (permission checked again on open).
+Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->middleware(['auth', 'throttle:60,1'])->name('documents.download');
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/consents/review', [ConsentReviewController::class, 'show'])->name('consents.review');

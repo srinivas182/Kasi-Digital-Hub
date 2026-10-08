@@ -61,6 +61,16 @@ Organisations: employers, training providers, partners, funders, hub operators, 
   `Model::query()->visibleTo($user, 'Work')` for hub-owned data (models with a hub column use `BelongsToHub`).
 - **Commands:** `kasi:roles assign|revoke|list|available`, `kasi:geography:import`.
 
+## Documents, notifications and events (ADR-012)
+
+- **Document vault:** `DocumentVault` - private storage, virus scan before use, signed short-lived links,
+  consent-based sharing, audited access.
+- **Notifications:** subclass `KasiNotification`, send with `Notifier::send($user, $notification)`. The notifier
+  applies consent, preferences, quiet hours, caps and fallbacks, and logs cost.
+- **Events:** subclass `PlatformEvent` (NAME, DESCRIPTION), list it under `events.publishes` in `module.json`,
+  dispatch with `event(...)`. Every event lands in `platform_events`. Run `php artisan kasi:docs:generate` after
+  adding events or WhatsApp templates.
+
 ## Key conventions
 
 - **Tenancy (ADR-003):** single database, every tenant-owned row scoped by the national → province → city →

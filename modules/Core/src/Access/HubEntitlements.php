@@ -7,6 +7,7 @@ namespace Modules\Core\Access;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
+use Modules\Core\Events\HubPackageChanged;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Structure\Models\Hub;
@@ -65,6 +66,7 @@ final readonly class HubEntitlements
 
         $this->audit->record('hub.package_applied', actor: $by, meta: ['hub' => $hub->code, 'package' => $package]);
         $this->bump();
+        event(new HubPackageChanged($hub->id, 'package:'.$package, $this->modulesFor($hub), $by?->id));
     }
 
     public function addOn(Hub $hub, string $module, ?User $by = null): void
@@ -80,6 +82,7 @@ final readonly class HubEntitlements
 
         $this->audit->record('hub.module_enabled', actor: $by, meta: ['hub' => $hub->code, 'module' => $module]);
         $this->bump();
+        event(new HubPackageChanged($hub->id, 'enabled:'.$module, $this->modulesFor($hub), $by?->id));
     }
 
     public function disable(Hub $hub, string $module, ?User $by = null): void
@@ -88,6 +91,7 @@ final readonly class HubEntitlements
 
         $this->audit->record('hub.module_disabled', actor: $by, meta: ['hub' => $hub->code, 'module' => $module]);
         $this->bump();
+        event(new HubPackageChanged($hub->id, 'disabled:'.$module, $this->modulesFor($hub), $by?->id));
     }
 
     public function enabled(Hub|string $hub, string $module): bool

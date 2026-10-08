@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/display';
 import { Field, Input, SearchInput, Select, Textarea } from '@/components/ui/form';
 import { Checkbox } from '@/components/ui/Checkbox';
+import { FileInput } from '@/components/ui/FileInput';
 import { RadioGroup } from '@/components/ui/RadioGroup';
 import { Switch } from '@/components/ui/Switch';
 import { Breadcrumbs, Pagination, Tabs } from '@/components/ui/navigation';
@@ -86,6 +87,7 @@ export default function UiKit({ layouts }: { layouts: string[] }) {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [page, setPage] = useState(1);
     const [step, setStep] = useState(1);
+    const [file, setFile] = useState<File | null>(null);
 
     return (
         <PublicLayout>
@@ -172,6 +174,14 @@ export default function UiKit({ layouts }: { layouts: string[] }) {
                         </Field>
                         <Field label="Start date">
                             <Input type="date" />
+                        </Field>
+                        <Field label="Document" hint="PDF or a clear photo, up to 10 MB">
+                            <FileInput
+                                file={file}
+                                onChange={setFile}
+                                chooseLabel="Choose file"
+                                photoLabel="Take a photo"
+                            />
                         </Field>
                         <Field label="Search">
                             <SearchInput placeholder="Search jobs, courses or mentors" aria-label="Search" />

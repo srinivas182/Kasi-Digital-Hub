@@ -15,6 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Modules\Core\Access\BelongsToHub;
 use Modules\Core\Database\Factories\UserFactory;
+use Modules\Core\Notifications\Models\NotificationDelivery;
 use Modules\Core\Structure\Models\Hub;
 use Modules\Core\Structure\Models\Municipality;
 use Modules\Core\Structure\Models\Province;
@@ -175,6 +176,12 @@ final class User extends Authenticatable
     public function roleAssignments(): HasMany
     {
         return $this->hasMany(RoleAssignment::class);
+    }
+
+    /** @return HasMany<NotificationDelivery, $this> */
+    public function notificationDeliveries(): HasMany
+    {
+        return $this->hasMany(NotificationDelivery::class);
     }
 
     /** People are scoped to staff through their home hub. */
