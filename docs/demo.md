@@ -60,6 +60,12 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - public website (3 minutes)
+
+1. Open `/` - impact numbers, services, hubs. Share the link in WhatsApp to show the preview.
+2. "Find a hub" -> "Show hubs near me" (allow location) -> open Tsutsumani -> "Get directions".
+3. Show For employers / For funders and send an enquiry.
+
 ## Demo script - sign-up and sign-in (5 minutes)
 
 1. Open `/login`, enter any new mobile number (e.g. 083 555 0101), use the demo code.

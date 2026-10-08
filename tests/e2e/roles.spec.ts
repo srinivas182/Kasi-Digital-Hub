@@ -30,7 +30,7 @@ for (const person of CASES) {
     test(`${person.who} sees only their portals`, async ({ page }) => {
         await signIn(page, person.phone);
 
-        if (person.hub) await expect(page.getByText(`Your hub: ${person.hub}`)).toBeVisible();
+        if (person.hub) await expect(page.getByText(person.hub, { exact: true })).toBeVisible();
 
         await page.getByRole('button', { name: 'All services' }).click();
         for (const portal of person.sees) await expect(page.getByRole('link', { name: portal })).toBeVisible();

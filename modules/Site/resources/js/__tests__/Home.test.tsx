@@ -1,9 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { sharedProps } from '@/__tests__/inertia-mock';
-
-import Home, { type PortalSummary } from '../Pages/Home';
+import Home from '../Pages/Home';
 
 vi.mock('@inertiajs/react', async () => {
     const { sharedProps: props } = await import('@/__tests__/inertia-mock');
@@ -15,22 +13,31 @@ vi.mock('@inertiajs/react', async () => {
     };
 });
 
-const portals: PortalSummary[] = [
-    { name: 'Work', title: 'KasiWork', description: 'Jobs and AI matching', group: 'service' },
-    { name: 'Admin', title: 'National admin console', description: 'Running the platform', group: 'national' },
-];
-
 describe('Site/Home', () => {
-    it('shows the brand, demo banner, skip link and portals grouped', () => {
-        render(<Home portals={portals} />);
+    it('shows the sign-up call to action, impact numbers and hubs', () => {
+        render(
+            <Home
+                impact={{ people: 2418, hubs: 11, organisations: 9, verifiedDocuments: 6 }}
+                hubs={[
+                    {
+                        slug: 'tsutsumani',
+                        name: 'Tsutsumani Digital Hub',
+                        place: 'Tsutsumani',
+                        city: 'Greater Giyani',
+                        province: 'Limpopo',
+                    },
+                ]}
+                hubCount={12}
+            />,
+        );
 
-        expect(screen.getByText(sharedProps.platform.brand)).toBeInTheDocument();
+        expect(screen.getAllByRole('link', { name: 'site.home.cta' })[0]).toHaveAttribute('href', '/login');
+        expect(screen.getByText('2 418')).toBeInTheDocument(); // en-ZA number grouping
+        expect(screen.getByRole('link', { name: /Tsutsumani Digital Hub/ })).toHaveAttribute(
+            'href',
+            '/hubs/tsutsumani',
+        );
         expect(screen.getByText(/Demo environment/)).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Skip to main content' })).toHaveAttribute('href', '#main');
-        expect(screen.getByRole('heading', { name: 'Service portals' })).toBeInTheDocument();
-        expect(screen.getByText('KasiWork')).toBeInTheDocument();
-        expect(
-            screen.getByText('A Kasi Digital Hubs Initiative by Ku Tirhisana Consultancy (Pty) Ltd'),
-        ).toBeInTheDocument();
     });
 });

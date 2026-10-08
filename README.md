@@ -39,5 +39,6 @@ Then open http://localhost:8080. Full instructions: [docs/setup.md](docs/setup.m
 - [Design system](docs/design-system.md) and [content guide](docs/content-guide.md) - live UI kit at `/ui-kit`
 - [Sprint records](docs/sprints)
 - [Demo environment and demo accounts](docs/demo.md)
+- [Content and inputs needed before launch](docs/content-inputs.md)
 - [Contributing & definition of done](CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)

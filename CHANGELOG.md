@@ -2,6 +2,19 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.5.0] - 2026-10-08 - Sprint 5: Hub home & public website
+
+### Added
+- Public website: home, find a hub (search and "near me"), hub pages, employers, funders and partners, about,
+  help, contact; mobile menu.
+- Search and sharing: server-rendered tags, structured data, sitemap.xml, robots.txt (ADR-013).
+- Enquiry forms with spam protection; cookie-free page counts.
+- Hub home: next steps with progress, your hub, service tiles, latest updates; `HomeContributor` extension point.
+- docs/content-inputs.md - wording and details needed from Ku Tirhisana before launch.
+
+### Fixed
+- Footer links to the terms and privacy pages.
+
 ## [0.4.0] - 2026-10-07 - Sprint 4: Documents, notifications & events
 
 ### Added

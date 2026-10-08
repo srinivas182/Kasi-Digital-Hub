@@ -20,6 +20,9 @@ return [
         'full_name' => env('KASI_BRAND_FULL_NAME', 'Kasi Digital Hub'),
         'tagline' => env('KASI_BRAND_TAGLINE', 'Jobs, skills and enterprise - one platform for every hub'),
         'owner' => env('KASI_BRAND_OWNER', 'Ku Tirhisana Consultancy (Pty) Ltd'),
+        // Where website enquiries are sent (placeholder until Ku Tirhisana confirms).
+        'contact_email' => env('KASI_CONTACT_EMAIL', 'hello@kasidigitalhub.co.za'),
+        'url' => env('APP_URL', 'https://kasidigitalhub.co.za'),
     ],
 
     'version' => [

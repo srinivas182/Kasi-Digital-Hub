@@ -22,6 +22,8 @@ use Modules\Core\Documents\Drivers\ClamAvScanner;
 use Modules\Core\Documents\Drivers\FakeVirusScanner;
 use Modules\Core\Documents\RemindExpiringDocuments;
 use Modules\Core\Events\IsPlatformEvent;
+use Modules\Core\Home\HomeRegistry;
+use Modules\Core\Home\ProfileHomeContributor;
 use Modules\Core\Http\Middleware\EnsureAccountReady;
 use Modules\Core\Http\Middleware\EnsureAdult;
 use Modules\Core\Http\Middleware\EnsurePortalAccess;
@@ -45,6 +47,7 @@ final class CoreServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(RoleRegistry::class);
+        $this->app->tag([ProfileHomeContributor::class], HomeRegistry::TAG);
 
         $this->app->singleton(SmsSender::class, fn (): SmsSender => match (config('kasi.drivers.sms')) {
             'log' => new LogSmsSender,

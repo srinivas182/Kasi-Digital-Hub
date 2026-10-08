@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 use Modules\Core\Access\HubEntitlements;
 use Modules\Core\Structure\Models\Hub;
 use Modules\Core\Structure\Models\Municipality;
@@ -70,8 +71,14 @@ final class DemoHierarchySeeder extends Seeder
                 ['kind' => $data['kind'], 'latitude' => $data['lat'], 'longitude' => $data['lng']],
             );
 
+            $slug = Str::slug($data['place']);
             $hub = Hub::query()->updateOrCreate(['code' => $data['code']], [
                 'name' => $data['name'],
+                'slug' => $slug,
+                'description' => "Free help with CVs, job applications, courses and business registration for young people in {$data['place']} and nearby.",
+                'phone' => sprintf('+2715%07d', 100000 + crc32($data['code']) % 900000),
+                'email' => $slug.'@kasidigitalhub.co.za',
+                'address' => "Main Road, {$data['place']}",
                 'municipality_id' => $city->id,
                 'place_id' => $place->id,
                 'latitude' => $data['lat'],

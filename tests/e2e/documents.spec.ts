@@ -17,13 +17,11 @@ test('a person uploads a document to their vault', async ({ page }) => {
     await expectAccessible(page);
 
     await page.getByLabel(/Type of document/).selectOption('qualification');
-    await page
-        .getByLabel(/^File/)
-        .setInputFiles({
-            name: 'certificate.pdf',
-            mimeType: 'application/pdf',
-            buffer: Buffer.from('%PDF-1.4\nDemo certificate'),
-        });
+    await page.getByLabel(/^File/).setInputFiles({
+        name: 'certificate.pdf',
+        mimeType: 'application/pdf',
+        buffer: Buffer.from('%PDF-1.4\nDemo certificate'),
+    });
     await page.getByRole('button', { name: 'Upload', exact: true }).click();
 
     await expect(page.getByText(/Document uploaded/)).toBeVisible();

@@ -17,6 +17,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $id
  * @property string $code
  * @property string $name
+ * @property string|null $slug
+ * @property string|null $description
+ * @property string|null $phone
+ * @property string|null $email
  * @property int $municipality_id
  * @property string|null $place_id
  * @property string|null $address
@@ -35,7 +39,7 @@ final class Hub extends Model
 
     public const STATUSES = ['planned', 'live', 'paused'];
 
-    protected $fillable = ['code', 'name', 'municipality_id', 'place_id', 'address', 'latitude', 'longitude', 'opening_hours', 'status', 'package', 'operator_organisation_id'];
+    protected $fillable = ['code', 'name', 'slug', 'description', 'phone', 'email', 'municipality_id', 'place_id', 'address', 'latitude', 'longitude', 'opening_hours', 'status', 'package', 'operator_organisation_id'];
 
     /**
      * @return array<string, string>
