@@ -24,6 +24,14 @@ use Modules\Core\Identity\Models\User;
  * @property string|null $contact_phone
  * @property int|null $municipality_id
  * @property string|null $address
+ * @property string|null $trading_name
+ * @property string|null $sector
+ * @property string|null $size_band
+ * @property string|null $description
+ * @property string|null $website
+ * @property bool $community
+ * @property string|null $registration_document_id
+ * @property array<string, bool>|null $verification_checklist
  * @property CarbonImmutable|null $created_at
  */
 final class Organisation extends Model
@@ -33,14 +41,39 @@ final class Organisation extends Model
 
     public const TYPES = ['employer', 'training_provider', 'partner', 'funder', 'hub_operator', 'platform'];
 
-    protected $fillable = ['type', 'name', 'registration_number', 'verification_status', 'verified_at', 'contact_email', 'contact_phone', 'municipality_id', 'address'];
+    protected $fillable = ['type', 'name', 'registration_number', 'verification_status', 'verified_at', 'contact_email', 'contact_phone', 'municipality_id', 'address', 'trading_name', 'sector', 'size_band', 'description', 'website', 'community', 'registration_document_id'];
+
+    /** The name people know (trading name when there is one). */
+    public function displayName(): string
+    {
+        return $this->trading_name ?: $this->name;
+    }
+
+    /**
+     * Checks the KasiHub team ticks before verifying (config kasi.verification.checklists).
+     *
+     * @return list<string>
+     */
+    public function checklistItems(): array
+    {
+        $key = $this->type.($this->community ? '_community' : '');
+
+        return array_values((array) config("kasi.verification.checklists.{$key}", []));
+    }
+
+    public function checklistComplete(): bool
+    {
+        $ticked = $this->verification_checklist ?? [];
+
+        return collect($this->checklistItems())->every(static fn (string $item): bool => ($ticked[$item] ?? false) === true);
+    }
 
     /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
-        return ['verified_at' => 'immutable_datetime'];
+        return ['verified_at' => 'immutable_datetime', 'community' => 'boolean', 'verification_checklist' => 'array'];
     }
 
     public function isVerified(): bool

@@ -16,6 +16,7 @@ Every event is written to the platform event log and can be used by any portal t
 | `core.document.uploaded` | Core | - | A document was uploaded to a person's vault (before virus scanning). |
 | `core.document.verified` | Core | Core | A document was checked and verified - it can now be reused by every portal. |
 | `core.hub.package_changed` | Core | - | The portals a hub may deliver changed (package, add-on or switch-off). |
+| `core.moderation.decided` | Core | - | A reviewer approved, rejected or escalated flagged content. |
 | `core.notification.failed` | Core | - | A WhatsApp, SMS or email message could not be delivered. |
 | `core.role.assigned` | Core | Core | A person was given a role in a scope (own account, organisation, hub, city, province, national). |
 | `core.role.revoked` | Core | - | A role was taken away from a person. |
@@ -26,4 +27,7 @@ Every event is written to the platform event log and can be used by any portal t
 | `hubops.event.scheduled` | KasiHub Ops | - | A hub scheduled an event (job day, workshop, info session or class). |
 | `hubops.visit.recorded` | KasiHub Ops | - | Someone visited a hub (QR at the door, front desk, walk-in, event or assisted registration). |
 | `work.cv.created` | KasiWork | - | A job seeker created a CV (PDF). |
+| `work.employer.registered` | KasiWork | - | A business registered as an employer on KasiWork (waiting for verification). |
+| `work.listing.closed` | KasiWork | - | A job listing closed (filled, closed by the employer, expired or taken down). |
+| `work.listing.published` | KasiWork | - | A job listing went live. |
 | `work.profile.completed` | KasiWork | - | A job seeker completed the essential parts of their job profile. |

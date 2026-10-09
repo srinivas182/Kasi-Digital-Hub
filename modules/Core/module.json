@@ -28,7 +28,8 @@
             "core.document.verified",
             "core.document.rejected",
             "core.document.quarantined",
-            "core.notification.failed"
+            "core.notification.failed",
+            "core.moderation.decided"
         ],
         "consumes": [
             "core.user.registered",

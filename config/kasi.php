@@ -205,6 +205,28 @@ return [
         'timeout_seconds' => 30,
     ],
 
+    /*
+    | Verification checklists ticked by the KasiHub team before an organisation is verified (S10).
+    */
+    'verification' => [
+        'checklists' => [
+            'employer' => ['cipc_found', 'cipc_active', 'person_linked', 'phone_answered'],
+            'employer_community' => ['id_verified', 'address_verified', 'hub_visit', 'phone_answered'],
+        ],
+    ],
+
+    /*
+    | KasiWork listings (S10). The minimum wage must be checked against the current gazetted rate
+    | every year (the default is the rate from 1 March 2025: R28.79 an hour).
+    */
+    'work' => [
+        'minimum_wage_cents_per_hour' => (int) env('KASI_MINIMUM_WAGE_CENTS', 2879),
+        'hours_per_period' => ['hour' => 1, 'day' => 8, 'week' => 40, 'month' => 173],
+        'free_listing_limit' => 3,
+        'community_listing_limit' => 3,
+        'max_listing_days' => 60,
+    ],
+
     'hub_ops' => [
         // POPIA: visits older than this keep only totals (kasi:hub-ops:anonymise-visits, monthly).
         'visit_retention_months' => 24,

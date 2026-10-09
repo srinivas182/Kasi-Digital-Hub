@@ -67,6 +67,10 @@ it('verifies an organisation and tells its members', function (): void {
     $org = Organisation::query()->create(['type' => 'employer', 'name' => 'Test Traders', 'verification_status' => 'pending']);
     $org->members()->attach($member->id);
 
+    $this->post("/admin/organisations/{$org->id}/verify")->assertSessionHasErrors('checklist'); // checklist first
+    foreach (['cipc_found', 'cipc_active', 'person_linked', 'phone_answered'] as $item) {
+        $this->post("/admin/organisations/{$org->id}/checklist", ['item' => $item, 'checked' => true])->assertSessionHasNoErrors();
+    }
     $this->post("/admin/organisations/{$org->id}/verify")->assertSessionHasNoErrors();
 
     expect($org->refresh()->verification_status)->toBe('verified')

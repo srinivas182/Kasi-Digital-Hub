@@ -31,3 +31,6 @@ Schedule::command('kasi:hub-ops:anonymise-visits')->monthlyOn(1, '03:00')->timez
 // S8: clear AI inputs/outputs after the retention period; rebuild the search index nightly.
 Schedule::command('kasi:ai:purge')->dailyAt('02:45')->onSuccess($heartbeat('ai-purge'));
 Schedule::command('kasi:search:reindex')->dailyAt('03:30')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('search-reindex'));
+
+// S10: expire job listings past their closing date; remind employers 3 days before.
+Schedule::command('kasi:work:listings')->dailyAt('06:00')->timezone('Africa/Johannesburg')->onSuccess($heartbeat('work-listings'));

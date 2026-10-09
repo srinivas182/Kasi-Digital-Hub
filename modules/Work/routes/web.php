@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
 use Modules\Work\Http\Controllers\CvController;
+use Modules\Work\Http\Controllers\EmployerController;
 use Modules\Work\Http\Controllers\ExperienceController;
+use Modules\Work\Http\Controllers\JobsController;
+use Modules\Work\Http\Controllers\ListingController;
 use Modules\Work\Http\Controllers\ProfileController;
 
 /*
@@ -38,4 +41,31 @@ Route::prefix('work')->name('work.')->middleware(['auth', 'account.ready'])->gro
     Route::delete('/cv/{cv}', [CvController::class, 'destroy'])->name('cv.destroy');
 
     Route::post('/voice', [CvController::class, 'voice'])->middleware('throttle:10,1')->name('voice');
+
+    // Job board (S10)
+    Route::get('/jobs', [JobsController::class, 'index'])->name('jobs');
+    Route::get('/jobs/{listing}', [JobsController::class, 'show'])->name('jobs.show');
+    Route::post('/jobs/{listing}/save', [JobsController::class, 'save'])->name('jobs.save');
+    Route::delete('/jobs/{listing}/save', [JobsController::class, 'unsave'])->name('jobs.unsave');
+
+    // Employers (S10)
+    Route::get('/employer', [EmployerController::class, 'dashboard'])->name('employer');
+    Route::get('/employer/register', [EmployerController::class, 'registerForm'])->name('employer.register');
+    Route::post('/employer/register', [EmployerController::class, 'register'])->middleware('throttle:5,10')->name('employer.register.store');
+    Route::put('/employer/profile', [EmployerController::class, 'updateProfile'])->name('employer.profile');
+    Route::post('/employer/team', [EmployerController::class, 'addRecruiter'])->name('employer.team.store');
+    Route::delete('/employer/team/{member}', [EmployerController::class, 'removeRecruiter'])->name('employer.team.destroy');
+    Route::get('/employer/listings/create', [ListingController::class, 'create'])->name('employer.listings.create');
+    Route::post('/employer/listings', [ListingController::class, 'store'])->name('employer.listings.store');
+    Route::post('/employer/listings/write', [ListingController::class, 'write'])->middleware('throttle:20,1')->name('employer.listings.write');
+    Route::get('/employer/occupations', [ListingController::class, 'occupations'])->name('employer.occupations');
+    Route::get('/employer/listings/{listing}/edit', [ListingController::class, 'edit'])->name('employer.listings.edit');
+    Route::put('/employer/listings/{listing}', [ListingController::class, 'update'])->name('employer.listings.update');
+    Route::post('/employer/listings/{listing}/publish', [ListingController::class, 'publish'])->name('employer.listings.publish');
+    Route::post('/employer/listings/{listing}/close', [ListingController::class, 'close'])->name('employer.listings.close');
+    Route::post('/employer/listings/{listing}/renew', [ListingController::class, 'renew'])->name('employer.listings.renew');
 });
+
+// Public job pages: shareable and findable by search engines; no employer contact details.
+Route::get('/jobs/{listing}', [JobsController::class, 'public'])->middleware('throttle:120,1')->name('jobs.public');
+Route::post('/jobs/{listing}/take-down', [JobsController::class, 'takeDown'])->middleware(['auth', 'account.ready'])->name('jobs.take_down');

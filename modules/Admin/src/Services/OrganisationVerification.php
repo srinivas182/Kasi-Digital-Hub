@@ -23,6 +23,10 @@ final readonly class OrganisationVerification
 
     public function verify(Organisation $organisation, User $by): void
     {
+        if (! $organisation->checklistComplete()) {
+            throw new \DomainException(__('admin.organisations.checklist_incomplete'));
+        }
+
         $organisation->forceFill(['verification_status' => 'verified', 'verified_at' => now()])->save();
         $this->audit->record('organisation.verified', meta: ['organisation' => $organisation->id], actor: $by);
         event(new OrganisationVerified($organisation, $by->id));

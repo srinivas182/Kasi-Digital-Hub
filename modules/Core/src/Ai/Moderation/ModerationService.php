@@ -27,11 +27,12 @@ final readonly class ModerationService
     public function __construct(private AiService $ai) {}
 
     /**
+     * @param  list<string>  $extraReasons  Reasons a portal's own rules found (e.g. KasiWork fair-language rules)
      * @return array{verdict: 'allow'|'flag', reasons: list<string>, flag: ModerationFlag|null}
      */
-    public function check(string $text, string $subjectType, string $subjectId, ?User $author = null, bool $useAi = true): array
+    public function check(string $text, string $subjectType, string $subjectId, ?User $author = null, bool $useAi = true, array $extraReasons = []): array
     {
-        $reasons = [];
+        $reasons = $extraReasons;
         foreach (self::RULES as $reason => $pattern) {
             if (preg_match($pattern, $text) === 1) {
                 $reasons[] = $reason;

@@ -52,6 +52,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'account.ready', 'po
     Route::middleware('permission:admin.organisations.verify')->group(function (): void {
         Route::post('/organisations/{organisation}/verify', [OrganisationsController::class, 'verify'])->name('organisations.verify');
         Route::post('/organisations/{organisation}/reject', [OrganisationsController::class, 'reject'])->name('organisations.reject');
+        Route::post('/organisations/{organisation}/checklist', [OrganisationsController::class, 'checklist'])->name('organisations.checklist');
     });
     Route::get('/organisations/{organisation}', [OrganisationsController::class, 'show'])->middleware('permission:admin.organisations.view')->name('organisations.show');
 

@@ -18,5 +18,9 @@
     "work.cv_summary": {
         "version": 1,
         "sha256": "7c0a624a0af20e8196a1142379d4f3608cda57f043a0397dbc71603abab8cd8a"
+    },
+    "work.listing_writer": {
+        "version": 1,
+        "sha256": "cf66d10d6749b9ed31276657cff5755876d1649f843b465c5ba827613b315250"
     }
 }

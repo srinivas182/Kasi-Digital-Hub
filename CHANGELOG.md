@@ -2,6 +2,14 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.10.0] - 2026-10-09 - Sprint 10: KasiWork for employers and job listings
+
+### Added
+- Employer registration (CIPC or community employer), verification checklist, team, company profile, dashboard.
+- Job listings with required pay (minimum wage check), fair-language and scam checks, review queue, expiry and
+  renewal; "Help me write it" for adverts; job board, saved jobs and public job pages (ADR-018).
+- Occupation starter list and official OFO import command.
+
 ## [0.9.0] - 2026-10-09 - Sprint 9: KasiWork for job seekers
 
 ### Added

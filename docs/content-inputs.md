@@ -36,3 +36,11 @@ recordings. Please collect, at Tsutsumani and Giyani:
 
 We will compare OpenAI, Google Cloud Speech-to-Text and Lelapa AI (Vulavula) and report accuracy and cost per
 language before switching any language on.
+
+## KasiWork employers (Sprint 10)
+
+- **National minimum wage:** confirm the current gazetted hourly rate (the platform uses R28.79 from 1 March 2025
+  until told otherwise) and the stipend rules Ku Tirhisana wants for learnerships and internships.
+- **Official OFO list:** a CSV of the Organising Framework for Occupations (code, title, major group) from the
+  Department of Employment and Labour or QCTO, so occupations carry official codes.
+- **Who verifies employers** at Ku Tirhisana, and the hub process for visiting community employers.

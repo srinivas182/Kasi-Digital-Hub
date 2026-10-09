@@ -5,7 +5,7 @@
     "description": "Jobs and AI matching: AI CVs, 0-10 matching, employers, hiring pipeline",
     "group": "service",
     "release": "r1",
-    "version": "0.9.0",
+    "version": "0.10.0",
     "depends_on": [
         "Core"
     ],
@@ -27,7 +27,10 @@
             "access": {
                 "Work": "use",
                 "Learn": "use"
-            }
+            },
+            "permissions": [
+                "work.seek"
+            ]
         },
         {
             "key": "employer_admin",
@@ -39,7 +42,10 @@
                 "Work": "manage",
                 "Learn": "use",
                 "Connect": "use"
-            }
+            },
+            "permissions": [
+                "work.employ"
+            ]
         },
         {
             "key": "recruiter",
@@ -49,14 +55,23 @@
             "staff": true,
             "access": {
                 "Work": "use"
-            }
+            },
+            "permissions": [
+                "work.employ"
+            ]
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "work.seek",
+        "work.employ"
+    ],
     "events": {
         "publishes": [
             "work.profile.completed",
-            "work.cv.created"
+            "work.cv.created",
+            "work.employer.registered",
+            "work.listing.published",
+            "work.listing.closed"
         ],
         "consumes": []
     },
@@ -73,14 +88,28 @@
         "href": "/work/profile",
         "items": [
             {
+                "label": "nav.work.jobs",
+                "href": "/work/jobs",
+                "icon": "briefcase",
+                "permission": "work.seek"
+            },
+            {
                 "label": "nav.work.profile",
                 "href": "/work/profile",
-                "icon": "users"
+                "icon": "users",
+                "permission": "work.seek"
             },
             {
                 "label": "nav.work.cv",
                 "href": "/work/cv",
-                "icon": "book-open"
+                "icon": "book-open",
+                "permission": "work.seek"
+            },
+            {
+                "label": "nav.work.employer",
+                "href": "/work/employer",
+                "icon": "building",
+                "permission": "work.employ"
             }
         ]
     }

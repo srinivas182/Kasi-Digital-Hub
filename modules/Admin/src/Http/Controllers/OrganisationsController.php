@@ -11,6 +11,8 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Admin\Services\OrganisationVerification;
+use Modules\Core\Documents\DocumentVault;
+use Modules\Core\Documents\Models\Document;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Structure\Models\Municipality;
@@ -74,9 +76,23 @@ final class OrganisationsController
 
     public function verify(Request $request, Organisation $organisation, OrganisationVerification $verification): RedirectResponse
     {
-        $verification->verify($organisation, $this->actor($request));
+        try {
+            $verification->verify($organisation, $this->actor($request));
+        } catch (\DomainException $e) {
+            return back()->withErrors(['checklist' => $e->getMessage()]);
+        }
 
         return back()->with('status', __('admin.organisations.verified'));
+    }
+
+    /** Tick or untick the verification checklist (audited). */
+    public function checklist(Request $request, Organisation $organisation, AuditLogger $audit): RedirectResponse
+    {
+        $validated = $request->validate(['item' => ['required', Rule::in($organisation->checklistItems())], 'checked' => ['required', 'boolean']]);
+        $organisation->forceFill(['verification_checklist' => [...($organisation->verification_checklist ?? []), $validated['item'] => (bool) $validated['checked']]])->save();
+        $audit->record('organisation.checklist', meta: ['organisation' => $organisation->id, ...$validated], actor: $this->actor($request));
+
+        return back();
     }
 
     public function reject(Request $request, Organisation $organisation, OrganisationVerification $verification): RedirectResponse
@@ -118,6 +134,11 @@ final class OrganisationsController
                 'registrationNumber' => $organisation->registration_number, 'status' => $organisation->verification_status,
                 'verifiedAt' => $organisation->verified_at?->toIso8601String(), 'email' => $organisation->contact_email,
                 'phone' => $organisation->contact_phone, 'municipalityId' => $organisation->municipality_id, 'address' => $organisation->address,
+                'tradingName' => $organisation->trading_name, 'community' => $organisation->community, 'sector' => $organisation->sector,
+                'sizeBand' => $organisation->size_band, 'description' => $organisation->description,
+                'documentUrl' => $organisation->registration_document_id !== null && ($doc = Document::query()->find($organisation->registration_document_id)) !== null && $doc->canBeOpened()
+                    ? app(DocumentVault::class)->temporaryUrl($doc, inline: true) : null,
+                'checklist' => collect($organisation->checklistItems())->map(fn (string $item): array => ['item' => $item, 'checked' => (bool) (($organisation->verification_checklist ?? [])[$item] ?? false)])->values(),
             ],
             'members' => $organisation === null ? [] : $organisation->members()->get()->map(static fn (User $m): array => [
                 'id' => $m->id, 'name' => $m->fullName(), 'phone' => SaFormat::maskedPhone($m->phone), 'title' => $m->getRelationValue('pivot')?->getAttribute('title'),

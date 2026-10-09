@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Ai\Models\ModerationFlag;
+use Modules\Core\Events\ModerationDecided;
 use Modules\Core\Identity\Services\AuditLogger;
 
 /**
@@ -20,7 +21,7 @@ final class ModerationController
     use Concerns;
 
     /** Where staff can see the flagged item. Portals add theirs here as they arrive. */
-    private const LINKS = ['hub_event' => '/hub-ops/events/'];
+    private const LINKS = ['hub_event' => '/hub-ops/events/', 'job_listing' => '/jobs/'];
 
     public function index(Request $request): Response
     {
@@ -47,6 +48,7 @@ final class ModerationController
         abort_unless(in_array($flag->status, ['pending', 'escalated'], true), 409);
 
         $flag->forceFill(['status' => $validated['decision'], 'decision_reason' => $validated['reason'], 'reviewed_by' => $this->actor($request)->id, 'reviewed_at' => now()])->save();
+        event(new ModerationDecided($flag->subject_type, $flag->subject_id, $validated['decision'], $validated['reason'], $this->actor($request)->id));
         $audit->record('moderation.'.$validated['decision'], meta: ['flag' => $flag->id, 'subject' => $flag->subject_type.':'.$flag->subject_id, 'reason' => $validated['reason']], actor: $this->actor($request));
 
         return back()->with('status', __('admin.moderation.done'));

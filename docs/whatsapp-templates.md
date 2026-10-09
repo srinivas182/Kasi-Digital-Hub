@@ -17,6 +17,7 @@ Until a template is approved, the platform falls back to SMS for important messa
 | `kasihub_event_registered` | utility | event_registered | hub_news | KasiHub: {{1}} - {{2}} |
 | `kasihub_event_reminder` | utility | event_reminder | hub_news | Reminder: {{1}} is tomorrow, {{2}} at {{3}}. See you there! |
 | `kasihub_event_spot` | utility | event_spot | hub_news | Good news! A place opened up for {{1}} on {{2}}. You are now booked. Can no longer come? Cancel in the KasiHub app so someone else can go. |
+| `kasihub_listing_status` | utility | listing_status | jobs | KasiWork: {{1}} - {{2}} |
 | `kasihub_organisation_rejected` | utility | organisation_rejected | account | We could not verify {{1}} on KasiHub. Reason: {{2}}. Please contact us to complete the check. |
 | `kasihub_organisation_verified` | utility | organisation_verified | account | {{1}} is now verified on KasiHub. You can start posting opportunities for young people. |
 | `kasihub_role_assigned` | utility | role_assigned | account | You now have the {{1}} role on KasiHub ({{2}}). Sign in to see your new tools. |

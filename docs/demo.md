@@ -62,6 +62,16 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - employers and job adverts (4 minutes)
+
+1. Sign in as Sipho (072 000 0010, Mopani Fresh Market): My business - verified, 5 live adverts with views.
+2. New job advert -> "Help me write it" with rough notes; try pay of R20 an hour (refused: below minimum wage)
+   and a question "How old are you?" (refused).
+3. Type "Ladies only" in the description and publish: held for review. As Lucky, approve or reject it in Content review.
+4. As Thandi (072 000 0001): Find jobs - nearest first, filter "No experience needed", save a job.
+5. Open a job's public page while signed out (/jobs/...) - no employer contact details, sign-in to apply.
+6. As Lucky: Organisations - "Mama Rose Kitchen (demo)" shows the community employer checklist.
+
 ## Demo script - job profile and CV (4 minutes)
 
 1. Sign in as Lwazi (072 000 0002): hub home shows "Complete your job profile".

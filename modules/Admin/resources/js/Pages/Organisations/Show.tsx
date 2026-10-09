@@ -1,7 +1,8 @@
-import { router, useForm } from '@inertiajs/react';
+import { router, useForm, usePage } from '@inertiajs/react';
 import type { FormEvent } from 'react';
 
 import { Button } from '@/components/ui/Button';
+import { Checkbox } from '@/components/ui/Checkbox';
 import { Badge, Card, CardTitle } from '@/components/ui/display';
 import { Field, Input, Select } from '@/components/ui/form';
 import { PhoneInput } from '@/components/ui/PhoneInput';
@@ -21,6 +22,9 @@ interface Props {
         phone: string | null;
         municipalityId: number | null;
         address: string | null;
+        community?: boolean;
+        documentUrl?: string | null;
+        checklist?: { item: string; checked: boolean }[];
     } | null;
     members: { id: string; name: string; phone: string; title: string | null }[];
     types: string[];
@@ -30,6 +34,7 @@ interface Props {
 
 export default function OrganisationShow({ organisation, members, types, cities, can }: Props) {
     const { t } = useTranslation();
+    const { errors } = usePage().props;
     const form = useForm({
         name: organisation?.name ?? '',
         type: organisation?.type ?? 'employer',
@@ -94,6 +99,43 @@ export default function OrganisationShow({ organisation, members, types, cities,
                         {t(`admin.organisations.status.${organisation.status}`)}
                     </Badge>
                 </div>
+            )}
+            {organisation && (organisation.checklist?.length ?? 0) > 0 && (
+                <Card className="mb-6">
+                    <CardTitle>{t('admin.organisations.checklist')}</CardTitle>
+                    {organisation.community && (
+                        <p className="text-fg mt-1 text-sm font-semibold">{t('admin.organisations.community')}</p>
+                    )}
+                    {organisation.documentUrl && (
+                        <a
+                            href={organisation.documentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary mt-2 inline-block text-sm font-semibold hover:underline"
+                        >
+                            {t('admin.organisations.certificate')}
+                        </a>
+                    )}
+                    {errors?.checklist && <p className="text-danger-text mt-2 text-sm">{errors.checklist}</p>}
+                    <ul className="mt-3 flex flex-col gap-1">
+                        {organisation.checklist?.map((c) => (
+                            <li key={c.item}>
+                                <Checkbox
+                                    label={t(`admin.check.${c.item}`)}
+                                    checked={c.checked}
+                                    disabled={!can.verify}
+                                    onCheckedChange={(checked) =>
+                                        router.post(
+                                            `/admin/organisations/${organisation.id}/checklist`,
+                                            { item: c.item, checked: checked === true },
+                                            { preserveScroll: true },
+                                        )
+                                    }
+                                />
+                            </li>
+                        ))}
+                    </ul>
+                </Card>
             )}
             <div className="grid gap-6 lg:grid-cols-3">
                 <Card className="lg:col-span-2">
