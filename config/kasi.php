@@ -196,6 +196,14 @@ return [
         'openai_model' => env('KASI_SPEECH_OPENAI_MODEL', 'whisper-1'),
     ],
 
+    /*
+    | Embeddings (S11): only skill names and job titles are embedded, never personal details.
+    */
+    'embeddings' => [
+        'driver' => env('KASI_EMBEDDINGS_DRIVER', 'fake'),
+        'openai_model' => env('KASI_EMBEDDINGS_OPENAI_MODEL', 'text-embedding-3-small'),
+    ],
+
     'search' => [
         'meilisearch' => ['url' => env('MEILISEARCH_HOST', 'http://meilisearch:7700'), 'key' => env('MEILISEARCH_KEY'), 'index' => env('KASI_SEARCH_INDEX', 'kasi_content')],
     ],

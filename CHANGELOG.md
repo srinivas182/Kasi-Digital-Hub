@@ -2,6 +2,13 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.11.0] - 2026-10-09 - Sprint 11: KasiWork matching
+
+### Added
+- Explainable match scores with reasons and gaps, synonym and embedding-based similar skills (ADR-019).
+- "Jobs for you", invitations to apply, profile-view history, hiding from employers, daily job alerts.
+- Suggested anonymised candidates for verified employers; matching insights with a fairness check.
+
 ## [0.10.0] - 2026-10-09 - Sprint 10: KasiWork for employers and job listings
 
 ### Added

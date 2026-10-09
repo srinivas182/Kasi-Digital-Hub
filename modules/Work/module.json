@@ -5,7 +5,7 @@
     "description": "Jobs and AI matching: AI CVs, 0-10 matching, employers, hiring pipeline",
     "group": "service",
     "release": "r1",
-    "version": "0.10.0",
+    "version": "0.11.0",
     "depends_on": [
         "Core"
     ],
@@ -63,7 +63,8 @@
     ],
     "permissions": [
         "work.seek",
-        "work.employ"
+        "work.employ",
+        "work.insights"
     ],
     "events": {
         "publishes": [
@@ -71,7 +72,9 @@
             "work.cv.created",
             "work.employer.registered",
             "work.listing.published",
-            "work.listing.closed"
+            "work.listing.closed",
+            "work.invitation.sent",
+            "work.invitation.answered"
         ],
         "consumes": []
     },
@@ -87,6 +90,12 @@
         "icon": "briefcase",
         "href": "/work/profile",
         "items": [
+            {
+                "label": "nav.work.matches",
+                "href": "/work/matches",
+                "icon": "rocket",
+                "permission": "work.seek"
+            },
             {
                 "label": "nav.work.jobs",
                 "href": "/work/jobs",

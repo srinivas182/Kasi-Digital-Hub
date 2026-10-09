@@ -34,7 +34,8 @@
             },
             "permissions": [
                 "hubops.dashboard",
-                "hubops.compare"
+                "hubops.compare",
+                "work.insights"
             ]
         },
         {
@@ -54,7 +55,8 @@
             },
             "permissions": [
                 "hubops.dashboard",
-                "hubops.compare"
+                "hubops.compare",
+                "work.insights"
             ]
         }
     ],

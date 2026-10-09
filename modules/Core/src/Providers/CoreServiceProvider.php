@@ -19,6 +19,9 @@ use Modules\Core\Ai\AiDriver;
 use Modules\Core\Ai\Drivers\AnthropicDriver;
 use Modules\Core\Ai\Drivers\FakeAiDriver;
 use Modules\Core\Ai\Drivers\OpenAiDriver;
+use Modules\Core\Ai\Embeddings\EmbeddingProvider;
+use Modules\Core\Ai\Embeddings\FakeEmbeddings;
+use Modules\Core\Ai\Embeddings\OpenAiEmbeddings;
 use Modules\Core\Ai\PromptRegistry;
 use Modules\Core\Ai\Speech\FakeSpeechToText;
 use Modules\Core\Ai\Speech\OpenAiSpeechToText;
@@ -78,6 +81,11 @@ final class CoreServiceProvider extends ServiceProvider
             'fake' => new FakeSpeechToText,
             'openai' => new OpenAiSpeechToText,
             default => throw new InvalidArgumentException('Unknown speech driver ['.config('kasi.speech.driver').'].'),
+        });
+        $this->app->singleton(EmbeddingProvider::class, fn (): EmbeddingProvider => match (config('kasi.embeddings.driver')) {
+            'fake' => new FakeEmbeddings,
+            'openai' => new OpenAiEmbeddings,
+            default => throw new InvalidArgumentException('Unknown embeddings driver ['.config('kasi.embeddings.driver').'].'),
         });
         $this->app->singleton(SearchEngine::class, fn (): SearchEngine => match (config('kasi.drivers.search')) {
             'database' => new DatabaseSearchEngine,

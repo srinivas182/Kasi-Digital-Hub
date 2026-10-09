@@ -38,7 +38,8 @@
             },
             "permissions": [
                 "admin.*",
-                "hubops.*"
+                "hubops.*",
+                "work.insights"
             ]
         },
         {
@@ -74,7 +75,8 @@
                 "hubops.dashboard",
                 "hubops.compare",
                 "admin.ai.view",
-                "admin.moderation.review"
+                "admin.moderation.review",
+                "work.insights"
             ]
         },
         {

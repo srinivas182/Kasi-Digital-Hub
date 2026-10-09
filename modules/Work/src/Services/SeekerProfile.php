@@ -12,6 +12,7 @@ use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Structure\Models\RoleAssignment;
 use Modules\Work\Events\ProfileCompleted;
+use Modules\Work\Matching\RefreshMatches;
 use Modules\Work\Models\WorkEducation;
 use Modules\Work\Models\WorkExperience;
 use Modules\Work\Models\WorkProfile;
@@ -63,6 +64,8 @@ final readonly class SeekerProfile
         } else {
             $profile->save();
         }
+
+        RefreshMatches::dispatch('seeker', $user->id);
 
         return $profile;
     }

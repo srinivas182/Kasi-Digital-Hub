@@ -169,6 +169,21 @@ export default function Dashboard({ person, employer, employers, isAdmin, listin
                                 cell: (l) => l.saves,
                                 hideOnMobile: true,
                             },
+                            {
+                                key: 'candidates',
+                                header: t('work.candidates.link'),
+                                cell: (l) =>
+                                    l.status === 'live' && employer.status === 'verified' ? (
+                                        <Link
+                                            href={`/work/employer/listings/${l.id}/candidates`}
+                                            className="text-primary font-semibold hover:underline"
+                                        >
+                                            {t('work.candidates.title')}
+                                        </Link>
+                                    ) : (
+                                        '-'
+                                    ),
+                            },
                         ]}
                     />
                 </div>

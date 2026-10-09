@@ -57,6 +57,16 @@ export default function JobShow({ job, saved, canTakeDown }: { job: Job; saved: 
                             )}
                         </div>
                         <p className="text-fg-muted mt-2 text-sm">{t('work.jobs.apply_soon')}</p>
+                        <Button
+                            size="sm"
+                            variant="ghost"
+                            className="mt-2"
+                            onClick={() =>
+                                router.post(`/work/jobs/${job.id}/hide-employer`, {}, { preserveScroll: true })
+                            }
+                        >
+                            {t('work.matches.hide')}
+                        </Button>
                     </JobDetail>
                 </div>
             </div>

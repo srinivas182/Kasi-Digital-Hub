@@ -28,6 +28,8 @@ Every event is written to the platform event log and can be used by any portal t
 | `hubops.visit.recorded` | KasiHub Ops | - | Someone visited a hub (QR at the door, front desk, walk-in, event or assisted registration). |
 | `work.cv.created` | KasiWork | - | A job seeker created a CV (PDF). |
 | `work.employer.registered` | KasiWork | - | A business registered as an employer on KasiWork (waiting for verification). |
+| `work.invitation.answered` | KasiWork | - | A job seeker accepted or declined an invitation to apply. |
+| `work.invitation.sent` | KasiWork | - | A verified employer invited a job seeker to apply. |
 | `work.listing.closed` | KasiWork | - | A job listing closed (filled, closed by the employer, expired or taken down). |
 | `work.listing.published` | KasiWork | - | A job listing went live. |
 | `work.profile.completed` | KasiWork | - | A job seeker completed the essential parts of their job profile. |

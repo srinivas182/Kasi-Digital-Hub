@@ -62,6 +62,14 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - matching (4 minutes)
+
+1. As Thandi (072 000 0001): Jobs for you - scores with reasons ("You have 1 of 1 must-have skills", "8 km from your hub").
+2. As Sipho (072 000 0010): My business -> Suggested candidates on a live advert - anonymised ("Thandi M."); open a
+   profile (Thandi can see the view), Invite to apply.
+3. As Thandi: Invitations -> Accept. As Sipho: her full name and phone number now show.
+4. As Lucky (072 000 0040): /work/insights - totals and the fairness check (informal-only vs formal experience).
+
 ## Demo script - employers and job adverts (4 minutes)
 
 1. Sign in as Sipho (072 000 0010, Mopani Fresh Market): My business - verified, 3 live adverts (the free limit) with views; publishing a 4th shows the limit message.

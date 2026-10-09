@@ -12,6 +12,7 @@ use Modules\Core\Documents\Models\Document;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Structure\Models\Municipality;
 use Modules\Core\Structure\Models\Organisation;
+use Modules\Work\Matching\MatchIndex;
 use Modules\Work\Models\JobListing;
 use Modules\Work\Models\OfoOccupation;
 use Modules\Work\Models\WorkEducation;
@@ -77,6 +78,9 @@ final class DemoWorkSeeder extends Seeder
             ]);
             $profiles->refresh($lwazi);
         }
+
+        // Matches for the demo profiles (S11).
+        app(MatchIndex::class)->refreshAll();
     }
 
     /** Demo employers and live listings (S10). All fictitious. */

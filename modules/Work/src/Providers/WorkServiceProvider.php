@@ -11,8 +11,10 @@ use Modules\Core\Home\HomeRegistry;
 use Modules\Core\Search\RefreshSearchDocument;
 use Modules\Core\Search\SearchRegistry;
 use Modules\Work\Console\ImportOfoCommand;
+use Modules\Work\Console\JobAlertsCommand;
 use Modules\Work\Console\ListingHousekeepingCommand;
 use Modules\Work\Home\WorkHomeContributor;
+use Modules\Work\Matching\RefreshMatches;
 use Modules\Work\Models\JobListing;
 use Modules\Work\Search\JobSearchSource;
 use Modules\Work\Services\Listings;
@@ -30,7 +32,7 @@ final class WorkServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'work');
 
         if ($this->app->runningInConsole()) {
-            $this->commands([ImportOfoCommand::class, ListingHousekeepingCommand::class]);
+            $this->commands([ImportOfoCommand::class, ListingHousekeepingCommand::class, JobAlertsCommand::class]);
         }
 
         // Reviewers' decisions on flagged listings (content review queue).
@@ -41,7 +43,11 @@ final class WorkServiceProvider extends ServiceProvider
         });
 
         // Keep the job search index current.
-        JobListing::saved(static fn (JobListing $l) => RefreshSearchDocument::dispatch('job', $l->id));
+        JobListing::saved(static function (JobListing $l): void {
+            RefreshSearchDocument::dispatch('job', $l->id);
+            // Matches follow the advert: recalculated when it goes live, changes or closes.
+            RefreshMatches::dispatch('listing', $l->id);
+        });
         JobListing::deleted(static fn (JobListing $l) => RefreshSearchDocument::dispatch('job', $l->id));
     }
 }

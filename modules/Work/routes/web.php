@@ -3,11 +3,14 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Work\Http\Controllers\CandidatesController;
 use Modules\Work\Http\Controllers\CvController;
 use Modules\Work\Http\Controllers\EmployerController;
 use Modules\Work\Http\Controllers\ExperienceController;
+use Modules\Work\Http\Controllers\InsightsController;
 use Modules\Work\Http\Controllers\JobsController;
 use Modules\Work\Http\Controllers\ListingController;
+use Modules\Work\Http\Controllers\MatchesController;
 use Modules\Work\Http\Controllers\ProfileController;
 
 /*
@@ -47,6 +50,17 @@ Route::prefix('work')->name('work.')->middleware(['auth', 'account.ready'])->gro
     Route::get('/jobs/{listing}', [JobsController::class, 'show'])->name('jobs.show');
     Route::post('/jobs/{listing}/save', [JobsController::class, 'save'])->name('jobs.save');
     Route::delete('/jobs/{listing}/save', [JobsController::class, 'unsave'])->name('jobs.unsave');
+
+    // Matching (S11)
+    Route::get('/matches', [MatchesController::class, 'index'])->name('matches');
+    Route::post('/invitations/{invitation}', [MatchesController::class, 'answer'])->name('invitations.answer');
+    Route::post('/hidden', [MatchesController::class, 'hide'])->name('hidden.store');
+    Route::delete('/hidden/{organisation}', [MatchesController::class, 'unhide'])->name('hidden.destroy');
+    Route::post('/jobs/{listing}/hide-employer', [MatchesController::class, 'hideEmployerOf'])->name('jobs.hide_employer');
+    Route::get('/employer/listings/{listing}/candidates', [CandidatesController::class, 'index'])->name('employer.candidates');
+    Route::get('/employer/listings/{listing}/candidates/{person}', [CandidatesController::class, 'show'])->middleware('throttle:120,1')->name('employer.candidates.show');
+    Route::post('/employer/listings/{listing}/candidates/{person}/invite', [CandidatesController::class, 'invite'])->middleware('throttle:30,1')->name('employer.candidates.invite');
+    Route::get('/insights', InsightsController::class)->middleware('permission:work.insights')->name('insights');
 
     // Employers (S10)
     Route::get('/employer', [EmployerController::class, 'dashboard'])->name('employer');

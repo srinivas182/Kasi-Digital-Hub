@@ -15,6 +15,7 @@ use Modules\Core\Structure\Models\Organisation;
 use Modules\Core\Structure\Models\RoleAssignment;
 use Modules\Work\Events\ListingClosed;
 use Modules\Work\Events\ListingPublished;
+use Modules\Work\Matching\Invitations;
 use Modules\Work\Models\JobListing;
 use Modules\Work\Notifications\Messages\ListingStatusNotification;
 
@@ -107,6 +108,7 @@ final readonly class Listings
     {
         $listing->forceFill(['status' => $status, 'status_reason' => $reason, 'closed_at' => now()])->save();
         $this->audit->record('work.listing_'.$status, meta: ['listing' => $listing->id, 'reason' => $reason], actor: $by);
+        app(Invitations::class)->expireFor($listing->id);
         event(new ListingClosed($listing, $by?->id));
 
         if ($status === 'taken_down') {

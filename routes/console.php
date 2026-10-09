@@ -34,3 +34,6 @@ Schedule::command('kasi:search:reindex')->dailyAt('03:30')->timezone('Africa/Joh
 
 // S10: expire job listings past their closing date; remind employers 3 days before.
 Schedule::command('kasi:work:listings')->dailyAt('06:00')->timezone('Africa/Johannesburg')->onSuccess($heartbeat('work-listings'));
+
+// S11: refresh job matches and send at most one job alert per person (after quiet hours end).
+Schedule::command('kasi:work:matches')->dailyAt('07:15')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('work-matches'));
