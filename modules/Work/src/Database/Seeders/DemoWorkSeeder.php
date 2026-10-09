@@ -126,7 +126,11 @@ final class DemoWorkSeeder extends Seeder
                 'latitude' => $m?->latitude, 'longitude' => $m?->longitude,
                 'pay_min_cents' => $pay * 100, 'pay_period' => $period, 'hours' => $hours, 'education' => $type === 'learnership' ? 'matric' : 'none',
                 'experience' => $exp, 'languages' => ['English', 'Xitsonga'], 'description' => $description,
-                'closes_on' => now()->addDays(21)->toDateString(), 'status' => 'live', 'published_at' => now()->subDays(2),
+                'closes_on' => now()->addDays(21)->toDateString(), 'published_at' => now()->subDays(2),
+                // Within the free limit of 3 active adverts: two older adverts are already filled/closed.
+                'status' => match ($title) {
+                    'Delivery driver' => 'filled', 'Fruit and vegetable assistant' => 'closed', default => 'live'
+                },
             ]);
             foreach ($skills as [$name, $must]) {
                 $listing->skills()->create(['name' => $name, 'must' => $must]);

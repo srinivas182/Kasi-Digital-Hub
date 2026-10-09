@@ -192,13 +192,15 @@ export default function ListingEdit({ person, employer, listing, cities, default
                     <Alert tone="danger" title={errorFor('publish') ?? ''} />
                 </div>
             )}
-            {Object.keys(form.errors).length > 0 && (
+            {Object.keys(form.errors).filter((key) => key !== 'publish').length > 0 && (
                 <div className="mt-4">
                     <Alert tone="danger" title={t('work.listing.fix_errors')}>
                         <ul className="list-disc pl-5">
-                            {Object.entries(form.errors).map(([key, message]) => (
-                                <li key={key}>{message}</li>
-                            ))}
+                            {Object.entries(form.errors)
+                                .filter(([key]) => key !== 'publish')
+                                .map(([key, message]) => (
+                                    <li key={key}>{message}</li>
+                                ))}
                         </ul>
                     </Alert>
                 </div>

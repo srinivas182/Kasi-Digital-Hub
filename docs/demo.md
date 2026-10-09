@@ -64,7 +64,7 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 
 ## Demo script - employers and job adverts (4 minutes)
 
-1. Sign in as Sipho (072 000 0010, Mopani Fresh Market): My business - verified, 5 live adverts with views.
+1. Sign in as Sipho (072 000 0010, Mopani Fresh Market): My business - verified, 3 live adverts (the free limit) with views; publishing a 4th shows the limit message.
 2. New job advert -> "Help me write it" with rough notes; try pay of R20 an hour (refused: below minimum wage)
    and a question "How old are you?" (refused).
 3. Type "Ladies only" in the description and publish: held for review. As Lucky, approve or reject it in Content review.

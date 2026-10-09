@@ -19,7 +19,7 @@
   jobs; job pages with directions; public shareable job pages with JobPosting data; jobs in platform search
   (adults only). Applying opens in S12 (people can save jobs now).
 - **Occupations:** 105-title starter list (major groups, no codes) and an import command for the official OFO list.
-- **Demo:** Mopani Fresh Market (verified) with 5 live adverts; Mama Rose Kitchen (community, waiting).
+- **Demo:** Mopani Fresh Market (verified) with 3 live adverts (the free limit) plus a filled and a closed one; Mama Rose Kitchen (community, waiting).
 
 ## Note on occupation codes
 
@@ -33,3 +33,6 @@ starter list has titles and OFO major groups only; codes arrive with the officia
   without a visible message. The demo AI now returns short list items, suggested skills are trimmed, and the
   advert form lists every problem at the top.
 - Verifying an employer now needs the checklist; the earlier admin test was updated accordingly.
+- CI found that a refused "publish" (over the listing limit) showed the same message twice - in the problem list
+  and in its own alert. The problem list now leaves it out. The demo employer also had 5 live adverts, above its
+  own free limit of 3; two demo adverts are now filled/closed.
