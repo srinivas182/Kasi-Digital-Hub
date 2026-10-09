@@ -2,14 +2,24 @@ import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Bookmark, BookmarkCheck } from 'lucide-react';
 
 import { Alert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
+import { Button, buttonVariants } from '@/components/ui/Button';
 import { AppLayout } from '@/layouts/AppLayout';
 import { useTranslation } from '@/lib/i18n';
 
 import { type Job, JobDetail } from '../../components/JobDetail';
 import { ReasonDialog } from '../../components/ReasonDialog';
 
-export default function JobShow({ job, saved, canTakeDown }: { job: Job; saved: boolean; canTakeDown: boolean }) {
+export default function JobShow({
+    job,
+    saved,
+    canTakeDown,
+    applicationId,
+}: {
+    job: Job;
+    saved: boolean;
+    canTakeDown: boolean;
+    applicationId: string | null;
+}) {
     const { t } = useTranslation();
     const { auth, flash } = usePage().props;
 
@@ -28,6 +38,17 @@ export default function JobShow({ job, saved, canTakeDown }: { job: Job; saved: 
                 <div className="mt-3">
                     <JobDetail job={job}>
                         <div className="flex flex-wrap items-center gap-3">
+                            {applicationId ? (
+                                <Link href={`/work/applications/${applicationId}`} className={buttonVariants({})}>
+                                    {t('work.apply.view')}
+                                </Link>
+                            ) : (
+                                job.status === 'live' && (
+                                    <Link href={`/work/jobs/${job.id}/apply`} className={buttonVariants({})}>
+                                        {t('work.apply.button')}
+                                    </Link>
+                                )
+                            )}
                             {saved ? (
                                 <Button
                                     variant="secondary"
@@ -56,7 +77,7 @@ export default function JobShow({ job, saved, canTakeDown }: { job: Job; saved: 
                                 />
                             )}
                         </div>
-                        <p className="text-fg-muted mt-2 text-sm">{t('work.jobs.apply_soon')}</p>
+
                         <Button
                             size="sm"
                             variant="ghost"

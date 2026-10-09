@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Work\Http\Controllers\ApplicationsController;
 use Modules\Work\Http\Controllers\CandidatesController;
 use Modules\Work\Http\Controllers\CvController;
 use Modules\Work\Http\Controllers\EmployerController;
@@ -11,6 +12,7 @@ use Modules\Work\Http\Controllers\InsightsController;
 use Modules\Work\Http\Controllers\JobsController;
 use Modules\Work\Http\Controllers\ListingController;
 use Modules\Work\Http\Controllers\MatchesController;
+use Modules\Work\Http\Controllers\PipelineController;
 use Modules\Work\Http\Controllers\ProfileController;
 
 /*
@@ -61,6 +63,25 @@ Route::prefix('work')->name('work.')->middleware(['auth', 'account.ready'])->gro
     Route::get('/employer/listings/{listing}/candidates/{person}', [CandidatesController::class, 'show'])->middleware('throttle:120,1')->name('employer.candidates.show');
     Route::post('/employer/listings/{listing}/candidates/{person}/invite', [CandidatesController::class, 'invite'])->middleware('throttle:30,1')->name('employer.candidates.invite');
     Route::get('/insights', InsightsController::class)->middleware('permission:work.insights')->name('insights');
+
+    // Hiring (S12)
+    Route::get('/jobs/{listing}/apply', [ApplicationsController::class, 'create'])->name('apply');
+    Route::post('/jobs/{listing}/apply', [ApplicationsController::class, 'store'])->middleware('throttle:20,1')->name('apply.store');
+    Route::get('/applications', [ApplicationsController::class, 'index'])->name('applications');
+    Route::get('/applications/{application}', [ApplicationsController::class, 'show'])->name('applications.show');
+    Route::post('/applications/{application}/withdraw', [ApplicationsController::class, 'withdraw'])->name('applications.withdraw');
+    Route::post('/applications/{application}/messages', [ApplicationsController::class, 'message'])->middleware('throttle:30,1')->name('applications.messages');
+    Route::post('/applications/{application}/hire', [ApplicationsController::class, 'confirmHire'])->name('applications.hire');
+    Route::post('/interviews/{interview}', [ApplicationsController::class, 'answerInterview'])->name('interviews.answer');
+    Route::post('/retention/{check}', [ApplicationsController::class, 'retention'])->whereNumber('check')->name('retention.answer');
+    Route::post('/messages/{message}/report', [ApplicationsController::class, 'report'])->name('messages.report');
+    Route::get('/employer/listings/{listing}/applicants', [PipelineController::class, 'index'])->name('employer.applicants');
+    Route::post('/employer/listings/{listing}/applicants/move', [PipelineController::class, 'move'])->name('employer.applicants.move');
+    Route::get('/employer/listings/{listing}/applicants/{application}', [PipelineController::class, 'show'])->name('employer.applicants.show');
+    Route::get('/employer/listings/{listing}/applicants/{application}/cv', [PipelineController::class, 'cv'])->name('employer.applicants.cv');
+    Route::post('/employer/listings/{listing}/applicants/{application}/notes', [PipelineController::class, 'note'])->name('employer.applicants.notes');
+    Route::post('/employer/listings/{listing}/applicants/{application}/interviews', [PipelineController::class, 'interview'])->name('employer.applicants.interviews');
+    Route::post('/employer/listings/{listing}/applicants/{application}/messages', [PipelineController::class, 'message'])->middleware('throttle:60,1')->name('employer.applicants.messages');
 
     // Employers (S10)
     Route::get('/employer', [EmployerController::class, 'dashboard'])->name('employer');

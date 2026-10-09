@@ -139,7 +139,7 @@ final class ListingController extends WorkController
                 'title' => $listing->title, 'occupation' => $listing->occupation ? ['id' => $listing->occupation->id, 'title' => $listing->occupation->title] : null,
                 'type' => $listing->type, 'positions' => $listing->positions, 'municipalityId' => $listing->municipality_id, 'placeName' => $listing->place_name,
                 'payMin' => $listing->pay_min_cents / 100, 'payMax' => $listing->pay_max_cents !== null ? $listing->pay_max_cents / 100 : null, 'payPeriod' => $listing->pay_period,
-                'hours' => $listing->hours, 'education' => $listing->education, 'licence' => $listing->licence, 'experience' => $listing->experience,
+                'hours' => $listing->hours, 'education' => $listing->education, 'licence' => $listing->licence, 'experience' => $listing->experience, 'blind' => $listing->blind_shortlisting,
                 'languages' => $listing->languages ?? [], 'description' => $listing->description, 'closesOn' => $listing->closes_on->toDateString(),
                 'skills' => $listing->skills->map(static fn ($s): array => ['name' => $s->name, 'must' => $s->must])->values(),
                 'questions' => $listing->questions->map(static fn ($q): array => ['question' => $q->question, 'kind' => $q->kind])->values(),
@@ -172,6 +172,7 @@ final class ListingController extends WorkController
             'education' => ['nullable', Rule::in(JobListing::EDUCATION)],
             'licence' => ['nullable', Rule::in(Profile::LICENCES)],
             'experience' => ['required', Rule::in(JobListing::EXPERIENCE)],
+            'blind_shortlisting' => ['boolean'],
             'languages' => ['array', 'max:6'], 'languages.*' => [Rule::in(Profile::LANGUAGES)],
             'description' => ['required', 'string', 'min:30', 'max:4000'],
             'closes_on' => ['required', 'date', 'after_or_equal:today', 'before_or_equal:'.now()->addDays((int) config('kasi.work.max_listing_days'))->toDateString()],
@@ -206,7 +207,7 @@ final class ListingController extends WorkController
             'latitude' => $municipality?->latitude, 'longitude' => $municipality?->longitude,
             'pay_min_cents' => (int) round(((float) $data['pay_min']) * 100), 'pay_max_cents' => isset($data['pay_max']) ? (int) round(((float) $data['pay_max']) * 100) : null,
             'pay_period' => $data['pay_period'], 'hours' => $data['hours'] ?? null, 'education' => $data['education'] ?? null, 'licence' => $data['licence'] ?? null,
-            'experience' => $data['experience'], 'languages' => $data['languages'] ?? [], 'description' => $data['description'], 'closes_on' => $data['closes_on'],
+            'experience' => $data['experience'], 'blind_shortlisting' => (bool) ($data['blind_shortlisting'] ?? false), 'languages' => $data['languages'] ?? [], 'description' => $data['description'], 'closes_on' => $data['closes_on'],
         ], $skills, $questions];
     }
 

@@ -26,10 +26,14 @@ Every event is written to the platform event log and can be used by any portal t
 | `hubops.event.cancelled` | KasiHub Ops | - | A hub event was cancelled; everyone signed up was told why. |
 | `hubops.event.scheduled` | KasiHub Ops | - | A hub scheduled an event (job day, workshop, info session or class). |
 | `hubops.visit.recorded` | KasiHub Ops | - | Someone visited a hub (QR at the door, front desk, walk-in, event or assisted registration). |
+| `work.application.stage_changed` | KasiWork | - | An employer moved an application to another stage (shortlisted, interview, offer, hired, not successful). |
+| `work.application.submitted` | KasiWork | - | A job seeker applied for a job. |
 | `work.cv.created` | KasiWork | - | A job seeker created a CV (PDF). |
 | `work.employer.registered` | KasiWork | - | A business registered as an employer on KasiWork (waiting for verification). |
+| `work.hire.confirmed` | KasiWork | - | A hire confirmed by both the employer and the young person. |
 | `work.invitation.answered` | KasiWork | - | A job seeker accepted or declined an invitation to apply. |
 | `work.invitation.sent` | KasiWork | - | A verified employer invited a job seeker to apply. |
 | `work.listing.closed` | KasiWork | - | A job listing closed (filled, closed by the employer, expired or taken down). |
 | `work.listing.published` | KasiWork | - | A job listing went live. |
 | `work.profile.completed` | KasiWork | - | A job seeker completed the essential parts of their job profile. |
+| `work.retention.checked` | KasiWork | - | A young person answered the 30- or 90-day "still working there?" check-in. |

@@ -62,6 +62,14 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - hiring (5 minutes)
+
+1. As Lwazi (072 000 0002): Find jobs -> Shelf packer -> Apply (choose "make a new CV", answer, confirm sharing).
+2. As Sipho (072 000 0010): My business -> Applicants on "Cashier": Thandi is shortlisted. Open her, add a team
+   note, propose an interview at the hub, send a message. Try a message asking for a "registration fee": held.
+3. As Thandi (072 000 0001): My applications -> confirm the interview; read the message.
+4. As Sipho: move Thandi to Hired. As Thandi: "Yes, I started" - a confirmed hire for the funder numbers.
+
 ## Demo script - matching (4 minutes)
 
 1. As Thandi (072 000 0001): Jobs for you - scores with reasons ("You have 1 of 1 must-have skills", "8 km from your hub").

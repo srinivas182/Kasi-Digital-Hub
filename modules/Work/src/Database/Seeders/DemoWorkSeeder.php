@@ -18,6 +18,7 @@ use Modules\Work\Models\OfoOccupation;
 use Modules\Work\Models\WorkEducation;
 use Modules\Work\Models\WorkExperience;
 use Modules\Work\Services\CvComposer;
+use Modules\Work\Services\Hiring;
 use Modules\Work\Services\SeekerProfile;
 
 /**
@@ -81,6 +82,15 @@ final class DemoWorkSeeder extends Seeder
 
         // Matches for the demo profiles (S11).
         app(MatchIndex::class)->refreshAll();
+
+        // A demo application in the hiring pipeline (S12): Thandi applied for the cashier job and is shortlisted.
+        $cashier = JobListing::query()->where('title', 'Cashier')->first();
+        $sipho = User::query()->where('phone', '+27720000010')->first();
+        if ($cashier !== null && $sipho !== null) {
+            $hiring = app(Hiring::class);
+            $application = $hiring->apply($cashier, $thandi, null, ['Yes'], 'I live in Tsutsumani and can start immediately.');
+            $hiring->move($application->load(['listing.organisation', 'user']), 'shortlisted', $sipho);
+        }
     }
 
     /** Demo employers and live listings (S10). All fictitious. */

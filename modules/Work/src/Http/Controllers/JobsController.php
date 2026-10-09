@@ -70,6 +70,7 @@ final class JobsController extends WorkController
         return Inertia::render('Work/Jobs/Show', [
             'job' => $this->detail($listing),
             'saved' => DB::table('work_saved_jobs')->where('user_id', $user->id)->where('listing_id', $listing->id)->exists(),
+            'applicationId' => DB::table('work_applications')->where('user_id', $user->id)->where('listing_id', $listing->id)->value('id'),
             'canTakeDown' => $this->isStaff($user) && in_array($listing->status, ['live', 'review'], true),
         ]);
     }

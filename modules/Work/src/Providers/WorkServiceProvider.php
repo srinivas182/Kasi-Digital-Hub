@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Work\Providers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Events\ModerationDecided;
 use Modules\Core\Home\HomeRegistry;
 use Modules\Core\Search\RefreshSearchDocument;
 use Modules\Core\Search\SearchRegistry;
+use Modules\Work\Console\HiringHousekeepingCommand;
 use Modules\Work\Console\ImportOfoCommand;
 use Modules\Work\Console\JobAlertsCommand;
 use Modules\Work\Console\ListingHousekeepingCommand;
@@ -32,11 +34,19 @@ final class WorkServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'work');
 
         if ($this->app->runningInConsole()) {
-            $this->commands([ImportOfoCommand::class, ListingHousekeepingCommand::class, JobAlertsCommand::class]);
+            $this->commands([ImportOfoCommand::class, ListingHousekeepingCommand::class, JobAlertsCommand::class, HiringHousekeepingCommand::class]);
         }
 
         // Reviewers' decisions on flagged listings (content review queue).
         Event::listen(ModerationDecided::class, static function (ModerationDecided $e): void {
+            if ($e->subjectType === 'work_message') {
+                // Approved messages are delivered; rejected ones stay held.
+                if ($e->decision === 'approved') {
+                    DB::table('work_messages')->where('id', $e->subjectId)->update(['held' => false]);
+                }
+
+                return;
+            }
             if ($e->subjectType === 'job_listing' && ($listing = JobListing::query()->find($e->subjectId)) !== null) {
                 app(Listings::class)->reviewed($listing, $e->decision, $e->reason);
             }

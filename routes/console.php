@@ -37,3 +37,6 @@ Schedule::command('kasi:work:listings')->dailyAt('06:00')->timezone('Africa/Joha
 
 // S11: refresh job matches and send at most one job alert per person (after quiet hours end).
 Schedule::command('kasi:work:matches')->dailyAt('07:15')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('work-matches'));
+
+// S12: no-ghosting outcomes, interview reminders, retention check-ins, applying-open notices, anonymisation.
+Schedule::command('kasi:work:hiring')->dailyAt('09:00')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('work-hiring'));

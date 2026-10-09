@@ -2,6 +2,12 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.12.0] - 2026-10-09 - Sprint 12: KasiWork hiring
+
+### Added
+- Applying, my applications, employer pipeline with bulk moves, notes, interviews and messages; blind
+  shortlisting; no-ghosting outcomes; two-sided hire confirmation and retention check-ins (ADR-020).
+
 ## [0.11.0] - 2026-10-09 - Sprint 11: KasiWork matching
 
 ### Added

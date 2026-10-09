@@ -32,6 +32,7 @@ use Modules\Core\Structure\Models\Organisation;
  * @property string|null $education
  * @property string|null $licence
  * @property string $experience
+ * @property bool $blind_shortlisting
  * @property list<string>|null $languages
  * @property string $description
  * @property CarbonImmutable $closes_on
@@ -72,7 +73,7 @@ final class JobListing extends Model
         return [
             'languages' => 'array', 'closes_on' => 'immutable_date', 'published_at' => 'immutable_datetime',
             'closed_at' => 'immutable_datetime', 'reminded_at' => 'immutable_datetime', 'created_at' => 'immutable_datetime',
-            'pay_min_cents' => 'integer', 'pay_max_cents' => 'integer', 'positions' => 'integer',
+            'pay_min_cents' => 'integer', 'pay_max_cents' => 'integer', 'positions' => 'integer', 'blind_shortlisting' => 'boolean',
         ];
     }
 

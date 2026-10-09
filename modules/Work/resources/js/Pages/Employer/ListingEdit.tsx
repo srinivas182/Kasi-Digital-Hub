@@ -34,6 +34,7 @@ interface ListingProps {
     education: string | null;
     licence: string | null;
     experience: string;
+    blind?: boolean;
     languages: string[];
     description: string;
     closesOn: string;
@@ -85,6 +86,7 @@ export default function ListingEdit({ person, employer, listing, cities, default
         education: listing?.education ?? 'none',
         licence: listing?.licence ?? 'none',
         experience: listing?.experience ?? 'none',
+        blind_shortlisting: listing?.blind ?? false,
         languages: listing?.languages ?? ['English'],
         description: listing?.description ?? '',
         closes_on: listing?.closesOn ?? inDays(21),
@@ -395,6 +397,13 @@ export default function ListingEdit({ person, employer, listing, cities, default
                                 ))}
                             </div>
                         </fieldset>
+                        <div className="md:col-span-2">
+                            <Checkbox
+                                label={t('work.listing.blind')}
+                                checked={form.data.blind_shortlisting}
+                                onCheckedChange={(c) => form.setData('blind_shortlisting', c === true)}
+                            />
+                        </div>
                         <Field
                             label={t('work.listing.description')}
                             error={form.errors.description}
