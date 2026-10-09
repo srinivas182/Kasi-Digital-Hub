@@ -4,7 +4,7 @@ import { ArrowLeft, Clock, Mail, MapPin, Navigation, Phone } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/Button';
 import { Badge, Card, CardTitle } from '@/components/ui/display';
 import { PublicLayout } from '@/layouts/PublicLayout';
-import { formatPhone } from '@/lib/format';
+import { formatDateTime, formatPhone } from '@/lib/format';
 import { directionsUrl } from '@/lib/geo';
 import { useTranslation } from '@/lib/i18n';
 
@@ -27,7 +27,16 @@ interface HubDetail {
     services: string[];
 }
 
-export default function HubShow({ hub }: { hub: HubDetail }) {
+interface PublicEvent {
+    id: string;
+    title: string;
+    type: string;
+    startsAt: string;
+    room: string | null;
+    href: string;
+}
+
+export default function HubShow({ hub, events = [] }: { hub: HubDetail; events?: PublicEvent[] }) {
     const { t } = useTranslation();
 
     return (
@@ -49,7 +58,24 @@ export default function HubShow({ hub }: { hub: HubDetail }) {
                             </li>
                         ))}
                     </ul>
-                    <p className="text-fg-muted mt-6 text-sm">{t('site.hub.events')}</p>
+                    <h3 className="text-fg mt-8 text-base font-semibold">{t('site.hub.upcoming_events')}</h3>
+                    {events.length === 0 ? (
+                        <p className="text-fg-muted mt-2 text-sm">{t('site.hub.events')}</p>
+                    ) : (
+                        <ul className="mt-3 flex flex-col gap-3">
+                            {events.map((event) => (
+                                <li key={event.id} className="border-line border-b pb-3 last:border-0">
+                                    <Link href={event.href} className="text-primary font-semibold hover:underline">
+                                        {event.title}
+                                    </Link>
+                                    <p className="text-fg-muted text-sm">
+                                        {formatDateTime(event.startsAt)}
+                                        {event.room ? ` · ${event.room}` : ''}
+                                    </p>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </Card>
                 <div className="flex flex-col gap-6">
                     <Card>

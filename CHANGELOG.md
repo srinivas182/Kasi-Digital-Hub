@@ -2,6 +2,16 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.7.0] - 2026-10-09 - Sprint 7: KasiHub Ops
+
+### Added
+- Door-screen check-in with a QR code that changes every 2 minutes; front-desk check-in and walk-ins.
+- Assisted registration and assisted help for people at the hub (AssistedSession extension point, ADR-015).
+- Hub events with sign-ups, waiting lists, reminders, cancellation and attendance; events on the public hub page
+  and the hub home (HubActivity extension point).
+- Hub dashboard, coordinator comparison and CSV export; hub settings (internet connection, door screen,
+  facilitators); 24-month visit anonymisation.
+
 ## [0.6.0] - 2026-10-08 - Sprint 6: National admin console, part 1
 
 ### Added

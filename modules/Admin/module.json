@@ -37,7 +37,8 @@
                 "Commercial": "manage"
             },
             "permissions": [
-                "admin.*"
+                "admin.*",
+                "hubops.*"
             ]
         },
         {
@@ -69,7 +70,9 @@
                 "admin.organisations.verify",
                 "admin.documents.verify",
                 "admin.enquiries.handle",
-                "admin.audit.view"
+                "admin.audit.view",
+                "hubops.dashboard",
+                "hubops.compare"
             ]
         },
         {
@@ -92,7 +95,8 @@
                 "admin.hubs.view",
                 "admin.organisations.view",
                 "admin.documents.verify",
-                "admin.enquiries.handle"
+                "admin.enquiries.handle",
+                "hubops.dashboard"
             ]
         },
         {

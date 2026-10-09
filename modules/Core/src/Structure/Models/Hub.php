@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * A physical Kasi Digital Hub. Belongs to a city (metro or local municipality) and
@@ -30,6 +31,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $status
  * @property string $package
  * @property string|null $operator_organisation_id
+ * @property list<string>|null $trusted_ips
+ * @property string|null $kiosk_token_hash
  * @property-read Municipality $municipality
  */
 final class Hub extends Model
@@ -39,14 +42,37 @@ final class Hub extends Model
 
     public const STATUSES = ['planned', 'live', 'paused'];
 
-    protected $fillable = ['code', 'name', 'slug', 'description', 'phone', 'email', 'municipality_id', 'place_id', 'address', 'latitude', 'longitude', 'opening_hours', 'status', 'package', 'operator_organisation_id'];
+    protected $fillable = ['code', 'name', 'slug', 'description', 'phone', 'email', 'municipality_id', 'place_id', 'address', 'latitude', 'longitude', 'opening_hours', 'status', 'package', 'operator_organisation_id', 'trusted_ips'];
+
+    protected $hidden = ['kiosk_token_hash'];
+
+    /** Cache key for every hub's trusted internet connections (used by the sign-in code limits). */
+    public const TRUSTED_IPS_CACHE = 'kasi:hubs:trusted-ips';
+
+    protected static function booted(): void
+    {
+        self::saved(static fn () => Cache::forget(self::TRUSTED_IPS_CACHE));
+        self::deleted(static fn () => Cache::forget(self::TRUSTED_IPS_CACHE));
+    }
+
+    /**
+     * Every trusted hub connection (IP or CIDR range), cached for an hour.
+     *
+     * @return list<string>
+     */
+    public static function allTrustedIps(): array
+    {
+        /** @var list<string> */
+        return Cache::remember(self::TRUSTED_IPS_CACHE, 3600, static fn (): array => self::query()
+            ->whereNotNull('trusted_ips')->pluck('trusted_ips')->flatten()->filter(static fn (mixed $ip): bool => is_string($ip))->unique()->values()->all());
+    }
 
     /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
-        return ['opening_hours' => 'array'];
+        return ['opening_hours' => 'array', 'trusted_ips' => 'array'];
     }
 
     /** @return BelongsTo<Municipality, $this> */

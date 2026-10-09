@@ -10,6 +10,7 @@ use Illuminate\Routing\Router;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Home\HomeRegistry;
+use Modules\Core\Home\HubActivity;
 use Modules\Core\Home\NextStep;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Platform\Models\Update;
@@ -21,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  */
 final class HomeController
 {
-    public function __invoke(Request $request, HomeRegistry $home, NavigationBuilder $navigation, Router $router): Response
+    public function __invoke(Request $request, HomeRegistry $home, NavigationBuilder $navigation, Router $router, HubActivity $activity): Response
     {
         $user = $request->user();
         abort_unless($user instanceof User, 401);
@@ -41,6 +42,8 @@ final class HomeController
                 'longitude' => $hub->longitude !== null ? (float) $hub->longitude : null,
             ],
             'steps' => array_map(static fn (NextStep $step): array => $step->toArray(), $steps),
+            // Events and classes the person signed up for (from KasiHub Ops and later portals).
+            'agenda' => array_slice($activity->personalItems($user), 0, 3),
             'services' => $this->ordered(array_values(array_map(fn (array $portal): array => [
                 'module' => $portal['module'],
                 'title' => $portal['title'],

@@ -9,9 +9,14 @@ Until a template is approved, the platform falls back to SMS for important messa
 | Template | Meta category | Notification | Category | Body (English) |
 |---|---|---|---|---|
 | `kasihub_account_status` | utility | account_status | security | KasiHub account notice: {{1}} |
+| `kasihub_assisted_registration` | utility | assisted_registration | security | KasiHub: {{1}} |
 | `kasihub_document_expiring` | utility | document_expiring | account | Reminder from KasiHub: your {{1}} expires on {{2}}. Upload a new one so your applications are not held up. |
 | `kasihub_document_rejected` | utility | document_rejected | account | We couldn't accept your {{1}} on KasiHub. Reason: {{2}}. Please upload a clear copy, or ask your hub facilitator for help. |
 | `kasihub_document_verified` | utility | document_verified | account | Good news: your {{1}} has been verified on KasiHub. You won't need to upload it again - every KasiHub service can use it. |
+| `kasihub_event_cancelled` | utility | event_cancelled | hub_news | Sorry - {{1}} on {{2}} has been cancelled. Reason: {{3}}. |
+| `kasihub_event_registered` | utility | event_registered | hub_news | KasiHub: {{1}} - {{2}} |
+| `kasihub_event_reminder` | utility | event_reminder | hub_news | Reminder: {{1}} is tomorrow, {{2}} at {{3}}. See you there! |
+| `kasihub_event_spot` | utility | event_spot | hub_news | Good news! A place opened up for {{1}} on {{2}}. You are now booked. Can no longer come? Cancel in the KasiHub app so someone else can go. |
 | `kasihub_organisation_rejected` | utility | organisation_rejected | account | We could not verify {{1}} on KasiHub. Reason: {{2}}. Please contact us to complete the check. |
 | `kasihub_organisation_verified` | utility | organisation_verified | account | {{1}} is now verified on KasiHub. You can start posting opportunities for young people. |
 | `kasihub_role_assigned` | utility | role_assigned | account | You now have the {{1}} role on KasiHub ({{2}}). Sign in to see your new tools. |

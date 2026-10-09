@@ -7,7 +7,6 @@ namespace Modules\Core\Http\Controllers\Auth;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,6 +14,7 @@ use Modules\Core\Events\UserRegistered;
 use Modules\Core\Http\Controllers\Auth\Concerns\InteractsWithAuthFlow;
 use Modules\Core\Identity\Models\ConsentDocument;
 use Modules\Core\Identity\Models\User;
+use Modules\Core\Identity\Services\AccountCreator;
 use Modules\Core\Identity\Services\AgePolicy;
 use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Identity\Services\Authenticator;
@@ -48,7 +48,7 @@ final class SignUpController
         ]);
     }
 
-    public function store(Request $request, ConsentService $consents, AuditLogger $audit, Authenticator $authenticator): RedirectResponse
+    public function store(Request $request, AccountCreator $creator, AuditLogger $audit, Authenticator $authenticator): RedirectResponse
     {
         if (! $this->canSignUp($request)) {
             return to_route('login');
@@ -80,36 +80,9 @@ final class SignUpController
             return to_route('signup.declined');
         }
 
-        $user = DB::transaction(function () use ($request, $validated, $band, $consents, $audit): User {
-            $user = User::query()->create([
-                'phone' => $this->flowPhone($request),
-                'phone_verified_at' => now(),
-                'first_name' => trim($validated['first_name']),
-                'last_name' => trim($validated['last_name']),
-                'preferred_name' => isset($validated['preferred_name']) ? trim($validated['preferred_name']) : null,
-                'date_of_birth' => $validated['date_of_birth'],
-                'preferred_locale' => app()->getLocale(),
-                'pin' => $validated['pin'],
-                'status' => $band === AgePolicy::MINOR ? User::STATUS_PENDING_GUARDIAN : User::STATUS_ACTIVE,
-                'age_band' => $band,
-            ]);
-
-            if (! empty($validated['home_hub_id'])) {
-                $hub = Hub::query()->with('municipality')->whereKey($validated['home_hub_id'])->firstOrFail();
-                $user->forceFill([
-                    'home_hub_id' => $hub->id,
-                    'municipality_id' => $hub->municipality_id,
-                    'province_id' => $hub->municipality->province_id,
-                ])->save();
-            }
-
-            /** @var array<string, bool> $optional */
-            $optional = $validated['consents'] ?? [];
-            $consents->record($user, ['platform' => true, ...array_map('boolval', $optional)]);
-            $audit->record('signup.completed', $user, meta: ['age_band' => $band]);
-
-            return $user;
-        });
+        /** @var array<string, bool> $optional */
+        $optional = array_map('boolval', $validated['consents'] ?? []);
+        $user = $creator->create((string) $this->flowPhone($request), $validated, $band, $optional);
 
         if ($band === AgePolicy::MINOR) {
             $this->updateFlow($request, ['stage' => 'guardian', 'user_id' => $user->id]);

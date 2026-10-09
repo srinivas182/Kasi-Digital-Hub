@@ -156,6 +156,11 @@ return [
         'cost_cents' => ['whatsapp' => 35, 'sms' => 30, 'email' => 0, 'in_app' => 0],
     ],
 
+    'hub_ops' => [
+        // POPIA: visits older than this keep only totals (kasi:hub-ops:anonymise-visits, monthly).
+        'visit_retention_months' => 24,
+    ],
+
     'demo' => [
         // Demo mode enables the demo banner, role switcher and demo reset command.
         // It must never be enabled in production.

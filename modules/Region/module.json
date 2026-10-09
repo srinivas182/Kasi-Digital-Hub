@@ -31,7 +31,11 @@
                 "HubOps": "view",
                 "Region": "manage",
                 "Funder": "view"
-            }
+            },
+            "permissions": [
+                "hubops.dashboard",
+                "hubops.compare"
+            ]
         },
         {
             "key": "provincial_coordinator",
@@ -47,7 +51,11 @@
                 "HubOps": "view",
                 "Region": "manage",
                 "Funder": "view"
-            }
+            },
+            "permissions": [
+                "hubops.dashboard",
+                "hubops.compare"
+            ]
         }
     ],
     "permissions": [],

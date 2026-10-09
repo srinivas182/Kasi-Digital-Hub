@@ -20,3 +20,8 @@ Every event is written to the platform event log and can be used by any portal t
 | `core.role.assigned` | Core | Core | A person was given a role in a scope (own account, organisation, hub, city, province, national). |
 | `core.role.revoked` | Core | - | A role was taken away from a person. |
 | `core.user.registered` | Core | Core | A person created an account (self-service or assisted at a hub). |
+| `hubops.assisted.registration` | KasiHub Ops | - | A facilitator registered a person at a hub (the person confirmed their phone and chose their own PIN). |
+| `hubops.event.attended` | KasiHub Ops | - | A person attended a hub event (event QR code or ticked by staff). |
+| `hubops.event.cancelled` | KasiHub Ops | - | A hub event was cancelled; everyone signed up was told why. |
+| `hubops.event.scheduled` | KasiHub Ops | - | A hub scheduled an event (job day, workshop, info session or class). |
+| `hubops.visit.recorded` | KasiHub Ops | - | Someone visited a hub (QR at the door, front desk, walk-in, event or assisted registration). |

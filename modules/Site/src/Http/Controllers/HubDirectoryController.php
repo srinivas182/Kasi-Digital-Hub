@@ -7,6 +7,8 @@ namespace Modules\Site\Http\Controllers;
 use App\Support\Seo\Seo;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Core\Home\HubActivity;
+use Modules\Core\Structure\Models\Hub;
 use Modules\Site\Support\PublicHubs;
 
 /**
@@ -22,13 +24,17 @@ final class HubDirectoryController
         ]);
     }
 
-    public function show(string $slug): Response
+    public function show(string $slug, HubActivity $activity): Response
     {
         $hub = PublicHubs::find($slug);
         abort_if($hub === null, 404);
 
+        $model = Hub::query()->where('slug', $slug)->first();
+
         return Inertia::render('Site/Hubs/Show', [
             'hub' => $hub,
+            // Upcoming public events from any portal that runs them (KasiHub Ops today).
+            'events' => $model === null ? [] : $activity->publicItems($model),
             'seo' => Seo::page(
                 (string) $hub['name'],
                 (string) ($hub['description'] ?? __('site.hubs.seo_description')),

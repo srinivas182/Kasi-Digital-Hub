@@ -33,7 +33,11 @@
                 "Partner": "view",
                 "Admin": "view",
                 "Commercial": "manage"
-            }
+            },
+            "permissions": [
+                "hubops.dashboard",
+                "hubops.compare"
+            ]
         },
         {
             "key": "finance_admin",
@@ -52,7 +56,11 @@
                 "Partner": "view",
                 "Admin": "view",
                 "Commercial": "manage"
-            }
+            },
+            "permissions": [
+                "hubops.dashboard",
+                "hubops.compare"
+            ]
         }
     ],
     "permissions": [],

@@ -32,12 +32,13 @@ interface HomeProps {
         available: boolean;
     }[];
     updates: { id: string; title: string; module: string; read: boolean; createdAt: string }[];
+    agenda?: { id: string; title: string; startsAt: string; href: string; hub: string; status: string }[];
 }
 
 /** Personal hub home: next steps, your hub, your services and latest updates. */
-export default function Home({ welcome, hub, steps, services, updates }: HomeProps) {
+export default function Home({ welcome, hub, steps, services, updates, agenda = [] }: HomeProps) {
     const { t } = useTranslation();
-    const { auth } = usePage().props;
+    const { auth, flash } = usePage().props;
     const done = steps.filter((step) => step.done).length;
 
     return (
@@ -49,6 +50,11 @@ export default function Home({ welcome, hub, steps, services, updates }: HomePro
             {welcome && (
                 <div className="mt-4">
                     <Alert tone="success" title={t('hub.home.welcome')} />
+                </div>
+            )}
+            {flash.status && (
+                <div className="mt-4">
+                    <Alert tone="success" title={flash.status} />
                 </div>
             )}
 
@@ -173,6 +179,36 @@ export default function Home({ welcome, hub, steps, services, updates }: HomePro
                     )}
                 </Card>
             </div>
+
+            {agenda.length > 0 && (
+                <section aria-labelledby="agenda" className="mt-8">
+                    <div className="flex items-center justify-between gap-3">
+                        <h2 id="agenda" className="text-fg text-lg font-bold">
+                            {t('home.agenda.title')}
+                        </h2>
+                        <Link href="/events" className="text-primary text-sm font-semibold hover:underline">
+                            {t('home.agenda.all')}
+                        </Link>
+                    </div>
+                    <ul className="mt-3 grid gap-3 md:grid-cols-3">
+                        {agenda.map((item) => (
+                            <li key={item.id}>
+                                <Link href={item.href} className="block h-full">
+                                    <Card className="hover:bg-surface-muted h-full">
+                                        <Badge tone={item.status === 'registered' ? 'success' : 'warning'}>
+                                            {t(`hubops.events.status.${item.status}`)}
+                                        </Badge>
+                                        <p className="text-fg mt-2 font-semibold">{item.title}</p>
+                                        <p className="text-fg-muted text-sm">
+                                            {formatDateTime(item.startsAt)} · {item.hub}
+                                        </p>
+                                    </Card>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
 
             <section aria-labelledby="services" className="mt-8">
                 <h2 id="services" className="text-fg text-lg font-bold">

@@ -5,13 +5,15 @@
     "description": "Hub setup, check-in, facilitator assisted mode, events, bookings, hub finance",
     "group": "operations",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.7.0",
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\HubOps\\Providers\\HubOpsServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": "hub_ops",
@@ -29,7 +31,10 @@
                 "Connect": "view",
                 "HubOps": "manage",
                 "Funder": "view"
-            }
+            },
+            "permissions": [
+                "hubops.*"
+            ]
         },
         {
             "key": "hub_manager",
@@ -44,7 +49,10 @@
                 "Connect": "assist",
                 "HubOps": "manage",
                 "Funder": "view"
-            }
+            },
+            "permissions": [
+                "hubops.*"
+            ]
         },
         {
             "key": "hub_facilitator",
@@ -58,19 +66,43 @@
                 "Start": "assist",
                 "Connect": "assist",
                 "HubOps": "use"
-            }
+            },
+            "permissions": [
+                "hubops.dashboard",
+                "hubops.checkin",
+                "hubops.members",
+                "hubops.assist",
+                "hubops.events"
+            ]
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "hubops.dashboard",
+        "hubops.compare",
+        "hubops.checkin",
+        "hubops.members",
+        "hubops.assist",
+        "hubops.events",
+        "hubops.events.cancel",
+        "hubops.settings"
+    ],
     "events": {
-        "publishes": [],
+        "publishes": [
+            "hubops.visit.recorded",
+            "hubops.event.scheduled",
+            "hubops.event.cancelled",
+            "hubops.event.attended",
+            "hubops.assisted.registration"
+        ],
         "consumes": []
     },
     "impact_metrics": [
         "hub_visits",
         "events_held"
     ],
-    "demo_seeders": [],
+    "demo_seeders": [
+        "Modules\\HubOps\\Database\\Seeders\\DemoHubOpsSeeder"
+    ],
     "nav": {
         "icon": "building",
         "href": "/hub-ops",
@@ -78,22 +110,38 @@
             {
                 "label": "nav.hubops.dashboard",
                 "href": "/hub-ops",
-                "icon": "bar-chart"
+                "icon": "bar-chart",
+                "permission": "hubops.dashboard"
             },
             {
                 "label": "nav.hubops.check_in",
                 "href": "/hub-ops/check-in",
-                "icon": "users"
+                "icon": "qr",
+                "permission": "hubops.checkin"
+            },
+            {
+                "label": "nav.hubops.members",
+                "href": "/hub-ops/members",
+                "icon": "users",
+                "permission": "hubops.members"
             },
             {
                 "label": "nav.hubops.events",
                 "href": "/hub-ops/events",
-                "icon": "grid"
+                "icon": "calendar",
+                "permission": "hubops.events"
             },
             {
-                "label": "nav.hubops.finance",
-                "href": "/hub-ops/finance",
-                "icon": "coins"
+                "label": "nav.hubops.compare",
+                "href": "/hub-ops/compare",
+                "icon": "clipboard",
+                "permission": "hubops.compare"
+            },
+            {
+                "label": "nav.hubops.settings",
+                "href": "/hub-ops/settings",
+                "icon": "settings",
+                "permission": "hubops.settings"
             }
         ]
     }

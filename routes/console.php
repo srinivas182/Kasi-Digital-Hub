@@ -23,3 +23,7 @@ Schedule::command('kasi:documents:remind-expiring')->dailyAt('08:00')->timezone(
 
 // Retention: expired one-time codes daily; audit logs after the retention period (config/kasi.php).
 Schedule::command('model:prune', ['--model' => [OtpChallenge::class, AuditLog::class]])->dailyAt('02:30')->onSuccess($heartbeat('prune'));
+
+// KasiHub Ops (S7): event reminders hourly; visit anonymisation monthly (POPIA retention).
+Schedule::command('kasi:hub-ops:remind-events')->hourly()->withoutOverlapping()->onSuccess($heartbeat('event-reminders'));
+Schedule::command('kasi:hub-ops:anonymise-visits')->monthlyOn(1, '03:00')->timezone('Africa/Johannesburg')->onSuccess($heartbeat('visit-retention'));

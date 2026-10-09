@@ -9,6 +9,7 @@ use App\Support\Navigation\NavigationBuilder;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Modules\Core\Access\AccessResolver;
+use Modules\Core\Assist\AssistedSession;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Platform\Models\Update;
 
@@ -55,6 +56,8 @@ final class HandleInertiaRequests extends Middleware
             'flash' => fn (): array => [
                 'status' => $request->hasSession() ? $request->session()->get('status') : null,
             ],
+            // A facilitator helping someone at the hub (see AssistedSession) - shown as a banner.
+            'assist' => fn (): ?array => $request->hasSession() ? app(AssistedSession::class)->summary($this->currentUser($request)) : null,
         ];
     }
 

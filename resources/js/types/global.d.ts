@@ -55,6 +55,7 @@ export interface SharedProps extends InertiaPageProps {
     navigation: { portals: NavPortal[] };
     auth: { user: AuthUser | null };
     flash: { status: string | null };
+    assist: { name: string; expiresAt: string } | null;
 }
 
 declare module '@inertiajs/core' {

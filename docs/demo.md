@@ -62,6 +62,16 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - hub operations (5 minutes)
+
+1. Open the door screen on a large display: `/kiosk/tsutsumani/demo-door`.
+2. On a phone, sign in as Lwazi (072 000 0002), scan the code, choose "Learning" - checked in.
+3. Sign in as Rhulani (072 000 0020, facilitator): Hub dashboard (six weeks of visits), Check-in desk (find Lwazi,
+   "Help this person"), Register someone new (code shown on screen in demo mode).
+4. Events: open "Retail and hospitality job day" - sign-ups, waiting list, the attendance QR code.
+5. Sign in as Thandi (072 000 0001): "Your upcoming events" on the hub home; book "Write a CV that gets interviews".
+6. Sign in as Tsakani (072 000 0021, hub manager): Hub settings - add the hub's internet address, appoint a facilitator.
+
 ## Demo script - admin console (5 minutes)
 
 1. Sign in as Lucky (072 000 0040) and open "All services" -> National admin console.

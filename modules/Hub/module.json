@@ -38,6 +38,11 @@
                 "icon": "bar-chart"
             },
             {
+                "label": "nav.hub.events",
+                "href": "/events",
+                "icon": "calendar"
+            },
+            {
                 "label": "nav.hub.my_hub",
                 "href": "/home/hub",
                 "icon": "building"

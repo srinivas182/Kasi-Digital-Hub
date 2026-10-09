@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Modules\Core\Identity\Contracts\SmsSender;
 use Modules\Core\Identity\Models\OtpChallenge;
+use Modules\Core\Structure\Models\Hub;
 use Symfony\Component\HttpFoundation\IpUtils;
 
 /**
@@ -128,7 +129,7 @@ final readonly class OtpService
     /** Hub connections (trusted IPs) are shared by many people and get a higher limit. */
     private function ipLimit(?string $ip): int
     {
-        $trusted = (array) config('kasi.identity.otp.trusted_ips');
+        $trusted = [...(array) config('kasi.identity.otp.trusted_ips'), ...Hub::allTrustedIps()];
 
         if ($ip !== null && $trusted !== [] && IpUtils::checkIp($ip, $trusted)) {
             return (int) config('kasi.identity.otp.per_trusted_ip_hour');
