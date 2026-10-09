@@ -21,7 +21,7 @@ final class InsightsController
         $formal = DB::table('work_experiences')->whereIn('kind', ['job', 'learnership'])->distinct()->pluck('user_id')->flip();
         $anyExp = DB::table('work_experiences')->distinct()->pluck('user_id')->flip();
         $matric = DB::table('work_education')->whereIn('kind', ['matric', 'certificate', 'diploma', 'degree'])->distinct()->pluck('user_id')->flip();
-        $strong = DB::table('work_matches')->where('score', '>=', 70)->where('gaps', '[]')->select('user_id', DB::raw('count(*) as c'))->groupBy('user_id')->pluck('c', 'user_id');
+        $strong = DB::table('work_matches')->where('score', '>=', 70)->where('has_gaps', false)->select('user_id', DB::raw('count(*) as c'))->groupBy('user_id')->pluck('c', 'user_id');
         $invited = DB::table('work_invitations')->distinct()->pluck('user_id')->flip();
 
         $group = static fn (string $id): string => isset($formal[$id]) ? 'formal' : (isset($anyExp[$id]) ? 'informal_only' : 'no_experience');

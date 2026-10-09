@@ -31,7 +31,7 @@ final class JobAlertsCommand extends Command
         }
 
         $rows = DB::table('work_matches')->join('work_listings', 'work_listings.id', '=', 'work_matches.listing_id')
-            ->where('work_matches.score', '>=', self::THRESHOLD)->whereNull('work_matches.alerted_at')->where('work_matches.gaps', '[]')
+            ->where('work_matches.score', '>=', self::THRESHOLD)->whereNull('work_matches.alerted_at')->where('work_matches.has_gaps', false)
             ->where('work_listings.status', 'live')
             ->get(['work_matches.user_id', 'work_matches.listing_id', 'work_listings.title', 'work_matches.score'])
             ->groupBy('user_id');

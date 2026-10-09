@@ -82,7 +82,7 @@ final readonly class MatchIndex
         DB::table('work_matches')->updateOrInsert(
             ['user_id' => $seeker->userId, 'listing_id' => $listing->listingId],
             [
-                'score' => $result->score, 'reasons' => json_encode($result->reasons), 'gaps' => json_encode($result->gaps),
+                'score' => $result->score, 'reasons' => json_encode($result->reasons), 'gaps' => json_encode($result->gaps), 'has_gaps' => $result->gaps !== [],
                 'distance_km' => $result->distanceKm, 'computed_at' => now(), 'alerted_at' => $existing?->alerted_at,
             ],
         );

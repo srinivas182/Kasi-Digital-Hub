@@ -40,7 +40,7 @@ final class CandidatesController extends WorkController
         $this->authorise($request, $listing);
         $hidden = $this->visibility->hiddenFrom($listing->organisation_id);
 
-        $rows = DB::table('work_matches')->where('listing_id', $listing->id)->where('gaps', '[]')
+        $rows = DB::table('work_matches')->where('listing_id', $listing->id)->where('has_gaps', false)
             ->whereNotIn('user_id', $hidden)->orderByDesc('score')->limit(200)->get(['user_id', 'score', 'reasons', 'distance_km']);
         $allowed = array_flip($this->visibility->consenting(array_values(array_map('strval', $rows->pluck('user_id')->all()))));
         $rows = $rows->filter(static fn (object $r): bool => isset($allowed[(string) $r->user_id]))->take(50);

@@ -20,3 +20,5 @@
 
 - Two front-end edits silently did not apply because the code had been reformatted (the employer dashboard's
   "Suggested candidates" link was missing) - caught by the browser test. Edits are now always checked.
+- CI (MySQL) found that comparing a JSON column with the text "[]" behaves differently on MySQL and SQLite, so
+  employers' candidate lists and alerts filtered wrongly there. Matches now carry a plain `has_gaps` flag.
