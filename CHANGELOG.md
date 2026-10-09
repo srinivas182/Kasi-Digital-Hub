@@ -2,6 +2,18 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.8.0] - 2026-10-09 - Sprint 8: AI, search and document generation
+
+### Added
+- Shared AI layer with provider drivers, versioned prompts, identifier removal, budgets, switches, audit and
+  fallbacks; moderation and translation services; admin AI controls and content review queue (ADR-016).
+- Platform search (hubs, events, help) with permission-aware results.
+- PDF documents with QR verification, revocation and share links; certificates of attendance for hub events.
+- "Help me write it" for hub event descriptions.
+
+### Fixed
+- Signed-in pages no longer scroll sideways on 360 px phones (theme switch moved into the account menu on phones).
+
 ## [0.7.0] - 2026-10-09 - Sprint 7: KasiHub Ops
 
 ### Added

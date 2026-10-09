@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Admin\Http\Controllers\AiController;
 use Modules\Admin\Http\Controllers\AuditController;
 use Modules\Admin\Http\Controllers\DashboardController;
 use Modules\Admin\Http\Controllers\EnquiriesController;
 use Modules\Admin\Http\Controllers\HubsController;
+use Modules\Admin\Http\Controllers\ModerationController;
 use Modules\Admin\Http\Controllers\OrganisationsController;
 use Modules\Admin\Http\Controllers\PeopleController;
 use Modules\Admin\Http\Controllers\VerificationController;
@@ -62,6 +64,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'account.ready', 'po
     Route::middleware('permission:admin.enquiries.handle')->group(function (): void {
         Route::get('/enquiries', [EnquiriesController::class, 'index'])->name('enquiries.index');
         Route::put('/enquiries/{enquiry}', [EnquiriesController::class, 'update'])->name('enquiries.update');
+    });
+
+    Route::get('/ai', [AiController::class, 'index'])->middleware('permission:admin.ai.view')->name('ai.index');
+    Route::put('/ai', [AiController::class, 'update'])->middleware('permission:admin.ai.manage')->name('ai.update');
+    Route::middleware('permission:admin.moderation.review')->group(function (): void {
+        Route::get('/moderation', [ModerationController::class, 'index'])->name('moderation.index');
+        Route::post('/moderation/{flag}', [ModerationController::class, 'decide'])->name('moderation.decide');
     });
 
     Route::get('/audit', [AuditController::class, 'index'])->middleware('permission:admin.audit.view')->name('audit.index');

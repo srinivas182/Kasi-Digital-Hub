@@ -6,6 +6,7 @@ import { Field, Input, Select, Textarea } from '@/components/ui/form';
 import { useTranslation } from '@/lib/i18n';
 
 import { type HubChoice, HubOpsPage } from '../../components/HubOpsPage';
+import { WriteHelper } from '../../components/WriteHelper';
 
 interface Props {
     hubs: HubChoice;
@@ -22,9 +23,10 @@ interface Props {
     } | null;
     types: string[];
     audiences: string[];
+    aiEnabled?: boolean;
 }
 
-export default function EventEdit({ hubs, event, types, audiences }: Props) {
+export default function EventEdit({ hubs, event, types, audiences, aiEnabled = false }: Props) {
     const { t } = useTranslation();
     const form = useForm({
         type: event?.type ?? 'workshop',
@@ -105,6 +107,15 @@ export default function EventEdit({ hubs, event, types, audiences }: Props) {
                             onChange={(e) => form.setData('capacity', e.target.value)}
                         />
                     </Field>
+                    {aiEnabled && (
+                        <div className="md:col-span-2">
+                            <WriteHelper
+                                type={form.data.type}
+                                title={form.data.title}
+                                onUse={(text) => form.setData('description', text)}
+                            />
+                        </div>
+                    )}
                     <Field
                         label={t('hubops.events.field.description')}
                         error={form.errors.description}

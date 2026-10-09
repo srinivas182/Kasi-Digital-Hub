@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Modules\HubOps\Services;
+namespace Modules\Core\Support;
 
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;

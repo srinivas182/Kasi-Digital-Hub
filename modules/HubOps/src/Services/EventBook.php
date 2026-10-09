@@ -6,6 +6,7 @@ namespace Modules\HubOps\Services;
 
 use DomainException;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Ai\Moderation\ModerationService;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Notifications\Notifier;
@@ -29,6 +30,7 @@ final readonly class EventBook
         private Notifier $notifier,
         private AuditLogger $audit,
         private CheckIns $checkIns,
+        private ModerationService $moderation,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -37,6 +39,7 @@ final readonly class EventBook
         $event = HubEvent::query()->create([...$data, 'hub_id' => $hub->id, 'status' => 'scheduled', 'created_by' => $by->id]);
         $this->audit->record('hub_event.scheduled', meta: ['event' => $event->id, 'hub' => $hub->id], actor: $by);
         event(new EventScheduled($event));
+        $this->moderate($event, $by);
 
         return $event;
     }
@@ -50,6 +53,9 @@ final readonly class EventBook
 
         $event->update($data);
         $this->audit->record('hub_event.updated', meta: ['event' => $event->id, 'changed' => array_keys($event->getChanges())], actor: $by);
+        if ($event->wasChanged(['title', 'description', 'audience'])) {
+            $this->moderate($event, $by);
+        }
         $this->promote($event); // more places may have opened
 
         return $event;
@@ -179,6 +185,17 @@ final readonly class EventBook
         }
 
         return $registration;
+    }
+
+    /**
+     * Event text shown to the public is checked; anything doubtful goes to the admin review queue
+     * (the event stays visible - staff are trusted, the check catches mistakes and misuse).
+     */
+    private function moderate(HubEvent $event, User $by): void
+    {
+        if ($event->audience === 'public') {
+            $this->moderation->check(trim($event->title."\n".$event->description), 'hub_event', $event->id, $by);
+        }
     }
 
     public function registeredCount(HubEvent $event): int

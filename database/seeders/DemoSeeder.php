@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Support\Modules\ModuleRegistry;
 use Illuminate\Database\Seeder;
+use Modules\Core\Search\SearchService;
 
 /**
  * Orchestrates demo data for the whole platform.
@@ -23,5 +24,8 @@ final class DemoSeeder extends Seeder
                 $this->call($seeder);
             }
         }
+
+        // Make the demo content findable straight away.
+        app(SearchService::class)->reindex();
     }
 }

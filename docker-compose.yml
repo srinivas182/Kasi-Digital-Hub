@@ -96,6 +96,11 @@ services:
     volumes:
       - meili-data:/meili_data
 
+  # PDF rendering for certificates, CVs and reports (S8). Never exposed publicly.
+  gotenberg:
+    image: gotenberg/gotenberg:8.20
+    command: ["gotenberg", "--chromium-disable-javascript=true", "--chromium-allow-list=file:///tmp/.*"]
+
   mailpit:
     image: axllent/mailpit:latest
     ports:

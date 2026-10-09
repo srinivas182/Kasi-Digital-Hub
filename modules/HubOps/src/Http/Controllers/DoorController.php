@@ -12,10 +12,10 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Structure\Models\Hub;
+use Modules\Core\Support\Qr;
 use Modules\HubOps\Models\HubVisit;
 use Modules\HubOps\Services\CheckInCodes;
 use Modules\HubOps\Services\CheckIns;
-use Modules\HubOps\Services\Qr;
 
 /**
  * The door screen (no sign-in; opened with a secret link) and checking in by scanning it.

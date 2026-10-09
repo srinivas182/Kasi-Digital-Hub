@@ -8,202 +8,254 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - 'docs/**'
-      - '**/*.md'
-      - '.github/ISSUE_TEMPLATE/**'
-  workflow_dispatch:
+    push:
+        branches: [main]
+        paths-ignore:
+            - 'docs/**'
+            - '**/*.md'
+            - '.github/ISSUE_TEMPLATE/**'
+    workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
 
 permissions:
-  contents: read
+    contents: read
 
 jobs:
-  changes:
-    name: Detect changes
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    outputs:
-      php: ${{ steps.filter.outputs.php }}
-      js: ${{ steps.filter.outputs.js }}
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-      - uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          filters: |
-            php:
-              - '**/*.php'
-              - 'composer.*'
-              - 'phpunit.xml'
-              - 'phpstan.neon'
-              - 'pint.json'
-              - 'modules/*/module.json'
-              - 'resources/views/**'
-              - 'VERSION'
-              - 'lang/**'
-              - 'tests/fixtures/**'
-              - '.github/workflows/**'
-            js:
-              - 'resources/js/**'
-              - 'resources/css/**'
-              - 'modules/*/resources/js/**'
-              - 'package*.json'
-              - 'vite.config.ts'
-              - 'vitest.config.ts'
-              - 'tsconfig.json'
-              - 'eslint.config.js'
-              - '.prettierrc'
-              - 'scripts/check-bundle-size.mjs'
-              - 'playwright.config.ts'
-              - 'tests/e2e/**'
-              - 'tests/fixtures/**'
-              - 'public/**'
-              - 'lang/**'
-              - '.github/workflows/**'
+    changes:
+        name: Detect changes
+        runs-on: ubuntu-latest
+        timeout-minutes: 2
+        outputs:
+            php: ${{ steps.filter.outputs.php }}
+            js: ${{ steps.filter.outputs.js }}
+            services: ${{ steps.filter.outputs.services }}
+        steps:
+            - uses: actions/checkout@v5
+              with:
+                  fetch-depth: 0
+            - uses: dorny/paths-filter@v3
+              id: filter
+              with:
+                  filters: |
+                      services:
+                        - 'modules/Core/src/Search/**'
+                        - 'modules/Core/src/Documents/Generation/**'
+                        - 'resources/views/pdf/**'
+                        - 'modules/*/resources/views/**'
+                        - 'tests/Integration/**'
+                      php:
+                        - '**/*.php'
+                        - 'composer.*'
+                        - 'phpunit.xml'
+                        - 'phpstan.neon'
+                        - 'pint.json'
+                        - 'modules/*/module.json'
+                        - 'resources/views/**'
+                        - 'VERSION'
+                        - 'lang/**'
+                        - 'tests/fixtures/**'
+                        - '.github/workflows/**'
+                      js:
+                        - 'resources/js/**'
+                        - 'resources/css/**'
+                        - 'modules/*/resources/js/**'
+                        - 'package*.json'
+                        - 'vite.config.ts'
+                        - 'vitest.config.ts'
+                        - 'tsconfig.json'
+                        - 'eslint.config.js'
+                        - '.prettierrc'
+                        - 'scripts/check-bundle-size.mjs'
+                        - 'playwright.config.ts'
+                        - 'tests/e2e/**'
+                        - 'tests/fixtures/**'
+                        - 'public/**'
+                        - 'lang/**'
+                        - '.github/workflows/**'
 
-  php-quality:
-    name: PHP quality (Pint, Larastan L8, audit)
-    needs: changes
-    if: needs.changes.outputs.php == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 8
-    steps:
-      - uses: actions/checkout@v5
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          extensions: mbstring, intl, bcmath, pdo_mysql, zip, gd, redis, pcntl
-          coverage: none
-      - name: Cache Composer
-        uses: actions/cache@v4
-        with:
-          path: ~/.composer/cache/files
-          key: composer-${{ hashFiles('composer.lock') }}
-      - run: composer install --no-interaction --no-progress --prefer-dist
-      - run: vendor/bin/pint --test
-      - name: Cache PHPStan
-        uses: actions/cache@v4
-        with:
-          path: storage/framework/cache/phpstan
-          key: phpstan-${{ github.sha }}
-          restore-keys: phpstan-
-      - run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress
-      - run: composer audit --no-interaction
+    php-quality:
+        name: PHP quality (Pint, Larastan L8, audit)
+        needs: changes
+        if: needs.changes.outputs.php == 'true' || github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+        timeout-minutes: 8
+        steps:
+            - uses: actions/checkout@v5
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  extensions: mbstring, intl, bcmath, pdo_mysql, zip, gd, redis, pcntl
+                  coverage: none
+            - name: Cache Composer
+              uses: actions/cache@v4
+              with:
+                  path: ~/.composer/cache/files
+                  key: composer-${{ hashFiles('composer.lock') }}
+            - run: composer install --no-interaction --no-progress --prefer-dist
+            - run: vendor/bin/pint --test
+            - name: Cache PHPStan
+              uses: actions/cache@v4
+              with:
+                  path: storage/framework/cache/phpstan
+                  key: phpstan-${{ github.sha }}
+                  restore-keys: phpstan-
+            - run: vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+            - run: composer audit --no-interaction
 
-  php-tests:
-    name: PHP tests (Pest on MySQL)
-    needs: changes
-    if: needs.changes.outputs.php == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    services:
-      mysql:
-        image: mysql:8.4
+    php-tests:
+        name: PHP tests (Pest on MySQL)
+        needs: changes
+        if: needs.changes.outputs.php == 'true' || github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        services:
+            mysql:
+                image: mysql:8.4
+                env:
+                    MYSQL_DATABASE: kasi_test
+                    MYSQL_ROOT_PASSWORD: root
+                ports: ['3306:3306']
+                options: >-
+                    --health-cmd="mysqladmin ping -proot" --health-interval=5s --health-timeout=5s --health-retries=20
         env:
-          MYSQL_DATABASE: kasi_test
-          MYSQL_ROOT_PASSWORD: root
-        ports: ['3306:3306']
-        options: >-
-          --health-cmd="mysqladmin ping -proot" --health-interval=5s --health-timeout=5s --health-retries=20
-    env:
-      DB_CONNECTION: mysql
-      DB_HOST: 127.0.0.1
-      DB_PORT: 3306
-      DB_DATABASE: kasi_test
-      DB_USERNAME: root
-      DB_PASSWORD: root
-    steps:
-      - uses: actions/checkout@v5
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          extensions: mbstring, intl, bcmath, pdo_mysql, zip, gd, redis, pcntl
-          coverage: none
-      - name: Cache Composer
-        uses: actions/cache@v4
-        with:
-          path: ~/.composer/cache/files
-          key: composer-${{ hashFiles('composer.lock') }}
-      - run: composer install --no-interaction --no-progress --prefer-dist
-      - run: cp .env.example .env && php artisan key:generate
-      - name: Pest (parallel)
-        run: vendor/bin/pest --parallel
+            DB_CONNECTION: mysql
+            DB_HOST: 127.0.0.1
+            DB_PORT: 3306
+            DB_DATABASE: kasi_test
+            DB_USERNAME: root
+            DB_PASSWORD: root
+        steps:
+            - uses: actions/checkout@v5
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  extensions: mbstring, intl, bcmath, pdo_mysql, zip, gd, redis, pcntl
+                  coverage: none
+            - name: Cache Composer
+              uses: actions/cache@v4
+              with:
+                  path: ~/.composer/cache/files
+                  key: composer-${{ hashFiles('composer.lock') }}
+            - run: composer install --no-interaction --no-progress --prefer-dist
+            - run: cp .env.example .env && php artisan key:generate
+            - name: Pest (parallel)
+              run: vendor/bin/pest --parallel
+              env:
+                  DB_CONNECTION: mysql
+                  DB_DATABASE: kasi_test
+
+    # Real Meilisearch and Gotenberg, only when search or PDF code changes (about a minute).
+    integration:
+        name: Integration (Meilisearch + Gotenberg)
+        needs: changes
+        if: needs.changes.outputs.services == 'true' || github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+        timeout-minutes: 6
+        services:
+            meilisearch:
+                image: getmeili/meilisearch:v1.16
+                env:
+                    MEILI_MASTER_KEY: ci-master-key
+                    MEILI_NO_ANALYTICS: 'true'
+                ports: ['7700:7700']
+            gotenberg:
+                image: gotenberg/gotenberg:8.20
+                ports: ['3000:3000']
         env:
-          DB_CONNECTION: mysql
-          DB_DATABASE: kasi_test
+            KASI_INTEGRATION: '1'
+            MEILISEARCH_HOST: http://127.0.0.1:7700
+            MEILISEARCH_KEY: ci-master-key
+            GOTENBERG_URL: http://127.0.0.1:3000
+        steps:
+            - uses: actions/checkout@v5
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  extensions: mbstring, intl, bcmath, pdo_sqlite, zip, gd
+                  coverage: none
+            - name: Cache Composer
+              uses: actions/cache@v4
+              with:
+                  path: ~/.composer/cache/files
+                  key: composer-${{ hashFiles('composer.lock') }}
+            - run: composer install --no-interaction --no-progress --prefer-dist
+            - run: cp .env.example .env && php artisan key:generate
+            - name: Wait for services
+              run: |
+                  for i in $(seq 1 30); do curl -sf http://127.0.0.1:7700/health && curl -sf http://127.0.0.1:3000/health && exit 0; sleep 2; done; exit 1
+            - name: Contract tests
+              run: vendor/bin/pest --testsuite=Integration
+              env:
+                  DB_CONNECTION: sqlite
+                  DB_DATABASE: ':memory:'
 
-  js:
-    name: Frontend (types, lint, tests, build, bundle budget)
-    needs: changes
-    if: needs.changes.outputs.js == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 8
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci --no-audit --no-fund
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npm run format:check
-      - run: npm test
-      - run: npm run build
-      - run: npm run size
-      - run: npm audit --omit=dev --audit-level=high
+    js:
+        name: Frontend (types, lint, tests, build, bundle budget)
+        needs: changes
+        if: needs.changes.outputs.js == 'true' || github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+        timeout-minutes: 8
+        steps:
+            - uses: actions/checkout@v5
+            - uses: actions/setup-node@v5
+              with:
+                  node-version: 22
+                  cache: npm
+            - run: npm ci --no-audit --no-fund
+            - run: npm run typecheck
+            - run: npm run lint
+            - run: npm run format:check
+            - run: npm test
+            - run: npm run build
+            - run: npm run size
+            - run: npm audit --omit=dev --audit-level=high
 
-  e2e:
-    name: Browser tests (Playwright + axe, phone and desktop)
-    needs: changes
-    if: needs.changes.outputs.php == 'true' || needs.changes.outputs.js == 'true' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v5
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.3'
-          extensions: mbstring, intl, bcmath, pdo_sqlite, zip, gd
-          coverage: none
-      - name: Cache Composer
-        uses: actions/cache@v4
-        with:
-          path: ~/.composer/cache/files
-          key: composer-${{ hashFiles('composer.lock') }}
-      - run: composer install --no-interaction --no-progress --prefer-dist
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci --no-audit --no-fund
-      - name: Cache Playwright browsers
-        id: pw-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ hashFiles('package-lock.json') }}
-      - name: Install Chromium
-        if: steps.pw-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-      - name: Install Chromium system dependencies
-        if: steps.pw-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
-      - run: cp .env.example .env && php artisan key:generate
-      - run: npm run build
-      - run: npx playwright test
-      - name: Upload failure traces
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-traces
-          path: test-results
-          retention-days: 7
+    e2e:
+        name: Browser tests (Playwright + axe, phone and desktop)
+        needs: changes
+        if: needs.changes.outputs.php == 'true' || needs.changes.outputs.js == 'true' || github.event_name == 'workflow_dispatch'
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v5
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  extensions: mbstring, intl, bcmath, pdo_sqlite, zip, gd
+                  coverage: none
+            - name: Cache Composer
+              uses: actions/cache@v4
+              with:
+                  path: ~/.composer/cache/files
+                  key: composer-${{ hashFiles('composer.lock') }}
+            - run: composer install --no-interaction --no-progress --prefer-dist
+            - uses: actions/setup-node@v5
+              with:
+                  node-version: 22
+                  cache: npm
+            - run: npm ci --no-audit --no-fund
+            - name: Cache Playwright browsers
+              id: pw-cache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: playwright-${{ hashFiles('package-lock.json') }}
+            - name: Install Chromium
+              if: steps.pw-cache.outputs.cache-hit != 'true'
+              run: npx playwright install --with-deps chromium
+            - name: Install Chromium system dependencies
+              if: steps.pw-cache.outputs.cache-hit == 'true'
+              run: npx playwright install-deps chromium
+            - run: cp .env.example .env && php artisan key:generate
+            - run: npm run build
+            - run: npx playwright test
+            - name: Upload failure traces
+              if: failure()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: playwright-traces
+                  path: test-results
+                  retention-days: 7

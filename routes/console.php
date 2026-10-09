@@ -27,3 +27,7 @@ Schedule::command('model:prune', ['--model' => [OtpChallenge::class, AuditLog::c
 // KasiHub Ops (S7): event reminders hourly; visit anonymisation monthly (POPIA retention).
 Schedule::command('kasi:hub-ops:remind-events')->hourly()->withoutOverlapping()->onSuccess($heartbeat('event-reminders'));
 Schedule::command('kasi:hub-ops:anonymise-visits')->monthlyOn(1, '03:00')->timezone('Africa/Johannesburg')->onSuccess($heartbeat('visit-retention'));
+
+// S8: clear AI inputs/outputs after the retention period; rebuild the search index nightly.
+Schedule::command('kasi:ai:purge')->dailyAt('02:45')->onSuccess($heartbeat('ai-purge'));
+Schedule::command('kasi:search:reindex')->dailyAt('03:30')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('search-reindex'));

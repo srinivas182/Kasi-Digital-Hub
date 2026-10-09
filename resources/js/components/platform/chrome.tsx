@@ -89,7 +89,7 @@ const NEXT_THEME: Record<ThemeChoice, ThemeChoice> = { system: 'light', light: '
  * Cycles light -> dark -> phone setting. A plain button (no menu library) keeps the
  * public pages light on low-end phones.
  */
-export function ThemeToggle({ inverse }: { inverse?: boolean }) {
+export function ThemeToggle({ inverse, className }: { inverse?: boolean; className?: string }) {
     const { t } = useTranslation();
     const { choice, setTheme } = useTheme();
     const Icon = choice === 'dark' ? Moon : choice === 'light' ? Sun : Laptop;
@@ -99,10 +99,27 @@ export function ThemeToggle({ inverse }: { inverse?: boolean }) {
     return (
         <IconButton
             label={`${t('common.theme')}: ${current}`}
-            className={inverse ? 'text-white hover:bg-white/10' : undefined}
+            className={[inverse ? 'text-white hover:bg-white/10' : '', className ?? ''].join(' ').trim() || undefined}
             onClick={() => setTheme(NEXT_THEME[choice])}
         >
             <Icon className="size-5" aria-hidden />
         </IconButton>
+    );
+}
+
+/** Theme choice inside the user menu - used on phones, where the header has no room for the button. */
+export function ThemeMenuItem({ className }: { className: string }) {
+    const { t } = useTranslation();
+    const { choice, setTheme } = useTheme();
+    const Icon = choice === 'dark' ? Moon : choice === 'light' ? Sun : Laptop;
+    const current = t(
+        choice === 'dark' ? 'common.theme_dark' : choice === 'light' ? 'common.theme_light' : 'common.theme_system',
+    );
+
+    return (
+        <button type="button" className={className} onClick={() => setTheme(NEXT_THEME[choice])}>
+            <Icon className="size-4" aria-hidden />
+            {`${t('common.theme')}: ${current}`}
+        </button>
     );
 }

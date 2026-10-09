@@ -12,7 +12,9 @@ interface ReasonDialogProps {
     description?: string;
     confirmLabel: string;
     action: string;
-    method?: 'post' | 'delete';
+    method?: 'post' | 'put' | 'delete';
+    /** Extra fields sent with the reason. */
+    extra?: Record<string, string | number | boolean | null>;
     danger?: boolean;
 }
 
@@ -25,6 +27,7 @@ export function ReasonDialog({
     action,
     method = 'post',
     danger,
+    extra,
 }: ReasonDialogProps) {
     const { t } = useTranslation();
     const form = useForm({ reason: '' });
@@ -39,7 +42,10 @@ export function ReasonDialog({
                     variant={danger ? 'danger' : 'primary'}
                     loading={form.processing}
                     disabled={form.data.reason.trim().length < 5}
-                    onClick={() => form.submit(method, action, { preserveScroll: true, onSuccess: () => form.reset() })}
+                    onClick={() => {
+                        form.transform((data) => ({ ...extra, ...data }));
+                        form.submit(method, action, { preserveScroll: true, onSuccess: () => form.reset() });
+                    }}
                 >
                     {confirmLabel}
                 </Button>

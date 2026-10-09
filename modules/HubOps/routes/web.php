@@ -33,6 +33,7 @@ Route::middleware(['auth', 'account.ready'])->group(function (): void {
     Route::post('/events/{event}/register', [VisitorEventsController::class, 'register'])->middleware('throttle:20,1')->name('events.register');
     Route::delete('/events/{event}/register', [VisitorEventsController::class, 'cancel'])->name('events.cancel');
     Route::get('/events/{event}/attend', [VisitorEventsController::class, 'attend'])->middleware('signed')->name('events.attend');
+    Route::get('/events/{event}/certificate', [VisitorEventsController::class, 'certificate'])->middleware('throttle:20,1')->name('events.certificate');
 });
 
 /*
@@ -66,6 +67,7 @@ Route::prefix('hub-ops')->name('hubops.')->middleware(['auth', 'account.ready', 
         Route::get('/events', [EventsController::class, 'index'])->name('events.index');
         Route::get('/events/create', [EventsController::class, 'create'])->name('events.create');
         Route::post('/events', [EventsController::class, 'store'])->name('events.store');
+        Route::post('/events/write', [EventsController::class, 'writeDescription'])->middleware('throttle:20,1')->name('events.write');
         Route::get('/events/{event}', [EventsController::class, 'show'])->name('events.show');
         Route::get('/events/{event}/edit', [EventsController::class, 'edit'])->name('events.edit');
         Route::put('/events/{event}', [EventsController::class, 'update'])->name('events.update');

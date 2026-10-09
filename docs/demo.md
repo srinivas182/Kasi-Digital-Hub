@@ -62,6 +62,14 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - AI, search and documents (4 minutes)
+
+1. As Thandi (072 000 0001): tap the search button, type "Gyani" (spelling mistake on purpose) - hubs and events.
+2. As Rhulani (072 000 0020): Hub Ops -> Events -> New event, "Help me write it" with rough notes (demo AI text).
+3. As a person who attended an event: open the event, "Download my certificate of attendance"; check its code at `/verify`.
+4. As Lucky (072 000 0040): Admin -> AI controls (usage, cost, switches) and Content review (create a public event
+   mentioning a "registration fee" to see it flagged).
+
 ## Demo script - hub operations (5 minutes)
 
 1. Open the door screen on a large display: `/kiosk/tsutsumani/demo-door`.

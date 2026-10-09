@@ -1,0 +1,14 @@
+{
+    "core.moderation": {
+        "version": 1,
+        "sha256": "a93d352c7a14ca10342f81df8183c27a42c1d9b77eebfcfd6e5aceb33ce24ebe"
+    },
+    "core.translate": {
+        "version": 1,
+        "sha256": "12d3e68396d24579d65eb02bae0d6eef060d0159870f4a856867981daa77997d"
+    },
+    "hubops.event_description": {
+        "version": 1,
+        "sha256": "e16615b10c236b8b77553ab0e197221e2b1523e8f1bd724fe2136f1d46707df4"
+    }
+}

@@ -35,7 +35,7 @@ export function PortalLayout({
                     )}
                     <div className="ml-auto flex items-center gap-1">
                         <PortalSwitcher />
-                        <ThemeToggle />
+                        <ThemeToggle className="hidden sm:inline-grid" />
                         <UpdatesBell />
                         <UserMenu fallbackName={userName} />
                     </div>

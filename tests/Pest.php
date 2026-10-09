@@ -10,4 +10,4 @@ use Tests\TestCase;
 | fresh database. Module tests live in modules/<Module>/tests and are picked up automatically.
 */
 
-pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature', '../modules');
+pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature', 'Integration', '../modules');

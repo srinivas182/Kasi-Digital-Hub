@@ -9,11 +9,14 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Core\Documents\Generation\DocumentIssuer;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Structure\Models\Hub;
 use Modules\HubOps\Models\EventRegistration;
 use Modules\HubOps\Models\HubEvent;
 use Modules\HubOps\Services\EventBook;
+use Modules\HubOps\Services\EventCertificates;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Events for everyone signed in: browse, sign up, cancel, and check in at the event.
@@ -94,6 +97,16 @@ final class VisitorEventsController
         }
 
         return to_route('events.show', $event)->with('status', __('hubops.events.you_attended'));
+    }
+
+    /** Download (issuing the first time) the certificate for an event the person attended. */
+    public function certificate(Request $request, HubEvent $event, EventCertificates $certificates, DocumentIssuer $issuer): StreamedResponse
+    {
+        $user = $this->user($request);
+        $attended = EventRegistration::query()->where('event_id', $event->id)->where('user_id', $user->id)->whereNotNull('attended_at')->exists();
+        abort_unless($attended, 404);
+
+        return $issuer->download($certificates->forAttendee($event, $user));
     }
 
     private function user(Request $request): User

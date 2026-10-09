@@ -14,6 +14,9 @@
         <testsuite name="Arch">
             <directory>tests/Arch</directory>
         </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
+        </testsuite>
         <testsuite name="Modules">
             <directory suffix="Test.php">modules</directory>
         </testsuite>
@@ -31,6 +34,8 @@
         <env name="APP_ENV" value="testing"/>
         <env name="KASI_DEMO_MODE" value="false"/>
         <env name="KASI_AI_DRIVER" value="fake"/>
+        <env name="KASI_SEARCH_DRIVER" value="database"/>
+        <env name="KASI_PDF_DRIVER" value="fake"/>
         <env name="KASI_SMS_DRIVER" value="log"/>
         <env name="KASI_WHATSAPP_DRIVER" value="log"/>
         <env name="KASI_PAYMENTS_DRIVER" value="fake"/>

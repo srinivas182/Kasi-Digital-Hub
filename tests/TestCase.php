@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Modules\Core\Ai\Drivers\FakeAiDriver;
+use Modules\Core\Documents\Generation\FakePdfRenderer;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -14,5 +16,9 @@ abstract class TestCase extends BaseTestCase
 
         // Feature tests assert on Inertia responses; built assets are not needed.
         $this->withoutVite();
+
+        // Fake AI and PDF drivers keep state between calls; start every test clean.
+        FakeAiDriver::reset();
+        FakePdfRenderer::$rendered = [];
     }
 }

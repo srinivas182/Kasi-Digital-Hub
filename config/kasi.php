@@ -42,7 +42,8 @@ return [
         'whatsapp' => env('KASI_WHATSAPP_DRIVER', 'log'),
         'whatsapp_fail_numbers' => [], // test hook: numbers the log driver treats as undeliverable
         'payments' => env('KASI_PAYMENTS_DRIVER', 'fake'),
-        'search' => env('KASI_SEARCH_DRIVER', 'meilisearch'),
+        'search' => env('KASI_SEARCH_DRIVER', 'database'),
+        'pdf' => env('KASI_PDF_DRIVER', 'fake'),
         'bot_check' => env('KASI_BOT_CHECK_DRIVER', 'fake'),
         'virus_scan' => env('KASI_VIRUS_SCAN_DRIVER', 'fake'),
         'clamav_socket' => env('KASI_CLAMAV_SOCKET', '/var/run/clamav/clamd.ctl'),
@@ -154,6 +155,41 @@ return [
         'max_messages_per_day' => (int) env('KASI_MAX_MESSAGES_PER_DAY', 6),
         'dedupe_hours' => 24,
         'cost_cents' => ['whatsapp' => 35, 'sms' => 30, 'email' => 0, 'in_app' => 0],
+    ],
+
+    /*
+    | AI layer (S8, ADR-016). Features ask for a tier, not a model, so models change here.
+    | Prices are estimates in South African cents per million tokens - update them from the
+    | provider's current price list. Budgets are placeholders until Ku Tirhisana sets them.
+    */
+    'ai' => [
+        'tiers' => [
+            'anthropic' => ['fast' => env('KASI_AI_ANTHROPIC_FAST', 'claude-haiku-5-5'), 'strong' => env('KASI_AI_ANTHROPIC_STRONG', 'claude-sonnet-5-5')],
+            'openai' => ['fast' => env('KASI_AI_OPENAI_FAST', 'gpt-4o-mini'), 'strong' => env('KASI_AI_OPENAI_STRONG', 'gpt-4o')],
+            'fake' => ['fast' => 'fake-fast', 'strong' => 'fake-strong'],
+        ],
+        'keys' => ['anthropic' => env('ANTHROPIC_API_KEY'), 'openai' => env('OPENAI_API_KEY')],
+        'timeout_seconds' => 25,
+        'price_cents_per_million' => [
+            'fast' => ['input' => (int) env('KASI_AI_FAST_INPUT_CENTS', 1800), 'output' => (int) env('KASI_AI_FAST_OUTPUT_CENTS', 9000)],
+            'strong' => ['input' => (int) env('KASI_AI_STRONG_INPUT_CENTS', 5400), 'output' => (int) env('KASI_AI_STRONG_OUTPUT_CENTS', 27000)],
+        ],
+        'budgets' => [
+            'per_person_day_calls' => (int) env('KASI_AI_PER_PERSON_DAY', 20),
+            'per_hub_month_cents' => (int) env('KASI_AI_PER_HUB_MONTH_CENTS', 50000),
+            'platform_month_cents' => (int) env('KASI_AI_MONTHLY_CAP_CENTS', 200000), // placeholder: R2 000 a month
+        ],
+        // Inputs and outputs are kept this long for quality review, then deleted (metadata stays).
+        'retention_days' => 30,
+    ],
+
+    'search' => [
+        'meilisearch' => ['url' => env('MEILISEARCH_HOST', 'http://meilisearch:7700'), 'key' => env('MEILISEARCH_KEY'), 'index' => env('KASI_SEARCH_INDEX', 'kasi_content')],
+    ],
+
+    'pdf' => [
+        'gotenberg_url' => env('GOTENBERG_URL', 'http://gotenberg:3000'),
+        'timeout_seconds' => 30,
     ],
 
     'hub_ops' => [

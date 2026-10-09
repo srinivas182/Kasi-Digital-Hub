@@ -41,7 +41,7 @@ it('only shows console menu items the person may open', function (): void {
     Console::as($this, 'support_agent');
 
     $this->get('/admin')->assertInertia(fn ($page) => $page->where('navigation.portals', fn ($portals) => collect($portals)->firstWhere('module', 'Admin')['items'] !== null
-        && collect(collect($portals)->firstWhere('module', 'Admin')['items'])->pluck('href')->all() === ['/admin', '/admin/people', '/admin/hubs', '/admin/organisations', '/admin/verification', '/admin/enquiries']));
+        && collect(collect($portals)->firstWhere('module', 'Admin')['items'])->pluck('href')->all() === ['/admin', '/admin/people', '/admin/hubs', '/admin/organisations', '/admin/verification', '/admin/enquiries', '/admin/moderation']));
 });
 
 it('shows the overview numbers', function (): void {

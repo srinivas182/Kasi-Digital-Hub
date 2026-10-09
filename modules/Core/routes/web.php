@@ -13,6 +13,8 @@ use Modules\Core\Http\Controllers\Auth\NewPinController;
 use Modules\Core\Http\Controllers\Auth\SignInController;
 use Modules\Core\Http\Controllers\Auth\SignUpController;
 use Modules\Core\Http\Controllers\Auth\TwoFactorController;
+use Modules\Core\Http\Controllers\Platform\GeneratedDocumentController;
+use Modules\Core\Http\Controllers\Platform\SearchController;
 use Modules\Core\Http\Controllers\Platform\UpdatesController;
 use Modules\Core\Http\Controllers\UiKitController;
 
@@ -89,6 +91,15 @@ if ($uiKitEnabled) {
     Route::get('/ui-kit', [UiKitController::class, 'index'])->name('ui-kit');
     Route::get('/ui-kit/layouts/{layout}', [UiKitController::class, 'layout'])->name('ui-kit.layout');
 }
+
+// S8: search, document verification and share links.
+Route::get('/search', SearchController::class)->middleware(['auth', 'account.ready', 'throttle:60,1'])->name('search');
+Route::middleware('throttle:30,1')->group(function (): void {
+    Route::get('/verify', [GeneratedDocumentController::class, 'verifyForm'])->name('verify');
+    Route::get('/verify/{code}', [GeneratedDocumentController::class, 'verify'])->where('code', '[A-Za-z0-9]{6,16}')->name('verify.show');
+    Route::get('/share/{token}', [GeneratedDocumentController::class, 'shared'])->name('share.show');
+});
+Route::get('/my-documents/{document}/download', [GeneratedDocumentController::class, 'download'])->middleware(['auth', 'throttle:60,1'])->name('generated.download');
 
 // Offline fallback served by the service worker when there is no connection.
 Route::view('/offline', 'offline')->name('offline');

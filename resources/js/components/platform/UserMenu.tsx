@@ -1,6 +1,7 @@
 import { Link, router, usePage } from '@inertiajs/react';
 import { LogOut, UserRound } from 'lucide-react';
 
+import { ThemeMenuItem } from '@/components/platform/chrome';
 import { Avatar } from '@/components/ui/display';
 import { Disclosure } from '@/components/ui/Disclosure';
 import { useTranslation } from '@/lib/i18n';
@@ -29,6 +30,7 @@ export function UserMenu({ fallbackName = 'Guest' }: { fallbackName?: string }) 
                         <UserRound className="size-4" aria-hidden />
                         {t('account.title')}
                     </Link>
+                    <ThemeMenuItem className={`${item} sm:hidden`} />
                     <button type="button" className={item} onClick={() => router.post('/logout')}>
                         <LogOut className="size-4" aria-hidden />
                         {t('account.sign_out')}

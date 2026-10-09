@@ -14,3 +14,11 @@ The public website ships with professional first-draft copy (in `lang/en.json`, 
 | Brand decision: "KasiHub" vs "Kasi Digital Hub" in the interface | Everywhere | Working name: KasiHub |
 | Professional isiZulu and Xitsonga translations (and other languages) | All screens | Draft samples only |
 | Age policy confirmation (18+ full; 16-17 learning with guardian consent) | Sign-up | Built as recommended |
+
+## AI (Sprint 8)
+
+- **Privacy notice section on AI:** which provider, that it is outside South Africa, what is sent (only what the
+  person typed, never ID numbers or contact details), that results are kept 30 days for quality review. To be
+  confirmed by the Information Officer, including whether a separate consent switch is wanted.
+- **Monthly AI budget for the pilot** (currently a placeholder of R2 000 a month platform-wide, R500 per hub).
+- **Native-speaker review** of AI translations (Xitsonga, isiZulu, Sepedi, Tshivenda) before translation is offered to users.

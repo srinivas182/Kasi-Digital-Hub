@@ -9,7 +9,9 @@
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Site\\Providers\\SiteServiceProvider"
+    ],
     "routes": {
         "web": true,
         "api": false

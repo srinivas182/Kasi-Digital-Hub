@@ -15,7 +15,7 @@ export default function Help({ questions }: { questions: string[] }) {
             <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
                 <div className="flex flex-col gap-3">
                     {questions.map((q) => (
-                        <details key={q} className="rounded-card border-line bg-surface group border p-4">
+                        <details key={q} id={`q-${q}`} className="rounded-card border-line bg-surface group border p-4">
                             <summary className="text-fg cursor-pointer font-semibold">{t(`site.help.q.${q}`)}</summary>
                             <p className="text-fg-muted mt-3">{t(`site.help.a.${q}`)}</p>
                         </details>

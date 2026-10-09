@@ -1,7 +1,9 @@
 import { Head, router, usePage } from '@inertiajs/react';
 
 import { Alert } from '@/components/ui/Alert';
-import { Button } from '@/components/ui/Button';
+import { Download } from 'lucide-react';
+
+import { Button, buttonVariants } from '@/components/ui/Button';
 import { Badge, Card } from '@/components/ui/display';
 import { AppLayout } from '@/layouts/AppLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -60,7 +62,17 @@ export default function EventPage({ event, myStatus, attended }: Props) {
                     </p>
                     {cancelled && event.cancelReason && <p className="text-danger-text mt-3">{event.cancelReason}</p>}
                     {event.description && <p className="text-fg mt-4 whitespace-pre-line">{event.description}</p>}
-                    {attended && <p className="text-success-text mt-4 font-semibold">{t('hubops.visitor.attended')}</p>}
+                    {attended && (
+                        <div className="mt-4">
+                            <p className="text-success-text font-semibold">{t('hubops.visitor.attended')}</p>
+                            <a
+                                href={`/events/${event.id}/certificate`}
+                                className={buttonVariants({ variant: 'secondary', className: 'mt-3' })}
+                            >
+                                <Download className="size-4" aria-hidden /> {t('hubops.visitor.certificate')}
+                            </a>
+                        </div>
+                    )}
                     {!event.allowed && <p className="text-fg-muted mt-4">{t('hubops.events.adults_only')}</p>}
 
                     {open && !attended && (

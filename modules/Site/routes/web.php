@@ -26,7 +26,7 @@ Route::middleware(CountPageView::class)->group(function (): void {
 
 Route::post('/enquiries/{kind}', [EnquiryController::class, 'store'])
     ->whereIn('kind', ['contact', 'employer', 'funder'])
-    ->middleware('throttle:5,10')
+    ->middleware('throttle:site-enquiries')
     ->name('site.enquiries.store');
 
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('site.sitemap');

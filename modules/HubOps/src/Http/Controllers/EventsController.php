@@ -7,17 +7,20 @@ namespace Modules\HubOps\Http\Controllers;
 use App\Support\Format\SaFormat;
 use Carbon\CarbonImmutable;
 use DomainException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Core\Ai\AiBudget;
+use Modules\Core\Ai\AiService;
 use Modules\Core\Identity\Models\User;
+use Modules\Core\Support\Qr;
 use Modules\HubOps\Models\EventRegistration;
 use Modules\HubOps\Models\HubEvent;
 use Modules\HubOps\Services\EventBook;
-use Modules\HubOps\Services\Qr;
 
 /**
  * Hub staff: schedule events, manage sign-ups and waiting lists, take attendance.
@@ -157,6 +160,25 @@ final class EventsController extends StaffController
         return back()->with('status', __('hubops.events.attended'));
     }
 
+    /** "Help me write it": turns rough notes into a description staff can edit. */
+    public function writeDescription(Request $request, AiService $ai): JsonResponse
+    {
+        $hub = $this->hub($request);
+        $validated = $request->validate([
+            'type' => ['required', Rule::in(HubEvent::TYPES)],
+            'title' => ['required', 'string', 'max:140'],
+            'notes' => ['required', 'string', 'min:10', 'max:1500'],
+        ]);
+
+        $result = $ai->run('hubops.event_description', [
+            'type' => __('hubops.events.type.'.$validated['type'], [], 'en'), 'title' => $validated['title'], 'notes' => $validated['notes'],
+        ], by: $this->actor($request), hubId: $hub->id);
+
+        return response()->json($result->ok
+            ? ['ok' => true, 'description' => trim((string) $result->data['description'])]
+            : ['ok' => false, 'message' => __('ai.fallback.'.($result->reason ?? 'unavailable'))]);
+    }
+
     private function form(Request $request, ?HubEvent $event): Response
     {
         $hub = $this->hub($request);
@@ -171,6 +193,7 @@ final class EventsController extends StaffController
             ],
             'types' => HubEvent::TYPES,
             'audiences' => HubEvent::AUDIENCES,
+            'aiEnabled' => app(AiBudget::class)->enabled('hubops.event_description'),
         ]);
     }
 

@@ -203,7 +203,7 @@ return [
         // (virus scanning), cross-portal event listeners, and everything else.
         'supervisor-1' => [
             'connection' => 'redis',
-            'queue' => ['security', 'notifications', 'documents', 'events', 'default'],
+            'queue' => ['security', 'notifications', 'documents', 'events', 'search', 'ai', 'pdf', 'default'],
             'balance' => 'auto',
             'autoScalingStrategy' => 'time',
             'maxProcesses' => 1,
