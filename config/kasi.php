@@ -183,6 +183,19 @@ return [
         'retention_days' => 30,
     ],
 
+    /*
+    | Voice notes (S9). Each language is switched on only after testing with real recordings
+    | from the hubs. Audio is never stored.
+    */
+    'speech' => [
+        'driver' => env('KASI_SPEECH_DRIVER', 'fake'),
+        'languages' => array_values(array_filter(explode(',', (string) env('KASI_SPEECH_LANGUAGES', 'en')))),
+        'max_seconds' => 120,
+        'per_person_day' => (int) env('KASI_SPEECH_PER_PERSON_DAY', 10),
+        'cost_cents_per_minute' => (int) env('KASI_SPEECH_CENTS_PER_MINUTE', 12), // estimate - update from the price list
+        'openai_model' => env('KASI_SPEECH_OPENAI_MODEL', 'whisper-1'),
+    ],
+
     'search' => [
         'meilisearch' => ['url' => env('MEILISEARCH_HOST', 'http://meilisearch:7700'), 'key' => env('MEILISEARCH_KEY'), 'index' => env('KASI_SEARCH_INDEX', 'kasi_content')],
     ],

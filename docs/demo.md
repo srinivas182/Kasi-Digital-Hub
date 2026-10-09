@@ -62,6 +62,14 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - job profile and CV (4 minutes)
+
+1. Sign in as Lwazi (072 000 0002): hub home shows "Complete your job profile".
+2. Work and experience: his piece-work description -> "Help me write CV points" -> "Use this".
+3. Skills: tap a few ideas. My CV: preview (note what is never on a CV), choose "Simple", Create my CV.
+4. Download the PDF, "Get a share link", "Send on WhatsApp". Check the CV code at /verify.
+5. Sign in as Thandi (072 000 0001): a finished profile with a CV whose matric shows "Verified".
+
 ## Demo script - AI, search and documents (4 minutes)
 
 1. As Thandi (072 000 0001): tap the search button, type "Gyani" (spelling mistake on purpose) - hubs and events.

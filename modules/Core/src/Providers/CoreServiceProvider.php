@@ -20,6 +20,9 @@ use Modules\Core\Ai\Drivers\AnthropicDriver;
 use Modules\Core\Ai\Drivers\FakeAiDriver;
 use Modules\Core\Ai\Drivers\OpenAiDriver;
 use Modules\Core\Ai\PromptRegistry;
+use Modules\Core\Ai\Speech\FakeSpeechToText;
+use Modules\Core\Ai\Speech\OpenAiSpeechToText;
+use Modules\Core\Ai\Speech\SpeechToText;
 use Modules\Core\Console\AiLockCommand;
 use Modules\Core\Console\AiPurgeCommand;
 use Modules\Core\Console\GeographyImportCommand;
@@ -70,6 +73,11 @@ final class CoreServiceProvider extends ServiceProvider
             'anthropic' => new AnthropicDriver,
             'openai' => new OpenAiDriver,
             default => throw new InvalidArgumentException('Unknown AI driver ['.config('kasi.drivers.ai').'].'),
+        });
+        $this->app->singleton(SpeechToText::class, fn (): SpeechToText => match (config('kasi.speech.driver')) {
+            'fake' => new FakeSpeechToText,
+            'openai' => new OpenAiSpeechToText,
+            default => throw new InvalidArgumentException('Unknown speech driver ['.config('kasi.speech.driver').'].'),
         });
         $this->app->singleton(SearchEngine::class, fn (): SearchEngine => match (config('kasi.drivers.search')) {
             'database' => new DatabaseSearchEngine,

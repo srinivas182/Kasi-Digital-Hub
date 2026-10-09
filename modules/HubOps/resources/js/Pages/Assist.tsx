@@ -1,4 +1,4 @@
-import { router, useForm } from '@inertiajs/react';
+import { Link, router, useForm } from '@inertiajs/react';
 
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
@@ -39,6 +39,11 @@ export default function Assist({ person, documents, documentTypes }: Props) {
                 </Button>
             }
         >
+            <p className="mb-4">
+                <Link href="/work/profile" className="text-primary font-semibold hover:underline">
+                    {t('hubops.assist.work')}
+                </Link>
+            </p>
             <div className="grid gap-6 lg:grid-cols-2">
                 <Card>
                     <CardTitle>{t('hubops.assist.profile')}</CardTitle>

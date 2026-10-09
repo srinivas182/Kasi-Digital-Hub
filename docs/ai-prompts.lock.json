@@ -10,5 +10,13 @@
     "hubops.event_description": {
         "version": 1,
         "sha256": "e16615b10c236b8b77553ab0e197221e2b1523e8f1bd724fe2136f1d46707df4"
+    },
+    "work.cv_experience": {
+        "version": 1,
+        "sha256": "54f8e4a391f58c25e3a26af00751294cb3edf39e40e52b73182519ba2e8abe02"
+    },
+    "work.cv_summary": {
+        "version": 1,
+        "sha256": "7c0a624a0af20e8196a1142379d4f3608cda57f043a0397dbc71603abab8cd8a"
     }
 }

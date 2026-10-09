@@ -38,7 +38,7 @@ it('shows a new job seeker their next steps', function (): void {
     $user = Structure::personWith('job_seeker');
 
     homeFor($this, $user)
-        ->where('steps', fn ($steps) => collect($steps)->pluck('key')->all() === ['home_hub', 'location', 'id_document', 'matric', 'whatsapp']
+        ->where('steps', fn ($steps) => collect($steps)->pluck('key')->all() === ['home_hub', 'location', 'id_document', 'matric', 'work_profile', 'work_cv', 'whatsapp']
             && collect($steps)->every(fn ($step) => $step['done'] === false))
         ->where('hub', null);
 });
@@ -50,7 +50,7 @@ it('ticks off steps as they are done and puts open steps first', function (): vo
 
     homeFor($this, $user)
         ->where('steps', fn ($steps) => collect($steps)->pluck('done', 'key')->all() === [
-            'location' => false, 'matric' => false, 'home_hub' => true, 'id_document' => true, 'whatsapp' => true,
+            'location' => false, 'matric' => false, 'work_profile' => false, 'work_cv' => false, 'home_hub' => true, 'id_document' => true, 'whatsapp' => true,
         ])
         ->where('hub.name', 'Tsutsumani Digital Hub')
         ->where('hub.slug', 'tsutsumani');
@@ -64,7 +64,7 @@ it('only asks for a matric certificate from job seekers and learners', function 
 it('shows only the services the person can open, marking portals not built yet as coming soon', function (): void {
     homeFor($this, Structure::personWith('job_seeker'))
         ->where('services', fn ($services) => collect($services)->pluck('module')->all() === ['Work', 'Learn']
-            && collect($services)->every(fn ($s) => $s['available'] === false));
+            && collect($services)->pluck('available', 'module')->all() === ['Work' => true, 'Learn' => false]);
 });
 
 it('shows the latest updates', function (): void {

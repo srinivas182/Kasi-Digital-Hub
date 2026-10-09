@@ -22,3 +22,17 @@ The public website ships with professional first-draft copy (in `lang/en.json`, 
   confirmed by the Information Officer, including whether a separate consent switch is wanted.
 - **Monthly AI budget for the pilot** (currently a placeholder of R2 000 a month platform-wide, R500 per hub).
 - **Native-speaker review** of AI translations (Xitsonga, isiZulu, Sepedi, Tshivenda) before translation is offered to users.
+
+## Voice notes (Sprint 9) - test recordings
+
+Before voice notes are switched on for a language other than English, we test the speech services with real
+recordings. Please collect, at Tsutsumani and Giyani:
+
+- **About 20 recordings per language** (isiZulu, Xitsonga, Sepedi, and English spoken by local youth), each
+  30 to 90 seconds, of young people describing work they have done (e.g. "I help at my aunt's shop...").
+- Recorded on ordinary phones in a normal hub room (some background noise is fine - that is reality).
+- Written consent from each speaker that the recording is used only for this test and deleted afterwards.
+- A typed transcript of each recording by a fluent speaker, so we can measure accuracy.
+
+We will compare OpenAI, Google Cloud Speech-to-Text and Lelapa AI (Vulavula) and report accuracy and cost per
+language before switching any language on.

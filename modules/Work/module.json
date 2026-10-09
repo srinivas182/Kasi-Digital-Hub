@@ -5,13 +5,15 @@
     "description": "Jobs and AI matching: AI CVs, 0-10 matching, employers, hiring pipeline",
     "group": "service",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.9.0",
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Work\\Providers\\WorkServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": "work",
@@ -52,7 +54,10 @@
     ],
     "permissions": [],
     "events": {
-        "publishes": [],
+        "publishes": [
+            "work.profile.completed",
+            "work.cv.created"
+        ],
         "consumes": []
     },
     "impact_metrics": [
@@ -60,25 +65,22 @@
         "applications",
         "hires"
     ],
-    "demo_seeders": [],
+    "demo_seeders": [
+        "Modules\\Work\\Database\\Seeders\\DemoWorkSeeder"
+    ],
     "nav": {
         "icon": "briefcase",
-        "href": "/work",
+        "href": "/work/profile",
         "items": [
             {
-                "label": "nav.work.matches",
-                "href": "/work",
-                "icon": "briefcase"
+                "label": "nav.work.profile",
+                "href": "/work/profile",
+                "icon": "users"
             },
             {
                 "label": "nav.work.cv",
                 "href": "/work/cv",
                 "icon": "book-open"
-            },
-            {
-                "label": "nav.work.applications",
-                "href": "/work/applications",
-                "icon": "bar-chart"
             }
         ]
     }

@@ -25,3 +25,5 @@ Every event is written to the platform event log and can be used by any portal t
 | `hubops.event.cancelled` | KasiHub Ops | - | A hub event was cancelled; everyone signed up was told why. |
 | `hubops.event.scheduled` | KasiHub Ops | - | A hub scheduled an event (job day, workshop, info session or class). |
 | `hubops.visit.recorded` | KasiHub Ops | - | Someone visited a hub (QR at the door, front desk, walk-in, event or assisted registration). |
+| `work.cv.created` | KasiWork | - | A job seeker created a CV (PDF). |
+| `work.profile.completed` | KasiWork | - | A job seeker completed the essential parts of their job profile. |
