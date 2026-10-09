@@ -21,3 +21,5 @@
 - On phones the pipeline opened on "New" even when all applicants were further along, so it looked empty.
   It now opens on the first stage that has applicants.
 - The reminder test depended on the time of day it ran; it now uses a fixed time.
+- CI (MySQL) failed one test: MySQL re-orders the keys inside stored JSON objects, so an exact-order comparison of
+  screening answers failed there. The test now compares contents, not key order (the app reads keys by name).

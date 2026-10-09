@@ -50,7 +50,7 @@ it('applies with a CV made on the spot, screening answers and a sharing confirma
     $application = applyAs($this, $this->person, $this->listing);
 
     expect($application->stage)->toBe('new')->and($application->cv_id)->not->toBeNull()
-        ->and($application->answers)->toBe([['question' => 'Can you work weekends?', 'answer' => 'Yes']])
+        ->and($application->answers)->toEqual([['question' => 'Can you work weekends?', 'answer' => 'Yes']]) // MySQL re-orders JSON keys
         ->and(PlatformEventRecord::query()->where('name', 'work.application.submitted')->exists())->toBeTrue()
         ->and(Update::query()->where('user_id', $this->owner->id)->where('title', 'New application: Cashier')->exists())->toBeTrue();
 
