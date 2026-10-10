@@ -33,6 +33,19 @@
     @endforeach
 @endif
 
+@if (($cv['certificates'] ?? []) !== [])
+    <h2>Certificates</h2>
+    @foreach ($cv['certificates'] as $item)
+        <div class="item">
+            <div class="item-head">
+                <span class="item-title">{{ $item['title'] }}<span class="verified">&#10003; Verified</span></span>
+                <span class="muted">{{ $item['date'] }}</span>
+            </div>
+            <div class="muted">{{ $item['issuer'] }}@if ($item['code']) · check code {{ $item['code'] }} @endif</div>
+        </div>
+    @endforeach
+@endif
+
 @if ($cv['skills'] !== [])
     <h2>Skills</h2>
     <div class="tags">@foreach ($cv['skills'] as $skill)<span>{{ $skill }}</span>@endforeach</div>

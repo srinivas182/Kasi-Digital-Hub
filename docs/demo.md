@@ -62,6 +62,15 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - certificates and cohorts (5 minutes)
+
+1. As Lwazi (072 000 0002): open /learn/join/KASI24 (or scan the QR) - join "Tsutsumani, October (demo)".
+2. As Herman (072 000 0012): Cohorts -> the cohort: members, progress, the session next week (a hub event); select
+   a learner and send a nudge. Provider page: set who signs certificates.
+3. Complete a course (see the learning script) -> My certificates: download, share, "Show on my KasiWork CV";
+   check the code at /verify. My CV now has a "Certificates" section.
+4. As Herman: Moderation - the first assessments of a new assessor are in the sample; agree or send back.
+
 ## Demo script - learning (5 minutes)
 
 1. As Thandi (072 000 0001), on a phone: Courses -> "Customer service essentials" -> Enrol. Open "First impressions",

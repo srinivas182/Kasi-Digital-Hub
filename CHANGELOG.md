@@ -2,6 +2,16 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.15.0] - 2026-10-10 - Sprint 15: KasiLearn certificates, cohorts and moderation
+
+### Added
+- Verifiable certificates and statements of results (on the KasiWork CV), learning record PDF, revocation.
+- Cohorts with hub approval, join codes, waiting lists, hub sessions with attendance, dashboard and nudges.
+- Moderation sampling, re-assessment, certificate withdrawal and re-issue, CSV report (ADR-023).
+
+### Changed
+- Public first load reduced to about 122.9 KB (tailwind-merge replaced); CI warns above 125 KB.
+
 ## [0.14.0] - 2026-10-10 - Sprint 14: KasiLearn learning and assessments
 
 ### Added

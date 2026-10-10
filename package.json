@@ -58,8 +58,7 @@
         "clsx": "^2.1.1",
         "lucide-react": "^1.52.0",
         "react": "^19.3.0",
-        "react-dom": "^19.3.0",
-        "tailwind-merge": "^3.7.0"
+        "react-dom": "^19.3.0"
     },
     "name": "kasi-digital-hub"
 }

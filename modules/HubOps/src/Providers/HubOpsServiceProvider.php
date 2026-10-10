@@ -6,6 +6,7 @@ namespace Modules\HubOps\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Home\HubActivity;
+use Modules\Core\Hubs\HubSessions;
 use Modules\Core\Search\RefreshSearchDocument;
 use Modules\Core\Search\SearchRegistry;
 use Modules\HubOps\Console\AnonymiseVisitsCommand;
@@ -13,11 +14,13 @@ use Modules\HubOps\Console\RemindEventsCommand;
 use Modules\HubOps\Models\HubEvent;
 use Modules\HubOps\Search\EventSearchSource;
 use Modules\HubOps\Services\EventActivity;
+use Modules\HubOps\Services\EventSessions;
 
 final class HubOpsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(HubSessions::class, EventSessions::class);
         $this->app->tag([EventActivity::class], HubActivity::TAG);
         $this->app->tag([EventSearchSource::class], SearchRegistry::TAG);
     }

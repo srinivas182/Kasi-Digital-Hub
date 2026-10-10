@@ -210,7 +210,7 @@ final readonly class Learning
 
         $document = $file !== null ? $this->vault->store($user, $file, 'learning_evidence') : null;
         $submission = Submission::query()->create(['enrolment_id' => $enrolment->id, 'lesson_id' => $lessonId, 'text' => $text !== null ? mb_substr(trim($text), 0, 10000) : null,
-            'document_id' => $document?->id, 'attempt' => $previous->count() + 1]);
+            'document_id' => $document?->id, 'attempt' => $previous->count() + 1, 'status' => 'submitted']);
 
         $assessors = RoleAssignment::query()->whereIn('role', ['assessor_moderator', 'provider_admin'])->where('scope_type', 'organisation')->where('scope_id', $enrolment->course->organisation_id)->pluck('user_id');
         User::query()->whereIn('id', $assessors)->get()->each(fn (User $a) => $this->notifier->send($a, new LearnerNotification('to_assess', ['title' => $enrolment->course->title], '/learn/assess')));
@@ -231,6 +231,7 @@ final readonly class Learning
         $this->audit->record('learn.assessed', $learner, meta: ['submission' => $submission->id, 'competent' => $competent], actor: $assessor);
         event(new AssignmentAssessed($learner, $assessor->id, ['course' => $enrolment->course_id, 'lesson' => $submission->lesson_id, 'competent' => $competent]));
 
+        app(Moderation::class)->consider($submission);
         if ($competent) {
             DB::table('learn_progress')->updateOrInsert(['enrolment_id' => $enrolment->id, 'lesson_id' => $submission->lesson_id], ['completed_at' => now(), 'updated_at' => now(), 'created_at' => now()]);
             $this->recalculate($enrolment);
@@ -246,12 +247,16 @@ final readonly class Learning
         $done = DB::table('learn_progress')->where('enrolment_id', $enrolment->id)->whereIn('lesson_id', $required)->whereNotNull('completed_at')->count();
         $progress = $required === [] ? 0 : (int) floor(100 * $done / count($required));
 
+        $attendance = app(Cohorts::class)->attendance($enrolment);
+        $attendanceOk = $attendance === null || $attendance['percent'] >= (int) $enrolment->course->attendance_percent;
+
         $enrolment->forceFill(['progress' => $progress])->save();
-        if ($progress === 100 && $enrolment->completed_at === null) {
+        if ($progress === 100 && $attendanceOk && $enrolment->completed_at === null) {
             $enrolment->forceFill(['status' => 'completed', 'completed_at' => CarbonImmutable::now()])->save();
             $learner = User::query()->findOrFail($enrolment->user_id);
             event(new CourseCompleted($learner, null, ['course' => $enrolment->course_id, 'enrolment' => $enrolment->id]));
             $this->notifier->send($learner, new LearnerNotification('completed', ['title' => $enrolment->course->title], "/learn/my/{$enrolment->id}"));
+            app(Certificates::class)->issue($enrolment);
         }
     }
 

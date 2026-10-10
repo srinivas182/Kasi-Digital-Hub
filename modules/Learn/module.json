@@ -5,7 +5,7 @@
     "description": "Learning and skills: courses, assessments, certificates, cohorts, AI tutor",
     "group": "service",
     "release": "r1",
-    "version": "0.14.0",
+    "version": "0.15.0",
     "depends_on": [
         "Core"
     ],
@@ -111,6 +111,11 @@
                 "icon": "book-open"
             },
             {
+                "label": "nav.learn.certificates",
+                "href": "/learn/certificates",
+                "icon": "shield"
+            },
+            {
                 "label": "nav.learn.catalogue",
                 "href": "/learn/courses",
                 "icon": "grid"
@@ -130,6 +135,18 @@
             {
                 "label": "nav.learn.assess",
                 "href": "/learn/assess",
+                "icon": "shield",
+                "permission": "learn.assess"
+            },
+            {
+                "label": "nav.learn.cohorts",
+                "href": "/learn/cohorts",
+                "icon": "users",
+                "permission": "learn.approve"
+            },
+            {
+                "label": "nav.learn.moderation",
+                "href": "/learn/moderation",
                 "icon": "shield",
                 "permission": "learn.assess"
             }

@@ -20,6 +20,8 @@ const PAGE_BUDGET_KB = Number(process.env.BUNDLE_BUDGET_PAGE_KB ?? 60);
 const AUTHOR_PAGES = ['modules/Learn/resources/js/Pages/Author/'];
 const AUTHOR_PAGE_BUDGET_KB = Number(process.env.BUNDLE_BUDGET_AUTHOR_PAGE_KB ?? 200);
 const FIRST_LOAD_BUDGET_KB = Number(process.env.BUNDLE_BUDGET_FIRST_LOAD_KB ?? 130);
+// Early warning (S15): CI fails above this, so there is always room before the hard budget.
+const FIRST_LOAD_WARNING_KB = Number(process.env.BUNDLE_WARNING_FIRST_LOAD_KB ?? 125);
 // Internal pages that are never served in production (they deliberately load every component).
 const EXEMPT = ['modules/Core/resources/js/Pages/UiKit/'];
 
@@ -53,9 +55,9 @@ for (const key of Object.keys(manifest)) {
 
 if (manifest[PUBLIC_HOME]) {
     const firstLoad = size(new Set([...entryKeys, ...closure(PUBLIC_HOME)]));
-    const over = firstLoad > FIRST_LOAD_BUDGET_KB;
+    const over = firstLoad > FIRST_LOAD_WARNING_KB;
     failed ||= over;
-    console.log(`Public first load (entry + home): ${firstLoad.toFixed(1)} KB gzip (budget ${FIRST_LOAD_BUDGET_KB} KB)`);
+    console.log(`Public first load (entry + home): ${firstLoad.toFixed(1)} KB gzip (warning ${FIRST_LOAD_WARNING_KB} KB, budget ${FIRST_LOAD_BUDGET_KB} KB)${over ? '  <-- over the warning line' : ''}`);
 }
 
 if (failed) {

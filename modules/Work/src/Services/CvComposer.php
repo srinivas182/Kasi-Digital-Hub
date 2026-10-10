@@ -7,6 +7,7 @@ namespace Modules\Work\Services;
 use App\Support\Format\SaFormat;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
+use Modules\Core\Achievements\AchievementSource;
 use Modules\Core\Documents\Generation\DocumentIssuer;
 use Modules\Core\Documents\Models\Document;
 use Modules\Core\Identity\Models\User;
@@ -55,6 +56,9 @@ final readonly class CvComposer
                     'details' => $e->details, 'verified' => $e->document_id !== null && in_array($e->document_id, $verifiedDocs, true),
                 ])->all(),
             'skills' => DB::table('work_skills')->where('user_id', $user->id)->orderBy('id')->pluck('name')->all(),
+            // Verified achievements from other portals (e.g. KasiLearn certificates), shown unless hidden.
+            'certificates' => collect(app()->tagged(AchievementSource::TAG))
+                ->flatMap(static fn (AchievementSource $s): array => $s->achievements($user))->values()->all(),
             'languages' => DB::table('work_languages')->where('user_id', $user->id)->orderBy('id')->get(['language', 'level'])
                 ->map(static fn (object $l): array => ['language' => (string) $l->language, 'level' => (string) $l->level])->all(),
         ];

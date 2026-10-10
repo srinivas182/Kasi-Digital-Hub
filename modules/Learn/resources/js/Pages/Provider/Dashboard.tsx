@@ -20,6 +20,8 @@ interface Props {
     courses: { id: string; title: string; status: string; changed: boolean; slug: string; reason: string | null }[];
     team: { userId: string; name: string | null; phone: string | null; role: string }[];
     accreditations: { id: string; body: string; number: string; status: string; reason: string | null }[];
+    signatory: { signatory_name: string | null; signatory_title: string | null } | null;
+    certificates: { id: string; course: string; code: string | null; issuedAt: string; revoked: boolean }[];
 }
 
 export default function ProviderDashboard({
@@ -30,6 +32,8 @@ export default function ProviderDashboard({
     courses,
     team,
     accreditations,
+    signatory,
+    certificates,
 }: Props) {
     const { t } = useTranslation();
     const { auth, flash, errors } = usePage().props;
@@ -44,6 +48,10 @@ export default function ProviderDashboard({
         outcomes: [] as string[],
     });
     const member = useForm({ phone: '', role: 'course_author' });
+    const sign = useForm({
+        signatory_name: signatory?.signatory_name ?? '',
+        signatory_title: signatory?.signatory_title ?? '',
+    });
     const claim = useForm<{ body: string; number: string; evidence: File | null }>({
         body: 'QCTO',
         number: '',
@@ -257,6 +265,75 @@ export default function ProviderDashboard({
                                 </Button>
                             </div>
                         </form>
+                    </Card>
+                </div>
+            )}
+            {isAdmin && (
+                <div className="mt-8 grid gap-6 lg:grid-cols-2">
+                    <Card>
+                        <CardTitle>{t('learn.cert.signatory')}</CardTitle>
+                        <form
+                            className="mt-3 flex flex-col gap-3"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                sign.put('/learn/provider/signatory', { preserveScroll: true });
+                            }}
+                        >
+                            <Field label={t('learn.cert.signatory_name')}>
+                                <Input
+                                    value={sign.data.signatory_name}
+                                    onChange={(e) => sign.setData('signatory_name', e.target.value)}
+                                />
+                            </Field>
+                            <Field label={t('learn.cert.signatory_title')}>
+                                <Input
+                                    value={sign.data.signatory_title}
+                                    onChange={(e) => sign.setData('signatory_title', e.target.value)}
+                                />
+                            </Field>
+                            <div>
+                                <Button type="submit" variant="secondary">
+                                    {t('work.save')}
+                                </Button>
+                            </div>
+                        </form>
+                        <p className="mt-4 text-sm">
+                            <Link href="/learn/cohorts" className="text-primary font-semibold hover:underline">
+                                {t('learn.cohort.title')}
+                            </Link>
+                        </p>
+                    </Card>
+                    <Card>
+                        <CardTitle>{t('learn.cert.issued')}</CardTitle>
+                        <ul className="mt-3 flex flex-col gap-1 text-sm">
+                            {certificates.map((c) => (
+                                <li key={c.id} className="flex flex-wrap items-center justify-between gap-2">
+                                    <span className="text-fg">
+                                        {c.course} <span className="text-fg-muted font-mono">{c.code}</span>
+                                    </span>
+                                    {c.revoked ? (
+                                        <Badge tone="danger">{t('learn.cert.revoked')}</Badge>
+                                    ) : (
+                                        <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            onClick={() => {
+                                                const reason = window.prompt(t('learn.cert.revoke_reason'));
+                                                if (reason)
+                                                    router.post(
+                                                        `/learn/certificates/${c.id}/revoke`,
+                                                        { reason },
+                                                        { preserveScroll: true },
+                                                    );
+                                            }}
+                                        >
+                                            {t('learn.cert.revoke')}
+                                        </Button>
+                                    )}
+                                </li>
+                            ))}
+                            {certificates.length === 0 && <li className="text-fg-muted">{t('learn.review.none')}</li>}
+                        </ul>
                     </Card>
                 </div>
             )}

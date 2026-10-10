@@ -8,7 +8,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Notifications\Notifier;
+use Modules\Learn\Models\Enrolment;
 use Modules\Learn\Notifications\LearnerNotification;
+use Modules\Learn\Services\Certificates;
+use Modules\Learn\Services\Learning;
 
 /** Daily: tell people who saved courses (before enrolment existed) that they can now enrol - once. */
 final class LearnDailyCommand extends Command
@@ -32,6 +35,10 @@ final class LearnDailyCommand extends Command
                 DB::table('learn_saved_courses')->where('user_id', $userId)->whereIn('course_id', $saved->pluck('course_id'))->update(['notified_at' => now()]);
             });
         $this->info("Sent: {$sent}");
+        // Blended courses: work finished, waiting for sessions to take place.
+        Enrolment::query()->with(['course', 'version'])->where('progress', 100)->whereNull('completed_at')->where('status', 'active')
+            ->each(static fn (Enrolment $e) => app(Learning::class)->recalculate($e));
+        $this->info('Certificates issued after a delay (e.g. ID verified): '.app(Certificates::class)->issuePending());
 
         return self::SUCCESS;
     }

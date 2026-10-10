@@ -7,6 +7,7 @@ namespace Modules\Learn\Http\Controllers;
 use App\Support\Format\SaFormat;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Inertia\Inertia;
@@ -20,6 +21,7 @@ use Modules\Core\Structure\Models\RoleAssignment;
 use Modules\Core\Structure\OrganisationRegistration;
 use Modules\Learn\Events\ProviderRegistered;
 use Modules\Learn\Models\Accreditation;
+use Modules\Learn\Models\Certificate;
 use Modules\Learn\Models\Course;
 use Modules\Learn\Services\CurrentProvider;
 
@@ -50,6 +52,11 @@ final class ProviderController
                 ->whereIn('role', CurrentProvider::ROLES)->get()
                 ->map(static fn (RoleAssignment $a): array => ['userId' => $a->user_id, 'name' => $a->user?->fullName(), 'phone' => $a->user ? SaFormat::maskedPhone($a->user->phone) : null, 'role' => $a->role]),
             'accreditations' => Accreditation::query()->where('organisation_id', $provider->id)->get(['id', 'body', 'number', 'status', 'reason']),
+            'signatory' => DB::table('learn_provider_settings')->where('organisation_id', $provider->id)->first(['signatory_name', 'signatory_title']),
+            'certificates' => $isAdmin ? Certificate::query()->with(['enrolment.course', 'document'])
+                ->whereHas('enrolment.course', fn ($q) => $q->where('organisation_id', $provider->id))->latest('issued_at')->limit(50)->get()
+                ->map(static fn (Certificate $c): array => ['id' => $c->id, 'course' => $c->enrolment->course->title, 'code' => $c->document?->verification_code,
+                    'issuedAt' => $c->issued_at->toIso8601String(), 'revoked' => $c->revoked_at !== null]) : [],
         ]);
     }
 
@@ -113,6 +120,15 @@ final class ProviderController
         $registration->removeMember($provider, $member, $role, $user);
 
         return back()->with('status', __('work.team.removed'));
+    }
+
+    public function signatory(Request $request): RedirectResponse
+    {
+        [, $provider] = $this->admin($request);
+        $data = $request->validate(['signatory_name' => ['nullable', 'string', 'max:120'], 'signatory_title' => ['nullable', 'string', 'max:120']]);
+        DB::table('learn_provider_settings')->updateOrInsert(['organisation_id' => $provider->id], [...$data, 'updated_at' => now(), 'created_at' => now()]);
+
+        return back()->with('status', __('work.saved'));
     }
 
     /** Claim an accreditation (QCTO or a SETA) with evidence; the KasiHub team verifies it. */

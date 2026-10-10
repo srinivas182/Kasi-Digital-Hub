@@ -7,6 +7,7 @@ namespace Modules\HubOps\Services;
 use DomainException;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Ai\Moderation\ModerationService;
+use Modules\Core\Hubs\HubSessionAttended;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Notifications\Notifier;
@@ -182,6 +183,7 @@ final readonly class EventBook
             $registration->forceFill(['attended_at' => now(), 'status' => EventRegistration::REGISTERED])->save();
             $this->checkIns->record($event->hub, $person, 'event', 'event', $by);
             event(new EventAttended($registration->setRelation('event', $event), $by?->id));
+            event(new HubSessionAttended($event->id, $person->id));
         }
 
         return $registration;

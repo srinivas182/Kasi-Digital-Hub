@@ -26,6 +26,7 @@ use Modules\Core\Structure\Models\Organisation;
  * @property string|null $translation_group
  * @property int $min_age
  * @property string $delivery
+ * @property int $attendance_percent
  * @property string|null $accreditation_id
  * @property int|null $nqf_level
  * @property int|null $credits
@@ -60,7 +61,7 @@ final class Course extends Model
 
     protected function casts(): array
     {
-        return ['outcomes' => 'array', 'min_age' => 'integer', 'nqf_level' => 'integer', 'credits' => 'integer', 'changed_since_publish' => 'boolean', 'created_at' => 'immutable_datetime'];
+        return ['outcomes' => 'array', 'min_age' => 'integer', 'attendance_percent' => 'integer', 'nqf_level' => 'integer', 'credits' => 'integer', 'changed_since_publish' => 'boolean', 'created_at' => 'immutable_datetime'];
     }
 
     /** @return BelongsTo<Organisation, $this> */

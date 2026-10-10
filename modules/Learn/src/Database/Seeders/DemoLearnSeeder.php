@@ -5,14 +5,20 @@ declare(strict_types=1);
 namespace Modules\Learn\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Modules\Core\Access\RoleAssignments;
+use Modules\Core\Access\Scope;
 use Modules\Core\Identity\Models\User;
+use Modules\Core\Structure\Models\Hub;
 use Modules\Core\Structure\Models\Organisation;
 use Modules\Learn\Models\Assignment;
+use Modules\Learn\Models\Cohort;
 use Modules\Learn\Models\Course;
 use Modules\Learn\Models\CourseModule;
 use Modules\Learn\Models\Lesson;
 use Modules\Learn\Models\Quiz;
+use Modules\Learn\Services\Cohorts;
 use Modules\Learn\Services\CourseWorkflow;
 
 /**
@@ -59,6 +65,21 @@ final class DemoLearnSeeder extends Seeder
                 self::assessments($course);
             }
             $workflow->publish($course, $herman);
+        }
+
+        app(RoleAssignments::class)->assign($herman, 'assessor_moderator', Scope::organisation($hbm));
+
+        DB::table('learn_provider_settings')->insert(['organisation_id' => $hbm->id, 'signatory_name' => 'Dr Herman Moolman (demo)', 'signatory_title' => 'Director', 'created_at' => now(), 'updated_at' => now()]);
+
+        // A blended cohort at Tsutsumani hub (S15) with a session next week.
+        $customer = Course::query()->where('topic', 'customer_service')->first();
+        $hub = Hub::query()->where('code', 'LP-GIY-TSU')->first();
+        if ($customer !== null && $hub !== null) {
+            $customer->forceFill(['delivery' => 'blended'])->save();
+            $cohort = Cohort::query()->create(['course_id' => $customer->id, 'organisation_id' => $hbm->id, 'hub_id' => $hub->id, 'name' => 'Tsutsumani, October (demo)',
+                'code' => 'KASI24', 'starts_on' => now()->toDateString(), 'ends_on' => now()->addWeeks(6)->toDateString(), 'capacity' => 20, 'status' => 'open', 'created_by' => $herman->id, 'approved_by' => $herman->id]);
+            app(Cohorts::class)->addSession($cohort->load('course'), 'Role-play: serving customers', now('Africa/Johannesburg')->addWeek()->setTime(10, 0)->toImmutable(),
+                now('Africa/Johannesburg')->addWeek()->setTime(12, 0)->toImmutable(), 'Training room', $herman);
         }
 
         $draft = Course::query()->create(['organisation_id' => $hbm->id, 'slug' => 'cv-and-interview-skills-demo', 'title' => 'CV and interview skills (demo, draft)',

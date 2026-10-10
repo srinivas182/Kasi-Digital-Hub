@@ -121,3 +121,9 @@ UI kit pages are internal and exempt.
 Pages under `modules/Learn/resources/js/Pages/Author/` (course authoring) may be up to 200 KB gzip: they hold the
 rich-text editor (TipTap/ProseMirror), are used by provider staff on desktops and are never loaded by learners.
 Learner and public pages keep the 60 KB page budget and the 130 KB first-load budget.
+
+### First-load warning line (S15)
+
+CI fails when the public first load (entry + home page) passes **125 KB**, keeping 5 KB in hand under the 130 KB
+budget. In S15 the first load went from 130.0 KB to about 122.6 KB by replacing tailwind-merge with a small,
+tested `cn()` (resources/js/lib/cn.ts). What remains is mostly the framework itself (React, Inertia).
