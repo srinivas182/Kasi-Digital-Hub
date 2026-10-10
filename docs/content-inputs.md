@@ -51,3 +51,9 @@ language before switching any language on.
   15 minutes with transcripts).
 - **Accreditation details** (QCTO / SETA numbers and letters) for any accredited programmes.
 - **Who at Ku Tirhisana reviews courses** for 16-17-year-olds and first courses from new providers.
+
+## KasiStart (Sprint 16)
+
+- **Legal review** of the draft formalisation steps, the legal-form guide and the B-BBEE affidavit wording
+  (Admin -> Business steps). Each step shows a "last checked" date once reviewed.
+- **Commissioners of oaths:** do any hub staff hold this appointment (for signing affidavits at the hub)?

@@ -62,6 +62,16 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - KasiStart (4 minutes)
+
+1. As Nomsa (072 000 0003): My business -> "Nomsa Hair Studio (demo)": readiness, steps for a sole proprietor.
+2. Open "Get a B-BBEE sworn affidavit" -> download the pre-filled affidavit. Mark "Make sure the business is
+   registered for tax" done with a photo of the letter (goes to document verification).
+3. Open the guide - compare sole proprietor, company, co-operative and NPC.
+4. My business plan: "Help me improve this"; calculator: cost R120, markup 150% -> price and break-even.
+   Download the one-page summary (QR verifiable).
+5. As Lucky (072 000 0040): Business steps (content) - edit a step and tick "information checked today".
+
 ## Demo script - certificates and cohorts (5 minutes)
 
 1. As Lwazi (072 000 0002): open /learn/join/KASI24 (or scan the QR) - join "Tsutsumani, October (demo)".

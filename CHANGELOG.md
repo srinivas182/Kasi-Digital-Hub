@@ -2,6 +2,14 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.16.0] - 2026-10-10 - Sprint 16: KasiStart business registration
+
+### Added
+- Business profiles with co-owners, personalised formalisation journey with proof, legal-form guide, pre-filled
+  B-BBEE affidavit, editable step content, business plan builder with calculator and verifiable summary, readiness
+  score (ADR-024).
+- `scripts/prepush.sh` runs every local check and stops at the first failure.
+
 ## [0.15.0] - 2026-10-10 - Sprint 15: KasiLearn certificates, cohorts and moderation
 
 ### Added

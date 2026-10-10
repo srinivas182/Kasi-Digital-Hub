@@ -27,6 +27,10 @@
         "version": 1,
         "sha256": "ea08ac73dd36a722eff853f7cfe782a66f8ed0d7470e10780d5bc15ae629f1d8"
     },
+    "start.plan_section": {
+        "version": 1,
+        "sha256": "605065a775c862bcfc5718534e485d80763367b286dbb05f851c582648979636"
+    },
     "work.cv_experience": {
         "version": 1,
         "sha256": "54f8e4a391f58c25e3a26af00751294cb3edf39e40e52b73182519ba2e8abe02"

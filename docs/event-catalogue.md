@@ -35,6 +35,10 @@ Every event is written to the platform event log and can be used by any portal t
 | `learn.lesson.completed` | KasiLearn | - | A learner finished a lesson. |
 | `learn.provider.registered` | KasiLearn | - | A training provider registered (waiting for verification). |
 | `learn.quiz.passed` | KasiLearn | - | A learner passed a graded quiz. |
+| `start.business.created` | KasiStart | - | An entrepreneur created a business profile. |
+| `start.business.formalised` | KasiStart | - | A business completed every formalisation step that applies to it. |
+| `start.plan.completed` | KasiStart | - | A business completed its business plan. |
+| `start.step.completed` | KasiStart | - | A business completed a formalisation step (e.g. registered with CIPC). |
 | `work.application.stage_changed` | KasiWork | - | An employer moved an application to another stage (shortlisted, interview, offer, hired, not successful). |
 | `work.application.submitted` | KasiWork | - | A job seeker applied for a job. |
 | `work.cv.created` | KasiWork | - | A job seeker created a CV (PDF). |

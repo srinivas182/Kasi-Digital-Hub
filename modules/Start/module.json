@@ -5,13 +5,15 @@
     "description": "Business registration and formalisation: guided registration, compliance, bank and insurance referrals",
     "group": "service",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.16.0",
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Start\\Providers\\StartServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": "start",
@@ -26,32 +28,46 @@
                 "Learn": "use",
                 "Start": "use",
                 "Connect": "use"
-            }
+            },
+            "permissions": [
+                "start.own"
+            ]
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "start.own",
+        "start.content"
+    ],
     "events": {
-        "publishes": [],
-        "consumes": []
+        "publishes": [
+            "start.business.created",
+            "start.step.completed",
+            "start.business.formalised",
+            "start.plan.completed"
+        ],
+        "listens": []
     },
     "impact_metrics": [
         "businesses_formalised",
         "bank_accounts_opened"
     ],
-    "demo_seeders": [],
+    "demo_seeders": [
+        "Modules\\Start\\Database\\Seeders\\DemoStartSeeder"
+    ],
     "nav": {
         "icon": "rocket",
         "href": "/start",
         "items": [
             {
-                "label": "nav.start.progress",
+                "label": "nav.start.businesses",
                 "href": "/start",
                 "icon": "rocket"
             },
             {
-                "label": "nav.start.documents",
-                "href": "/start/documents",
-                "icon": "book-open"
+                "label": "nav.start.steps",
+                "href": "/start/admin/steps",
+                "icon": "shield",
+                "permission": "start.content"
             }
         ]
     }

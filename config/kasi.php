@@ -139,7 +139,8 @@ return [
         'link_minutes' => 5,
         'types' => [
             'id_document', 'matric_certificate', 'qualification', 'cipc_certificate',
-            'proof_of_address', 'bank_confirmation', 'tax_clearance', 'learning_evidence', 'other',
+            'proof_of_address', 'bank_confirmation', 'tax_clearance', 'learning_evidence',
+            'tax_registration', 'bbbee_affidavit', 'trading_permit', 'uif_registration', 'health_certificate', 'other',
         ],
         'expiry_reminder_days' => 30,
     ],

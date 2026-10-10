@@ -40,7 +40,8 @@
                 "admin.*",
                 "hubops.*",
                 "work.insights",
-                "learn.review"
+                "learn.review",
+                "start.content"
             ]
         },
         {
@@ -78,7 +79,8 @@
                 "admin.ai.view",
                 "admin.moderation.review",
                 "work.insights",
-                "learn.review"
+                "learn.review",
+                "start.content"
             ]
         },
         {
