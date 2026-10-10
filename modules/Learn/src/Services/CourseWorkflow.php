@@ -14,9 +14,14 @@ use Modules\Core\Structure\Models\RoleAssignment;
 use Modules\Learn\Events\CoursePublished;
 use Modules\Learn\Events\CourseSubmitted;
 use Modules\Learn\Events\CourseUnpublished;
+use Modules\Learn\Models\Assignment;
 use Modules\Learn\Models\Course;
 use Modules\Learn\Models\CourseVersion;
+use Modules\Learn\Models\Enrolment;
+use Modules\Learn\Models\Question;
+use Modules\Learn\Models\Quiz;
 use Modules\Learn\Notifications\CourseNotification;
+use Modules\Learn\Notifications\LearnerNotification;
 
 /**
  * Course review and publishing (ADR-021): author submits -> provider admin approves -> KasiHub review
@@ -115,6 +120,12 @@ final readonly class CourseWorkflow
         RefreshSearchDocument::dispatch('course', $course->id);
         $this->tell($course, ['course_author', 'provider_admin'], 'published', '/learn/courses/'.$course->slug);
 
+        // Learners on an older version are offered the update (they choose when to switch).
+        Enrolment::query()->where('course_id', $course->id)->where('status', 'active')->where('version_id', '!=', $version->id)->get()
+            ->each(fn (Enrolment $e) => ($learner = User::query()->find($e->user_id)) !== null
+                ? $this->notifier->send($learner, new LearnerNotification('version_available', ['title' => $course->title], '/learn/my/'.$e->id))
+                : null);
+
         return $version;
     }
 
@@ -143,6 +154,8 @@ final readonly class CourseWorkflow
                 $lessons[] = [
                     'id' => $lesson->id, 'title' => $lesson->title, 'kind' => $lesson->kind, 'minutes' => $lesson->minutes, 'preview' => $lesson->preview,
                     'html' => $this->renderer->html($lesson->content), 'transcript' => $lesson->transcript, 'bytes' => $bytes,
+                    'quiz' => $lesson->kind === 'quiz' ? $this->quizSnapshot($lesson->id) : null,
+                    'assignment' => $lesson->kind === 'assignment' ? $this->assignmentSnapshot($lesson->id) : null,
                     'media' => $lesson->media === null ? null : [
                         'id' => $lesson->media->id, 'kind' => $lesson->media->kind, 'duration' => $lesson->media->duration_seconds, 'name' => $lesson->media->original_name,
                         'versions' => collect($lesson->media->renditions ?? [])->map(static fn (array $r): int => $r['bytes'])->all(),
@@ -158,6 +171,27 @@ final readonly class CourseWorkflow
             'nqf_level' => $course->accredited() ? $course->nqf_level : null, 'credits' => $course->accredited() ? $course->credits : null,
             'licence' => $course->licence, 'attribution' => $course->attribution, 'modules' => $modules, 'data_bytes' => $total,
         ];
+    }
+
+    /** @return array<string, mixed>|null */
+    private function quizSnapshot(string $lessonId): ?array
+    {
+        $quiz = Quiz::query()->with('questions')->where('lesson_id', $lessonId)->first();
+
+        return $quiz === null ? null : [
+            'graded' => $quiz->graded, 'pass_mark' => $quiz->pass_mark, 'max_attempts' => $quiz->max_attempts, 'shuffle' => $quiz->shuffle,
+            'questions' => $quiz->questions->map(static fn (Question $q): array => [
+                'id' => $q->id, 'kind' => $q->kind, 'prompt' => $q->prompt, 'options' => $q->options, 'explanation' => $q->explanation,
+            ])->values()->all(),
+        ];
+    }
+
+    /** @return array<string, mixed>|null */
+    private function assignmentSnapshot(string $lessonId): ?array
+    {
+        $a = Assignment::query()->where('lesson_id', $lessonId)->first();
+
+        return $a === null ? null : ['instructions' => $a->instructions, 'rubric' => $a->rubric, 'evidence' => $a->evidence, 'max_resubmissions' => $a->max_resubmissions];
     }
 
     private function log(Course $course, User $by, string $kind, ?string $body = null): void

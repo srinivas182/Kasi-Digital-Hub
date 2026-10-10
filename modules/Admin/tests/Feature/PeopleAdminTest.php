@@ -18,11 +18,12 @@ beforeEach(function (): void {
 
 it('finds people by name or the last digits of their phone, with phones masked in the list', function (): void {
     Console::as($this, 'support_agent');
-    User::factory()->create(['first_name' => 'Thandeka', 'last_name' => 'Ngubane', 'phone' => '+27724183390']);
+    // Unusual name and phone ending, so random factory people (other users in this test) never match too.
+    User::factory()->create(['first_name' => 'Thandekazi', 'last_name' => 'Ngubane', 'phone' => '+27724187391']);
     User::factory()->create(['first_name' => 'Sipho', 'last_name' => 'Dube']);
 
-    $this->get('/admin/people?q=Thand')->assertInertia(fn ($page) => $page->has('people.data', 1)->where('people.data.0.phone', '072 *** 3390'));
-    $this->get('/admin/people?q=3390')->assertInertia(fn ($page) => $page->has('people.data', 1)->where('people.data.0.name', 'Thandeka Ngubane'));
+    $this->get('/admin/people?q=Thandekaz')->assertInertia(fn ($page) => $page->has('people.data', 1)->where('people.data.0.phone', '072 *** 7391'));
+    $this->get('/admin/people?q=4187391')->assertInertia(fn ($page) => $page->has('people.data', 1)->where('people.data.0.name', 'Thandekazi Ngubane'));
 });
 
 it('filters people by hub, role and status', function (): void {

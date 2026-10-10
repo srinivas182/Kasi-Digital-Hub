@@ -26,10 +26,15 @@ Every event is written to the platform event log and can be used by any portal t
 | `hubops.event.cancelled` | KasiHub Ops | - | A hub event was cancelled; everyone signed up was told why. |
 | `hubops.event.scheduled` | KasiHub Ops | - | A hub scheduled an event (job day, workshop, info session or class). |
 | `hubops.visit.recorded` | KasiHub Ops | - | Someone visited a hub (QR at the door, front desk, walk-in, event or assisted registration). |
+| `learn.assignment.assessed` | KasiLearn | - | An assessor marked an assignment competent or not yet competent. |
+| `learn.course.completed` | KasiLearn | - | A learner completed every required part of a course. |
 | `learn.course.published` | KasiLearn | - | A course (version) was published to the catalogue. |
 | `learn.course.submitted` | KasiLearn | - | A course author submitted a course for approval. |
 | `learn.course.unpublished` | KasiLearn | - | A course was taken out of the catalogue. |
+| `learn.enrolled` | KasiLearn | - | A learner enrolled in a course. |
+| `learn.lesson.completed` | KasiLearn | - | A learner finished a lesson. |
 | `learn.provider.registered` | KasiLearn | - | A training provider registered (waiting for verification). |
+| `learn.quiz.passed` | KasiLearn | - | A learner passed a graded quiz. |
 | `work.application.stage_changed` | KasiWork | - | An employer moved an application to another stage (shortlisted, interview, offer, hired, not successful). |
 | `work.application.submitted` | KasiWork | - | A job seeker applied for a job. |
 | `work.cv.created` | KasiWork | - | A job seeker created a CV (PDF). |

@@ -14,6 +14,7 @@ import { useTranslation } from '@/lib/i18n';
 import { Editor } from '../../components/Editor';
 import { formatBytes } from '../../components/format';
 import { postJson } from '../../components/postJson';
+import { AssignmentEditor, type BuilderAssignment, type BuilderQuiz, QuizBuilder } from '../../components/QuizBuilder';
 
 interface Props {
     course: { id: string; title: string; status: string };
@@ -38,11 +39,13 @@ interface Props {
         } | null;
     };
     problems: string[];
+    quiz: BuilderQuiz | null;
+    assignment: BuilderAssignment | null;
     ai: boolean;
     maxUploadMb: number;
 }
 
-export default function AuthorLesson({ course, lesson, problems, ai, maxUploadMb }: Props) {
+export default function AuthorLesson({ course, lesson, problems, quiz, assignment, ai, maxUploadMb }: Props) {
     const { t } = useTranslation();
     const { auth, flash, errors } = usePage().props;
     const base = `/learn/author/courses/${course.id}`;
@@ -226,8 +229,23 @@ export default function AuthorLesson({ course, lesson, problems, ai, maxUploadMb
                             />
                         </div>
                     )}
-                    {['quiz', 'assignment'].includes(lesson.kind) && (
-                        <p className="text-fg-muted mt-4">{t('learn.author.coming_s14')}</p>
+                    {lesson.kind === 'quiz' && quiz && (
+                        <div className="mt-4">
+                            <QuizBuilder
+                                quiz={quiz}
+                                action={`${base}/lessons/${lesson.id}/quiz`}
+                                suggestUrl={`${base}/lessons/${lesson.id}/questions`}
+                                ai={ai}
+                            />
+                        </div>
+                    )}
+                    {lesson.kind === 'assignment' && assignment && (
+                        <div className="mt-4">
+                            <AssignmentEditor
+                                assignment={assignment}
+                                action={`${base}/lessons/${lesson.id}/assignment`}
+                            />
+                        </div>
                     )}
                     <div className="mt-4">
                         <Checkbox

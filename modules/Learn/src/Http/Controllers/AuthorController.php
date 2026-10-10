@@ -19,10 +19,13 @@ use Modules\Core\Identity\Models\User;
 use Modules\Core\Structure\Models\Organisation;
 use Modules\Learn\Media\MediaLibrary;
 use Modules\Learn\Models\Accreditation;
+use Modules\Learn\Models\Assignment;
 use Modules\Learn\Models\Course;
 use Modules\Learn\Models\CourseModule;
 use Modules\Learn\Models\Lesson;
 use Modules\Learn\Models\Media;
+use Modules\Learn\Models\Question;
+use Modules\Learn\Models\Quiz;
 use Modules\Learn\Services\AuthoringAssistant;
 use Modules\Learn\Services\ContentRenderer;
 use Modules\Learn\Services\CourseChecks;
@@ -153,6 +156,14 @@ final class AuthorController
                     'versions' => collect($lesson->media->renditions ?? [])->map(static fn (array $r): int => $r['bytes'])->all()],
             ],
             'problems' => $lesson->kind === 'text' ? $renderer->problems($lesson->content) : [],
+            'quiz' => $lesson->kind !== 'quiz' ? null : (($q = Quiz::query()->with('questions')->where('lesson_id', $lesson->id)->first()) === null
+                ? ['graded' => true, 'passMark' => 70, 'maxAttempts' => 3, 'shuffle' => true, 'questions' => []]
+                : ['graded' => $q->graded, 'passMark' => $q->pass_mark, 'maxAttempts' => $q->max_attempts, 'shuffle' => $q->shuffle,
+                    'questions' => $q->questions->map(static fn (Question $x): array => ['kind' => $x->kind, 'prompt' => $x->prompt, 'options' => $x->options,
+                        'explanation' => $x->explanation, 'aiDrafted' => $x->ai_drafted])->values()]),
+            'assignment' => $lesson->kind !== 'assignment' ? null : (($a = Assignment::query()->where('lesson_id', $lesson->id)->first()) === null
+                ? ['instructions' => '', 'rubric' => [''], 'evidence' => ['text', 'photo', 'pdf'], 'maxResubmissions' => 2]
+                : ['instructions' => $a->instructions, 'rubric' => $a->rubric, 'evidence' => $a->evidence, 'maxResubmissions' => $a->max_resubmissions]),
             'ai' => app(AiBudget::class)->enabled('learn.authoring'),
             'maxUploadMb' => (int) (config('kasi.learn.max_upload_kb') / 1024),
             'providerId' => $provider->id,
@@ -188,6 +199,73 @@ final class AuthorController
         $this->touched($course);
 
         return back()->with('status', __('work.saved'));
+    }
+
+    /** Save a quiz's settings and questions (replaces the question list). */
+    public function saveQuiz(Request $request, Course $course, Lesson $lesson): RedirectResponse
+    {
+        $this->author($request, $course);
+        abort_unless($lesson->course_id === $course->id && $lesson->kind === 'quiz', 404);
+        $data = $request->validate([
+            'graded' => ['boolean'], 'pass_mark' => ['required', 'integer', 'min:1', 'max:100'], 'max_attempts' => ['required', 'integer', 'min:1', 'max:10'], 'shuffle' => ['boolean'],
+            'questions' => ['array', 'max:50'],
+            'questions.*.kind' => ['required', Rule::in(['single', 'multiple', 'truefalse'])],
+            'questions.*.prompt' => ['required', 'string', 'max:500'],
+            'questions.*.options' => ['required', 'array', 'min:2', 'max:6'],
+            'questions.*.options.*.text' => ['required', 'string', 'max:200'],
+            'questions.*.options.*.correct' => ['boolean'],
+            'questions.*.options.*.feedback' => ['nullable', 'string', 'max:300'],
+            'questions.*.explanation' => ['nullable', 'string', 'max:500'],
+            'questions.*.ai_drafted' => ['boolean'],
+        ]);
+
+        DB::transaction(function () use ($lesson, $data): void {
+            $quiz = Quiz::query()->updateOrCreate(['lesson_id' => $lesson->id], [
+                'graded' => (bool) ($data['graded'] ?? true), 'pass_mark' => $data['pass_mark'], 'max_attempts' => $data['max_attempts'], 'shuffle' => (bool) ($data['shuffle'] ?? true),
+            ]);
+            $quiz->questions()->delete();
+            foreach (array_values($data['questions'] ?? []) as $i => $q) {
+                $quiz->questions()->create(['kind' => $q['kind'], 'prompt' => $q['prompt'], 'explanation' => $q['explanation'] ?? null, 'ai_drafted' => (bool) ($q['ai_drafted'] ?? false), 'position' => $i,
+                    'options' => array_values(array_map(static fn (array $o): array => ['text' => $o['text'], 'correct' => (bool) ($o['correct'] ?? false), 'feedback' => $o['feedback'] ?? null], $q['options']))]);
+            }
+        });
+        $this->touched($course);
+
+        return back()->with('status', __('work.saved'));
+    }
+
+    public function saveAssignment(Request $request, Course $course, Lesson $lesson): RedirectResponse
+    {
+        $this->author($request, $course);
+        abort_unless($lesson->course_id === $course->id && $lesson->kind === 'assignment', 404);
+        $data = $request->validate([
+            'instructions' => ['required', 'string', 'max:5000'],
+            'rubric' => ['array', 'max:12'], 'rubric.*' => ['nullable', 'string', 'max:300'],
+            'evidence' => ['required', 'array', 'min:1'], 'evidence.*' => [Rule::in(['text', 'photo', 'pdf'])],
+            'max_resubmissions' => ['required', 'integer', 'min:0', 'max:5'],
+        ]);
+        Assignment::query()->updateOrCreate(['lesson_id' => $lesson->id], [
+            'instructions' => $data['instructions'], 'rubric' => array_values(array_filter(array_map('trim', $data['rubric'] ?? []))),
+            'evidence' => array_values(array_unique($data['evidence'])), 'max_resubmissions' => $data['max_resubmissions'],
+        ]);
+        $this->touched($course);
+
+        return back()->with('status', __('work.saved'));
+    }
+
+    /** AI: draft questions from the text lessons in the same module. */
+    public function suggestQuestions(Request $request, Course $course, Lesson $lesson, AuthoringAssistant $assistant, ContentRenderer $renderer): JsonResponse
+    {
+        [$user] = $this->author($request, $course);
+        abort_unless($lesson->course_id === $course->id && $lesson->kind === 'quiz', 404);
+        $text = Lesson::query()->where('module_id', $lesson->module_id)->where('kind', 'text')->orderBy('position')->get()
+            ->map(static fn (Lesson $l): string => $l->title."\n".strip_tags(str_replace(['</p>', '</li>', '</h2>', '</h3>'], "\n", $renderer->html($l->content))))->implode("\n\n");
+        if (mb_strlen(trim($text)) < 50) {
+            return response()->json(['ok' => false, 'message' => __('learn.quiz.need_text')]);
+        }
+        $result = $assistant->quizQuestions($text, $user);
+
+        return response()->json($result['ok'] ? $result : ['ok' => false, 'message' => __('ai.fallback.'.($result['reason'] ?? 'unavailable'))]);
     }
 
     public function deleteLesson(Request $request, Course $course, Lesson $lesson): RedirectResponse

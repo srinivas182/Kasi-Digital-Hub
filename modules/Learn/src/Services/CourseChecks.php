@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Learn\Services;
 
+use Modules\Learn\Models\Assignment;
 use Modules\Learn\Models\Course;
 use Modules\Learn\Models\Lesson;
 use Modules\Learn\Models\Media;
+use Modules\Learn\Models\Question;
+use Modules\Learn\Models\Quiz;
 
 /**
  * Checks before a course can be submitted, and the data a learner needs to download.
@@ -42,6 +45,8 @@ final readonly class CourseChecks
                     trim((string) $lesson->transcript) === '' ? 'transcript' : null,
                 ])),
                 'download' => $lesson->media === null ? ['no_media'] : [],
+                'quiz' => $this->quizProblems($lesson->id),
+                'assignment' => Assignment::query()->where('lesson_id', $lesson->id)->whereNot('instructions', '')->exists() ? [] : ['no_instructions'],
                 default => [],
             };
             foreach ($codes as $code) {
@@ -50,6 +55,18 @@ final readonly class CourseChecks
         }
 
         return $problems;
+    }
+
+    /** @return list<string> */
+    private function quizProblems(string $lessonId): array
+    {
+        $quiz = Quiz::query()->with('questions')->where('lesson_id', $lessonId)->first();
+        if ($quiz === null || $quiz->questions->isEmpty()) {
+            return ['no_questions'];
+        }
+
+        return $quiz->questions->contains(static fn (Question $q): bool => collect($q->options)->where('correct', true)->isEmpty() || count($q->options) < 2)
+            ? ['question_answers'] : [];
     }
 
     /** @return list<array{lesson: string|null, title: string, code: string}> */

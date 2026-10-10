@@ -62,6 +62,15 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - learning (5 minutes)
+
+1. As Thandi (072 000 0001), on a phone: Courses -> "Customer service essentials" -> Enrol. Open "First impressions",
+   tap "I've finished". The hub home now shows "Continue: ...".
+2. Open "Quiz: customer service" (answers R18 and "Listen calmly") - passed. Try the practice quiz too.
+3. Open the assignment and submit an answer. As Herman (072 000 0012): Assess work -> mark it Competent with feedback.
+4. Offline: on "Digital skills basics", "Download for offline"; switch the phone to flight mode, open
+   /learn/offline, finish a lesson ("1 update waiting"); switch flight mode off - it is sent.
+
 ## Demo script - KasiLearn courses (5 minutes)
 
 1. Signed out: /learn/courses - three HBM EduTech demo courses with data sizes; open one; read the free preview.

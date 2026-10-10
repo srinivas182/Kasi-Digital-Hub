@@ -40,6 +40,28 @@ final readonly class AuthoringAssistant
         return $content === [] ? ['ok' => false, 'reason' => 'invalid'] : ['ok' => true, 'doc' => ['type' => 'doc', 'content' => $content]];
     }
 
+    /**
+     * Draft quiz questions from lesson text (marked AI-drafted for reviewers).
+     *
+     * @return array{ok: bool, questions?: list<array{kind: string, prompt: string, options: list<array{text: string, correct: bool}>, explanation: string|null}>, reason?: string|null}
+     */
+    public function quizQuestions(string $text, User $by): array
+    {
+        $result = $this->ai->run('learn.quiz_questions', ['text' => mb_substr($text, 0, 12000)], by: $by);
+        $questions = [];
+        foreach ($result->ok ? (array) ($result->data['questions'] ?? []) : [] as $q) {
+            $q = (array) $q;
+            $options = array_values(array_filter(array_map(static fn ($o): array => ['text' => mb_substr(trim((string) ((array) $o)['text']), 0, 200), 'correct' => (bool) (((array) $o)['correct'] ?? false)], (array) ($q['options'] ?? [])),
+                static fn (array $o): bool => $o['text'] !== ''));
+            if (trim((string) ($q['prompt'] ?? '')) === '' || count($options) < 2 || count(array_filter($options, static fn (array $o): bool => $o['correct'])) !== 1) {
+                continue; // drop malformed questions rather than show something wrong
+            }
+            $questions[] = ['kind' => 'single', 'prompt' => mb_substr(trim((string) $q['prompt']), 0, 500), 'options' => $options, 'explanation' => isset($q['explanation']) ? mb_substr(trim((string) $q['explanation']), 0, 500) : null];
+        }
+
+        return $questions === [] ? ['ok' => false, 'reason' => $result->reason ?? 'invalid'] : ['ok' => true, 'questions' => array_slice($questions, 0, 6)];
+    }
+
     /** @return array{ok: bool, outcomes?: list<string>, reason?: string|null} */
     public function outcomes(string $title, string $summary, User $by): array
     {

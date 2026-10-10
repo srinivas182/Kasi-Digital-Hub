@@ -66,6 +66,7 @@ final class CatalogueController
         return Inertia::render($user instanceof User ? 'Learn/Catalogue/Show' : 'Learn/Catalogue/Public', [
             'course' => $this->detail($course),
             'saved' => $user instanceof User && DB::table('learn_saved_courses')->where('user_id', $user->id)->where('course_id', $course->id)->exists(),
+            'enrolmentId' => $user instanceof User ? DB::table('learn_enrolments')->where('user_id', $user->id)->where('course_id', $course->id)->where('status', '!=', 'left')->value('id') : null,
             'seo' => Seo::page($course->title, mb_strimwidth((string) $course->summary, 0, 155, '...'), '/learn/courses/'.$course->slug, [[
                 '@context' => 'https://schema.org', '@type' => 'Course', 'name' => $course->title, 'description' => (string) $course->summary,
                 'provider' => ['@type' => 'Organization', 'name' => $course->organisation->displayName()], 'inLanguage' => $course->language,

@@ -31,7 +31,15 @@ export function UserMenu({ fallbackName = 'Guest' }: { fallbackName?: string }) 
                         {t('account.title')}
                     </Link>
                     <ThemeMenuItem className={`${item} sm:hidden`} />
-                    <button type="button" className={item} onClick={() => router.post('/logout')}>
+                    <button
+                        type="button"
+                        className={item}
+                        onClick={() =>
+                            void import('@/lib/offlineData')
+                                .then((m) => m.clearPersonalOfflineData())
+                                .finally(() => router.post('/logout'))
+                        }
+                    >
                         <LogOut className="size-4" aria-hidden />
                         {t('account.sign_out')}
                     </button>

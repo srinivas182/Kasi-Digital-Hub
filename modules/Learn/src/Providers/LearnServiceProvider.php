@@ -8,6 +8,7 @@ use Illuminate\Support\ServiceProvider;
 use InvalidArgumentException;
 use Modules\Core\Home\HomeRegistry;
 use Modules\Core\Search\SearchRegistry;
+use Modules\Learn\Console\LearnDailyCommand;
 use Modules\Learn\Home\LearnHomeContributor;
 use Modules\Learn\Media\FakeMediaConverter;
 use Modules\Learn\Media\FfmpegConverter;
@@ -25,5 +26,12 @@ final class LearnServiceProvider extends ServiceProvider
         });
         $this->app->tag([LearnHomeContributor::class], HomeRegistry::TAG);
         $this->app->tag([CourseSearchSource::class], SearchRegistry::TAG);
+    }
+
+    public function boot(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([LearnDailyCommand::class]);
+        }
     }
 }

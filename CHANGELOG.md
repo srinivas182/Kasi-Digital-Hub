@@ -2,6 +2,16 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.14.0] - 2026-10-10 - Sprint 14: KasiLearn learning and assessments
+
+### Added
+- Enrolment, learning player with data saver, offline downloads with progress sync, practice and graded quizzes
+  with a builder and AI-suggested questions, assignments and assessor marking, course completion (ADR-022).
+- `scripts/test-mysql.sh` runs the PHP tests against MySQL locally, as CI does.
+
+### Changed
+- CI runs on Ubuntu 24.04 (pinned) with actions/cache v5.
+
 ## [0.13.0] - 2026-10-10 - Sprint 13: KasiLearn courses and authoring
 
 ### Added

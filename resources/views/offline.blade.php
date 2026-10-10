@@ -20,6 +20,11 @@
             <h1>You're offline</h1>
             <p>There's no internet connection right now. Check your data or Wi-Fi, then try again. Your hub can help if you need a connection.</p>
             <button type="button" onclick="location.reload()">Try again</button>
+            <p id="downloads" hidden><a href="/learn/offline" style="color:#3b34b5;font-weight:600">Open my downloaded courses</a></p>
         </main>
+        <script>
+            // Show the link only when this phone has downloaded courses (KasiLearn offline, S14).
+            if ('caches' in window) caches.has('kasi-user-learn').then(function (has) { if (has) document.getElementById('downloads').hidden = false; });
+        </script>
     </body>
 </html>

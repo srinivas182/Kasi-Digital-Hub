@@ -8,9 +8,11 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Structure\Models\Organisation;
+use Modules\Learn\Models\Assignment;
 use Modules\Learn\Models\Course;
 use Modules\Learn\Models\CourseModule;
 use Modules\Learn\Models\Lesson;
+use Modules\Learn\Models\Quiz;
 use Modules\Learn\Services\CourseWorkflow;
 
 /**
@@ -53,6 +55,9 @@ final class DemoLearnSeeder extends Seeder
                         'minutes' => 10, 'preview' => $mp === 1 && $lp === 0, 'content' => self::doc($lessonTitle, $title)]);
                 }
             }
+            if ($topic === 'customer_service') {
+                self::assessments($course);
+            }
             $workflow->publish($course, $herman);
         }
 
@@ -73,5 +78,29 @@ final class DemoLearnSeeder extends Seeder
             ['type' => 'heading', 'attrs' => ['level' => 2], 'content' => [['type' => 'text', 'text' => 'Key points']]],
             ['type' => 'bulletList', 'content' => array_map(static fn (string $t): array => ['type' => 'listItem', 'content' => [$p($t)]], ['Go step by step.', 'Practise what you learn.', 'Ask for help when you need it.'])],
         ]];
+    }
+
+    /** A practice quiz, a graded quiz and an assignment for the customer service demo course (S14). */
+    private static function assessments(Course $course): void
+    {
+        $module = CourseModule::query()->where('course_id', $course->id)->orderByDesc('position')->first();
+        if ($module === null) {
+            return;
+        }
+        $q = static fn (string $prompt, string $right, string $wrong, string $why): array => ['kind' => 'single', 'prompt' => $prompt, 'explanation' => $why,
+            'options' => [['text' => $right, 'correct' => true, 'feedback' => null], ['text' => $wrong, 'correct' => false, 'feedback' => null]]];
+
+        $practice = Lesson::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'title' => 'Practice: serving customers', 'kind' => 'quiz', 'position' => 10]);
+        $quiz = Quiz::query()->create(['lesson_id' => $practice->id, 'graded' => false]);
+        $quiz->questions()->create([...$q('A customer is waiting while you finish a phone call. What do you do?', 'Smile and show you will help them soon', 'Ignore them until the call ends', 'Letting people know you have seen them keeps them patient.'), 'position' => 0]);
+
+        $graded = Lesson::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'title' => 'Quiz: customer service', 'kind' => 'quiz', 'position' => 11]);
+        $quiz = Quiz::query()->create(['lesson_id' => $graded->id, 'graded' => true, 'pass_mark' => 50]);
+        $quiz->questions()->create([...$q('A customer gives you R50 for a R32 item. How much change?', 'R18', 'R28', '50 - 32 = 18.'), 'position' => 0]);
+        $quiz->questions()->create([...$q('An unhappy customer is shouting. What is the best first step?', 'Listen calmly and let them explain', 'Shout back so they stop', 'Listening calms the situation and shows respect.'), 'position' => 1]);
+
+        $task = Lesson::query()->create(['course_id' => $course->id, 'module_id' => $module->id, 'title' => 'Assignment: handle a complaint', 'kind' => 'assignment', 'position' => 12]);
+        Assignment::query()->create(['lesson_id' => $task->id, 'instructions' => 'A customer says the bread they bought this morning is stale. Write what you would say and do, step by step.',
+            'rubric' => ['Listens and apologises', 'Offers a fair solution', 'Stays polite'], 'evidence' => ['text', 'photo']]);
     }
 }

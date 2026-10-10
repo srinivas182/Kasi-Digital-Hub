@@ -40,3 +40,6 @@ Schedule::command('kasi:work:matches')->dailyAt('07:15')->timezone('Africa/Johan
 
 // S12: no-ghosting outcomes, interview reminders, retention check-ins, applying-open notices, anonymisation.
 Schedule::command('kasi:work:hiring')->dailyAt('09:00')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('work-hiring'));
+
+// S14: one-time "you can now enrol" messages for saved courses.
+Schedule::command('kasi:learn:daily')->dailyAt('09:30')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('learn-daily'));
