@@ -147,7 +147,7 @@ it('uploads pictures re-encoded as WebP and queues videos for low-data versions'
     $this->post("/learn/author/courses/{$c->id}/media", ['kind' => 'video', 'file' => UploadedFile::fake()->createWithContent('clip.mp4', str_repeat('v', 4000))->mimeType('video/mp4')])
         ->assertJson(['ok' => true]);
     $video = Media::query()->where('kind', 'video')->sole();
-    expect($video->status)->toBe('ready')->and(array_keys($video->renditions))->toBe(['low', 'standard', 'audio']); // fake converter ran (sync queue)
+    expect($video->status)->toBe('ready')->and(array_keys($video->renditions))->toEqualCanonicalizing(['low', 'standard', 'audio']); // fake converter ran; MySQL re-orders JSON keys
 
     $this->post("/learn/author/courses/{$c->id}/media", ['kind' => 'image', 'file' => UploadedFile::fake()->createWithContent('x.php', '<?php echo 1;')])
         ->assertStatus(422);

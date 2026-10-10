@@ -23,5 +23,7 @@
 - The editor version first installed had a published security advisory, and an indirect dependency
   (`shell-quote`) had a new critical advisory that would have failed CI on the next push. Both resolved.
 - The demo provider uses the existing organisation type `training_provider`; the first code used `provider`.
+- CI (MySQL) failed one test that checked the order of keys in the stored video versions; MySQL re-orders
+  JSON object keys. The app reads versions by name; the test now ignores order.
 - KasiHub reviewers' buttons first set the decision and submitted in one click, which would have sent the
   previous decision - they now send the decision directly.
