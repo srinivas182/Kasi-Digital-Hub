@@ -43,3 +43,6 @@ Schedule::command('kasi:work:hiring')->dailyAt('09:00')->timezone('Africa/Johann
 
 // S14: one-time "you can now enrol" messages for saved courses.
 Schedule::command('kasi:learn:daily')->dailyAt('09:30')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('learn-daily'));
+
+// S17: partner referral reminders, "no response" at 30 days, follow-ups.
+Schedule::command('kasi:partner:daily')->dailyAt('09:45')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('partner-daily'));

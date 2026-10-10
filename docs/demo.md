@@ -62,6 +62,15 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - support and referrals (4 minutes)
+
+1. As Nomsa (072 000 0003): Support for you - "You qualify" for some offers, "Almost there" for others with links to
+   the step that fixes each gap.
+2. Open "Business basics training (demo)" - tick what to share, agree, send. See the referral and its timeline.
+3. As Karabo (072 000 0050, Ubuntu Community Bank): Partner portal - open the referral, ask for more information,
+   approve, record the outcome. As Nomsa: confirm it was received.
+4. Partner portal -> New offer: structured criteria; try "application fee" in the description - it is refused.
+
 ## Demo script - KasiStart (4 minutes)
 
 1. As Nomsa (072 000 0003): My business -> "Nomsa Hair Studio (demo)": readiness, steps for a sole proprietor.

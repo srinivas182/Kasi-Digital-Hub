@@ -5,13 +5,15 @@
     "description": "Banks, insurers, funding agencies and corporate buyers: referrals and offers",
     "group": "operations",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.17.0",
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Partner\\Providers\\PartnerServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": null,
@@ -26,7 +28,10 @@
                 "Start": "view",
                 "Connect": "view",
                 "Partner": "manage"
-            }
+            },
+            "permissions": [
+                "partner.portal"
+            ]
         },
         {
             "key": "partner_agent",
@@ -36,16 +41,30 @@
             "staff": true,
             "access": {
                 "Partner": "use"
-            }
+            },
+            "permissions": [
+                "partner.portal"
+            ]
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "partner.portal"
+    ],
     "events": {
-        "publishes": [],
-        "consumes": []
+        "publishes": [
+            "partner.referral.sent",
+            "partner.referral.stage_changed",
+            "partner.support.confirmed",
+            "partner.followup.answered"
+        ],
+        "listens": [
+            "core.moderation.decided"
+        ]
     },
     "impact_metrics": [],
-    "demo_seeders": [],
+    "demo_seeders": [
+        "Modules\\Partner\\Database\\Seeders\\DemoPartnerSeeder"
+    ],
     "nav": {
         "icon": "store",
         "href": "/partner",
@@ -53,7 +72,8 @@
             {
                 "label": "nav.partner.referrals",
                 "href": "/partner",
-                "icon": "store"
+                "icon": "store",
+                "permission": "partner.portal"
             }
         ]
     }

@@ -35,6 +35,10 @@ Every event is written to the platform event log and can be used by any portal t
 | `learn.lesson.completed` | KasiLearn | - | A learner finished a lesson. |
 | `learn.provider.registered` | KasiLearn | - | A training provider registered (waiting for verification). |
 | `learn.quiz.passed` | KasiLearn | - | A learner passed a graded quiz. |
+| `partner.followup.answered` | Partner portal | - | An entrepreneur answered the 3- or 6-month "still trading?" check-in. |
+| `partner.referral.sent` | Partner portal | - | An entrepreneur (or a hub facilitator) sent a consented referral to a partner offer. |
+| `partner.referral.stage_changed` | Partner portal | - | A partner moved a referral (reviewing, more information, approved, declined, no response). |
+| `partner.support.confirmed` | Partner portal | - | Support from a partner confirmed by both the partner and the entrepreneur. |
 | `start.business.created` | KasiStart | - | An entrepreneur created a business profile. |
 | `start.business.formalised` | KasiStart | - | A business completed every formalisation step that applies to it. |
 | `start.plan.completed` | KasiStart | - | A business completed its business plan. |

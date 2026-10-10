@@ -64,6 +64,12 @@
                 "icon": "rocket"
             },
             {
+                "label": "nav.start.support",
+                "href": "/support",
+                "icon": "store",
+                "permission": "start.own"
+            },
+            {
                 "label": "nav.start.steps",
                 "href": "/start/admin/steps",
                 "icon": "shield",

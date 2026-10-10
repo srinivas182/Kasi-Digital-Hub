@@ -57,3 +57,7 @@ language before switching any language on.
 - **Legal review** of the draft formalisation steps, the legal-form guide and the B-BBEE affidavit wording
   (Admin -> Business steps). Each step shows a "last checked" date once reviewed.
 - **Commissioners of oaths:** do any hub staff hold this appointment (for signing affidavits at the hub)?
+
+## Partners (Sprint 17)
+
+- **Data-sharing agreement** wording for partners (currently a draft summary, version `draft-2026-10`).

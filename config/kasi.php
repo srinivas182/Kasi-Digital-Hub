@@ -198,6 +198,19 @@ return [
     ],
 
     /*
+    | Business sectors (KasiStart businesses, partner offer criteria). Must match Business::SECTORS (tested).
+    */
+    'business_sectors' => ['food', 'retail', 'beauty', 'services', 'construction', 'agriculture', 'transport', 'manufacturing', 'creative', 'digital', 'care', 'other'],
+
+    /*
+    | Partners (S17). The data-sharing agreement version partners must accept before receiving referrals.
+    | DRAFT wording - to be replaced by Ku Tirhisana's legal adviser (bump the version when it changes).
+    */
+    'partner' => [
+        'agreement_version' => env('KASI_PARTNER_AGREEMENT_VERSION', 'draft-2026-10'),
+    ],
+
+    /*
     | KasiLearn (S13): media conversion driver (fake in CI, ffmpeg in the media worker).
     */
     'learn' => [

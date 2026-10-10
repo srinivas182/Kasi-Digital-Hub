@@ -2,6 +2,14 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.17.0] - 2026-10-10 - Sprint 17: KasiStart partners and referrals
+
+### Added
+- Partner registration with data-sharing agreement, offers with structured eligibility, explainable "Support for you",
+  consented referrals with time-limited audited document access, partner pipeline with no-ghosting rules, two-sided
+  outcomes and follow-ups (ADR-025).
+- Architecture test: every rendered Inertia page has a page file.
+
 ## [0.16.0] - 2026-10-10 - Sprint 16: KasiStart business registration
 
 ### Added
