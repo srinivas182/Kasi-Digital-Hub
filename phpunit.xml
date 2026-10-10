@@ -36,6 +36,7 @@
         <env name="KASI_AI_DRIVER" value="fake"/>
         <env name="KASI_SEARCH_DRIVER" value="database"/>
         <env name="KASI_PDF_DRIVER" value="fake"/>
+        <env name="KASI_MEDIA_DRIVER" value="fake"/>
         <env name="KASI_SMS_DRIVER" value="log"/>
         <env name="KASI_WHATSAPP_DRIVER" value="log"/>
         <env name="KASI_PAYMENTS_DRIVER" value="fake"/>

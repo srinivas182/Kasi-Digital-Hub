@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Events\ModerationDecided;
 use Modules\Core\Home\HomeRegistry;
+use Modules\Core\Home\SkillGapSource;
 use Modules\Core\Search\RefreshSearchDocument;
 use Modules\Core\Search\SearchRegistry;
 use Modules\Work\Console\HiringHousekeepingCommand;
@@ -17,6 +18,7 @@ use Modules\Work\Console\JobAlertsCommand;
 use Modules\Work\Console\ListingHousekeepingCommand;
 use Modules\Work\Home\WorkHomeContributor;
 use Modules\Work\Matching\RefreshMatches;
+use Modules\Work\Matching\WorkSkillGaps;
 use Modules\Work\Models\JobListing;
 use Modules\Work\Search\JobSearchSource;
 use Modules\Work\Services\Listings;
@@ -26,6 +28,7 @@ final class WorkServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->tag([WorkHomeContributor::class], HomeRegistry::TAG);
+        $this->app->tag([WorkSkillGaps::class], SkillGapSource::TAG);
         $this->app->tag([JobSearchSource::class], SearchRegistry::TAG);
     }
 

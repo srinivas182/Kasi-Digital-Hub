@@ -64,7 +64,7 @@ it('only asks for a matric certificate from job seekers and learners', function 
 it('shows only the services the person can open, marking portals not built yet as coming soon', function (): void {
     homeFor($this, Structure::personWith('job_seeker'))
         ->where('services', fn ($services) => collect($services)->pluck('module')->all() === ['Work', 'Learn']
-            && collect($services)->pluck('available', 'module')->all() === ['Work' => true, 'Learn' => false]);
+            && collect($services)->pluck('available', 'module')->all() === ['Work' => true, 'Learn' => true]);
 });
 
 it('shows the latest updates', function (): void {

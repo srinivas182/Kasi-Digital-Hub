@@ -15,6 +15,10 @@ const ENTRY = 'resources/js/app.tsx';
 const PUBLIC_HOME = 'modules/Site/resources/js/Pages/Home.tsx';
 const ENTRY_BUDGET_KB = Number(process.env.BUNDLE_BUDGET_ENTRY_KB ?? 150);
 const PAGE_BUDGET_KB = Number(process.env.BUNDLE_BUDGET_PAGE_KB ?? 60);
+// Author-only tools (course editor) run on desktops, are never loaded by learners and carry a rich-text
+// editor; they get their own budget (docs/design-system.md#performance-budgets).
+const AUTHOR_PAGES = ['modules/Learn/resources/js/Pages/Author/'];
+const AUTHOR_PAGE_BUDGET_KB = Number(process.env.BUNDLE_BUDGET_AUTHOR_PAGE_KB ?? 200);
 const FIRST_LOAD_BUDGET_KB = Number(process.env.BUNDLE_BUDGET_FIRST_LOAD_KB ?? 130);
 // Internal pages that are never served in production (they deliberately load every component).
 const EXEMPT = ['modules/Core/resources/js/Pages/UiKit/'];
@@ -41,7 +45,8 @@ for (const key of Object.keys(manifest)) {
     const own = [...closure(key)].filter((k) => !entryKeys.has(k));
     const pageSize = size(own);
     const exempt = EXEMPT.some((prefix) => key.startsWith(prefix));
-    const over = !exempt && pageSize > PAGE_BUDGET_KB;
+    const budget = AUTHOR_PAGES.some((prefix) => key.startsWith(prefix)) ? AUTHOR_PAGE_BUDGET_KB : PAGE_BUDGET_KB;
+    const over = !exempt && pageSize > budget;
     failed ||= over;
     console.log(`Page ${key.replace(/^modules\//, '').replace('/resources/js/Pages/', '/')}: ${pageSize.toFixed(1)} KB gzip${exempt ? ' (internal, exempt)' : over ? '  <-- over budget' : ''}`);
 }

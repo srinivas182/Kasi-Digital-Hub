@@ -2,6 +2,16 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.13.0] - 2026-10-10 - Sprint 13: KasiLearn courses and authoring
+
+### Added
+- Training provider registration, team and accreditation claims; course authoring with a safe rich-text editor,
+  AI writing help, accessibility checks and data sizes; low-data video/audio conversion; review and publishing
+  with frozen versions; catalogue with public course pages and "Courses for you" (ADR-021).
+
+### Security
+- Dependency advisories resolved (TipTap 3.31.3, shell-quote).
+
 ## [0.12.0] - 2026-10-09 - Sprint 12: KasiWork hiring
 
 ### Added

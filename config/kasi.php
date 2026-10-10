@@ -197,6 +197,15 @@ return [
     ],
 
     /*
+    | KasiLearn (S13): media conversion driver (fake in CI, ffmpeg in the media worker).
+    */
+    'learn' => [
+        'media_driver' => env('KASI_MEDIA_DRIVER', 'fake'),
+        'max_media_seconds' => 15 * 60,
+        'max_upload_kb' => 500 * 1024,
+    ],
+
+    /*
     | Embeddings (S11): only skill names and job titles are embedded, never personal details.
     */
     'embeddings' => [
@@ -220,6 +229,7 @@ return [
         'checklists' => [
             'employer' => ['cipc_found', 'cipc_active', 'person_linked', 'phone_answered'],
             'employer_community' => ['id_verified', 'address_verified', 'hub_visit', 'phone_answered'],
+            'training_provider' => ['cipc_found', 'cipc_active', 'person_linked', 'phone_answered'],
         ],
     ],
 

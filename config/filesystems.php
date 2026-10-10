@@ -41,6 +41,15 @@ return [
         ],
 
         // Private document vault - never served directly; downloads use signed, permission-checked links.
+        // KasiLearn course media (S13), served through access-checked routes.
+        'learn' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/learn'),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => false,
+        ],
+
         'documents' => [
             'driver' => 'local',
             'root' => storage_path('app/private/documents'),

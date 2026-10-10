@@ -44,3 +44,10 @@ language before switching any language on.
 - **Official OFO list:** a CSV of the Organising Framework for Occupations (code, title, major group) from the
   Department of Employment and Labour or QCTO, so occupations carry official codes.
 - **Who verifies employers** at Ku Tirhisana, and the hub process for visiting community employers.
+
+## KasiLearn (Sprint 13)
+
+- **Real courses from HBM EduTech** to replace the three demo courses (titles, outcomes, lessons; videos at most
+  15 minutes with transcripts).
+- **Accreditation details** (QCTO / SETA numbers and letters) for any accredited programmes.
+- **Who at Ku Tirhisana reviews courses** for 16-17-year-olds and first courses from new providers.

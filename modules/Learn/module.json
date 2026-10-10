@@ -5,13 +5,15 @@
     "description": "Learning and skills: courses, assessments, certificates, cohorts, AI tutor",
     "group": "service",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.13.0",
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Learn\\Providers\\LearnServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": "learn",
@@ -24,7 +26,10 @@
             "staff": false,
             "access": {
                 "Learn": "use"
-            }
+            },
+            "permissions": [
+                "learn.study"
+            ]
         },
         {
             "key": "provider_admin",
@@ -34,7 +39,11 @@
             "staff": true,
             "access": {
                 "Learn": "manage"
-            }
+            },
+            "permissions": [
+                "learn.provide",
+                "learn.approve"
+            ]
         },
         {
             "key": "course_author",
@@ -44,7 +53,10 @@
             "staff": true,
             "access": {
                 "Learn": "use"
-            }
+            },
+            "permissions": [
+                "learn.provide"
+            ]
         },
         {
             "key": "assessor_moderator",
@@ -54,12 +66,26 @@
             "staff": true,
             "access": {
                 "Learn": "use"
-            }
+            },
+            "permissions": [
+                "learn.assess"
+            ]
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "learn.study",
+        "learn.provide",
+        "learn.approve",
+        "learn.assess",
+        "learn.review"
+    ],
     "events": {
-        "publishes": [],
+        "publishes": [
+            "learn.course.submitted",
+            "learn.course.published",
+            "learn.course.unpublished",
+            "learn.provider.registered"
+        ],
         "consumes": []
     },
     "impact_metrics": [
@@ -67,25 +93,29 @@
         "completions",
         "certificates"
     ],
-    "demo_seeders": [],
+    "demo_seeders": [
+        "Modules\\Learn\\Database\\Seeders\\DemoLearnSeeder"
+    ],
     "nav": {
         "icon": "book-open",
-        "href": "/learn",
+        "href": "/learn/courses",
         "items": [
-            {
-                "label": "nav.learn.my_courses",
-                "href": "/learn",
-                "icon": "book-open"
-            },
             {
                 "label": "nav.learn.catalogue",
                 "href": "/learn/courses",
                 "icon": "grid"
             },
             {
-                "label": "nav.learn.certificates",
-                "href": "/learn/certificates",
-                "icon": "shield"
+                "label": "nav.learn.author",
+                "href": "/learn/author",
+                "icon": "book-open",
+                "permission": "learn.provide"
+            },
+            {
+                "label": "nav.learn.review",
+                "href": "/learn/review",
+                "icon": "shield",
+                "permission": "learn.review"
             }
         ]
     }

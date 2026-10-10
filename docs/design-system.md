@@ -115,3 +115,9 @@ UI kit pages are internal and exempt.
 - Never rely on colour alone; icons have text or a label.
 - Tooltips are extras only - never essential information.
 - Run `npx playwright test` - axe must report no serious or critical issues.
+
+### Author tools budget (S13)
+
+Pages under `modules/Learn/resources/js/Pages/Author/` (course authoring) may be up to 200 KB gzip: they hold the
+rich-text editor (TipTap/ProseMirror), are used by provider staff on desktops and are never loaded by learners.
+Learner and public pages keep the 60 KB page budget and the 130 KB first-load budget.

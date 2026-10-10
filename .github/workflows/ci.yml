@@ -46,6 +46,7 @@ jobs:
                         - 'resources/views/pdf/**'
                         - 'modules/*/resources/views/**'
                         - 'tests/Integration/**'
+                        - 'modules/Learn/src/Media/**'
                       php:
                         - '**/*.php'
                         - 'composer.*'
@@ -149,7 +150,7 @@ jobs:
 
     # Real Meilisearch and Gotenberg, only when search or PDF code changes (about a minute).
     integration:
-        name: Integration (Meilisearch + Gotenberg)
+        name: Integration (Meilisearch + Gotenberg + ffmpeg)
         needs: changes
         if: needs.changes.outputs.services == 'true' || github.event_name == 'workflow_dispatch'
         runs-on: ubuntu-latest
@@ -186,6 +187,8 @@ jobs:
             - name: Wait for services
               run: |
                   for i in $(seq 1 30); do curl -sf http://127.0.0.1:7700/health && curl -sf http://127.0.0.1:3000/health && exit 0; sleep 2; done; exit 1
+            - name: Install ffmpeg (KasiLearn media conversion)
+              run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
             - name: Contract tests
               run: vendor/bin/pest --testsuite=Integration
               env:

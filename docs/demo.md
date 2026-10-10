@@ -62,6 +62,15 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - KasiLearn courses (5 minutes)
+
+1. Signed out: /learn/courses - three HBM EduTech demo courses with data sizes; open one; read the free preview.
+2. As Herman (072 000 0012): My courses (author) -> "CV and interview skills (demo, draft)". Add a text lesson,
+   use "Help me write this lesson", add a picture (it asks for a description), save - see the checks.
+3. Add a video lesson: upload a short clip; it is converted to small versions (240p, 360p, audio only).
+4. Submit; as provider admin approve -> it goes to KasiHub review (course for 16+). As Lucky (072 000 0040):
+   Course review -> approve and publish. The course appears in the catalogue.
+
 ## Demo script - hiring (5 minutes)
 
 1. As Lwazi (072 000 0002): Find jobs -> Shelf packer -> Apply (choose "make a new CV", answer, confirm sharing).

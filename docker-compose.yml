@@ -31,6 +31,8 @@ services:
       context: .
       dockerfile: docker/php/Dockerfile
     command: php artisan horizon
+    environment:
+      KASI_MEDIA_DRIVER: ffmpeg # KasiLearn video/audio conversion (ffmpeg is in the PHP image)
     volumes:
       - .:/var/www/html
     depends_on:

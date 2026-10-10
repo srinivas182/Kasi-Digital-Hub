@@ -39,7 +39,8 @@
             "permissions": [
                 "admin.*",
                 "hubops.*",
-                "work.insights"
+                "work.insights",
+                "learn.review"
             ]
         },
         {
@@ -76,7 +77,8 @@
                 "hubops.compare",
                 "admin.ai.view",
                 "admin.moderation.review",
-                "work.insights"
+                "work.insights",
+                "learn.review"
             ]
         },
         {
@@ -121,7 +123,8 @@
                 "admin.people.view",
                 "admin.hubs.view",
                 "admin.organisations.view",
-                "admin.moderation.review"
+                "admin.moderation.review",
+                "learn.review"
             ]
         }
     ],

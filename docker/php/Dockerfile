@@ -3,8 +3,8 @@
 FROM php:8.3-fpm-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        git unzip libzip-dev libicu-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+        git unzip libzip-dev libicu-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev libwebp-dev ffmpeg \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j"$(nproc)" pdo_mysql bcmath intl zip gd pcntl opcache \
     && pecl install redis && docker-php-ext-enable redis \
     && rm -rf /var/lib/apt/lists/*
