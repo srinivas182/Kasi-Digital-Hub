@@ -10,9 +10,30 @@ import { clsx, type ClassValue } from 'clsx';
  */
 const TEXT_SIZES = new Set(['xs', 'sm', 'base', 'lg', 'xl', '2xl', '3xl', '4xl', '5xl', '6xl']);
 const ALIGN = new Set(['left', 'center', 'right', 'justify', 'start', 'end']);
-const DISPLAY = new Set(['block', 'inline-block', 'inline', 'flex', 'inline-flex', 'grid', 'inline-grid', 'hidden', 'contents', 'table']);
+const DISPLAY = new Set([
+    'block',
+    'inline-block',
+    'inline',
+    'flex',
+    'inline-flex',
+    'grid',
+    'inline-grid',
+    'hidden',
+    'contents',
+    'table',
+]);
 const POSITION = new Set(['static', 'fixed', 'absolute', 'relative', 'sticky']);
-const FONT_WEIGHTS = new Set(['thin', 'extralight', 'light', 'normal', 'medium', 'semibold', 'bold', 'extrabold', 'black']);
+const FONT_WEIGHTS = new Set([
+    'thin',
+    'extralight',
+    'light',
+    'normal',
+    'medium',
+    'semibold',
+    'bold',
+    'extrabold',
+    'black',
+]);
 const BORDER_WIDTH = /^border(-[trblxy])?(-\d+)?$/;
 const ROUNDED = /^rounded(-[a-z0-9]+)*$/;
 
@@ -57,7 +78,7 @@ function group(utility: string): string | null {
         case 'gap':
             return rest.startsWith('x-') ? 'gap-x' : rest.startsWith('y-') ? 'gap-y' : 'gap';
         case 'text':
-            if (TEXT_SIZES.has(rest) || rest.startsWith('[') && /\d(px|rem|em)/.test(rest)) return 'text-size';
+            if (TEXT_SIZES.has(rest) || (rest.startsWith('[') && /\d(px|rem|em)/.test(rest))) return 'text-size';
             if (ALIGN.has(rest)) return 'text-align';
             return 'text-color';
         case 'font':
@@ -74,7 +95,11 @@ function group(utility: string): string | null {
         case 'col':
             return 'col';
         case 'flex':
-            return ['row', 'col', 'row-reverse', 'col-reverse'].includes(rest) ? 'flex-direction' : ['wrap', 'nowrap', 'wrap-reverse'].includes(rest) ? 'flex-wrap' : 'flex';
+            return ['row', 'col', 'row-reverse', 'col-reverse'].includes(rest)
+                ? 'flex-direction'
+                : ['wrap', 'nowrap', 'wrap-reverse'].includes(rest)
+                  ? 'flex-wrap'
+                  : 'flex';
         case 'overflow':
             return rest.startsWith('x') ? 'overflow-x' : rest.startsWith('y') ? 'overflow-y' : 'overflow';
         case 'cursor':
