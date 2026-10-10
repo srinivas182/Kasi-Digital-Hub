@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\ThrottlePerRoute;
 use App\Support\Errors\ErrorPage;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -23,6 +24,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['kasi_locale']);
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/home');
+        // Rate limits per person and per route (see ThrottlePerRoute).
+        $middleware->alias(['throttle' => ThrottlePerRoute::class]);
         $middleware->web(append: [
             TrackDevice::class,
             SetLocale::class,

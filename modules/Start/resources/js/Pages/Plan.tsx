@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardTitle } from '@/components/ui/display';
 import { Field, Input, Textarea } from '@/components/ui/form';
 import { AppLayout } from '@/layouts/AppLayout';
+import { formatMoney } from '@/lib/format';
 import { useTranslation } from '@/lib/i18n';
 
 interface Props {
@@ -17,7 +18,8 @@ interface Props {
     ai: boolean;
 }
 
-const money = (v: number) => `R${v.toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+// The platform's money format (same on every phone and browser), not the browser's locale.
+const money = (rands: number) => formatMoney(Math.round(rands * 100));
 
 /** Price and break-even, worked out on the phone with the same rules as the server (Plans::calculate). */
 export function calculate(cost: number | null, markup: number | null, price: number | null, fixed: number | null) {
