@@ -23,6 +23,14 @@
 - The new national roles were added to the agreed access matrix (a guard test that stops roles being added silently).
 - The safeguarding queue sorted by an ambiguous `status` column (the joined users table has one too) - qualified.
 
+## CI note
+
+The first CI run of S18 failed in the browser job: the test web server stopped part-way through and 84 tests got
+"connection refused". It did not reproduce locally, even with CI's settings (`CI=1`). Changes: the test server now runs
+with `--no-reload` (it must never restart itself mid-run; a failed restart would leave it down, matching the CI
+pattern), and its output plus Laravel's log are uploaded with the traces when the browser job fails, so any recurrence
+can be diagnosed from evidence.
+
 ## Waiting on Ku Tirhisana
 
 - Mentor **code of conduct** wording; the **legal checks** for mentors of 16-17-year-olds; who the **safeguarding
