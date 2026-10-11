@@ -16,6 +16,9 @@ const AGREED_MATRIX = [
     'learner' => ['Learn' => 'use'],
     'entrepreneur' => ['Learn' => 'use', 'Start' => 'use', 'Connect' => 'use'],
     'mentor' => ['Connect' => 'use'],
+    // S18 (ADR-026): national mentoring roles.
+    'mentor_coordinator' => ['Connect' => 'manage'],
+    'safeguarding_officer' => ['Connect' => 'manage'],
     'employer_admin' => ['Work' => 'manage', 'Learn' => 'use', 'Connect' => 'use'],
     'recruiter' => ['Work' => 'use'],
     'provider_admin' => ['Learn' => 'manage'],

@@ -41,7 +41,9 @@
                 "hubops.*",
                 "work.insights",
                 "learn.review",
-                "start.content"
+                "start.content",
+                "connect.coordinate",
+                "connect.safeguard"
             ]
         },
         {
@@ -80,7 +82,8 @@
                 "admin.moderation.review",
                 "work.insights",
                 "learn.review",
-                "start.content"
+                "start.content",
+                "connect.coordinate"
             ]
         },
         {

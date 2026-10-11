@@ -61,3 +61,10 @@ language before switching any language on.
 ## Partners (Sprint 17)
 
 - **Data-sharing agreement** wording for partners (currently a draft summary, version `draft-2026-10`).
+
+## KasiConnect (Sprint 18)
+
+- **Mentor code of conduct** wording.
+- **Legal checks** for volunteer mentors of 16-17-year-olds (police clearance is required in the platform; confirm any
+  others, e.g. checks against registers of people unsuitable to work with children).
+- **Who** the safeguarding officers and mentor coordinators are (roles: `safeguarding_officer`, `mentor_coordinator`).

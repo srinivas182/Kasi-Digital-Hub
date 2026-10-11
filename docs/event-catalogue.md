@@ -10,6 +10,11 @@ Every event is written to the platform event log and can be used by any portal t
 | `admin.account.suspended` | National admin console | - | An administrator suspended a person's account (signed out everywhere; cannot sign in). |
 | `admin.organisation.rejected` | National admin console | - | An organisation's verification was rejected, with a reason. |
 | `admin.organisation.verified` | National admin console | - | An organisation's details were checked and it was verified. |
+| `connect.concern.raised` | KasiConnect | - | A safeguarding concern was reported (no details in the event). |
+| `connect.mentor.approved` | KasiConnect | - | A mentor passed vetting and was approved. |
+| `connect.mentorship.ended` | KasiConnect | - | A mentorship ended, with goals met. |
+| `connect.mentorship.started` | KasiConnect | - | A mentor and young person agreed a mentorship. |
+| `connect.session.held` | KasiConnect | - | A mentoring session took place (with the "helpful" answer when given). |
 | `core.consent.changed` | Core | - | A person gave or withdrew consent for a purpose (POPIA). |
 | `core.document.quarantined` | Core | - | A virus scan flagged an uploaded document; it is quarantined and cannot be opened. |
 | `core.document.rejected` | Core | Core | A document was checked and rejected, with a reason. |

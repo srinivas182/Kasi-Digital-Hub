@@ -46,3 +46,6 @@ Schedule::command('kasi:learn:daily')->dailyAt('09:30')->timezone('Africa/Johann
 
 // S17: partner referral reminders, "no response" at 30 days, follow-ups.
 Schedule::command('kasi:partner:daily')->dailyAt('09:45')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('partner-daily'));
+
+// S18: mentoring reminders, group-session hours, end-of-agreement prompts (hourly, safe to repeat).
+Schedule::command('kasi:connect:daily')->hourly()->withoutOverlapping()->onSuccess($heartbeat('connect-daily'));

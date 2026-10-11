@@ -62,6 +62,13 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - mentoring (4 minutes)
+
+1. As Nomsa (072 000 0003): Mentoring -> "Your mentor Palesa": goals, sessions with notes, "Was this helpful?".
+   Try sending a phone number in a message - refused before 2 sessions. "Report a concern" is always there.
+2. As Lwazi (072 000 0002): Find a mentor -> goal "Grow my business", interests "catering" - Palesa with reasons.
+3. As Ayanda (072 000 0042): Mentor vetting - the checklist. As Lucky (072 000 0040): Safeguarding queue.
+
 ## Demo script - support and referrals (4 minutes)
 
 1. As Nomsa (072 000 0003): Support for you - "You qualify" for some offers, "Almost there" for others with links to

@@ -2,6 +2,13 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.18.0] - 2026-10-10 - Sprint 18: KasiConnect mentors
+
+### Added
+- Mentor vetting and approval, explainable mentor suggestions, agreements, sessions with private notes, moderated
+  messages with early contact-detail blocking, group sessions at hubs, hours certificates.
+- Safeguarding: concern reporting, officer queue, urgent pause, under-18 protections and guardian SMS (ADR-026).
+
 ## [0.17.0] - 2026-10-10 - Sprint 17: KasiStart partners and referrals
 
 ### Added

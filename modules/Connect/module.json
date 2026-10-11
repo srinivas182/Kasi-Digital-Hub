@@ -5,13 +5,15 @@
     "description": "Mentors, networks and funding",
     "group": "service",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.18.0",
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Connect\\Providers\\ConnectServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": "connect",
@@ -24,18 +26,59 @@
             "staff": false,
             "access": {
                 "Connect": "use"
+            },
+            "permissions": [
+                "connect.mentor"
+            ]
+        },
+        {
+            "key": "mentor_coordinator",
+            "label": "roles.mentor_coordinator",
+            "scope": "national",
+            "category": "national",
+            "staff": true,
+            "permissions": [
+                "connect.coordinate"
+            ],
+            "access": {
+                "Connect": "manage"
+            }
+        },
+        {
+            "key": "safeguarding_officer",
+            "label": "roles.safeguarding_officer",
+            "scope": "national",
+            "category": "national",
+            "staff": true,
+            "permissions": [
+                "connect.safeguard"
+            ],
+            "access": {
+                "Connect": "manage"
             }
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "connect.mentor",
+        "connect.coordinate",
+        "connect.safeguard"
+    ],
     "events": {
-        "publishes": [],
-        "consumes": []
+        "publishes": [
+            "connect.mentor.approved",
+            "connect.mentorship.started",
+            "connect.session.held",
+            "connect.mentorship.ended",
+            "connect.concern.raised"
+        ],
+        "listens": []
     },
     "impact_metrics": [
         "mentor_sessions"
     ],
-    "demo_seeders": [],
+    "demo_seeders": [
+        "Modules\\Connect\\Database\\Seeders\\DemoConnectSeeder"
+    ],
     "nav": {
         "icon": "handshake",
         "href": "/connect",
@@ -46,9 +89,26 @@
                 "icon": "handshake"
             },
             {
-                "label": "nav.connect.sessions",
-                "href": "/connect/sessions",
+                "label": "nav.connect.find",
+                "href": "/connect/find",
                 "icon": "users"
+            },
+            {
+                "label": "nav.connect.be_mentor",
+                "href": "/connect/mentor",
+                "icon": "users"
+            },
+            {
+                "label": "nav.connect.coordinator",
+                "href": "/connect/coordinator",
+                "icon": "shield",
+                "permission": "connect.coordinate"
+            },
+            {
+                "label": "nav.connect.safeguarding",
+                "href": "/connect/safeguarding",
+                "icon": "shield",
+                "permission": "connect.safeguard"
             }
         ]
     }
