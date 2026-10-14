@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Commercial\Database\Seeders\CatalogueSeeder;
 use Modules\Core\Database\Seeders\ConsentDocumentSeeder;
 use Modules\Core\Database\Seeders\GeographySeeder;
 use Modules\Start\Database\Seeders\StepSeeder;
@@ -19,7 +20,7 @@ final class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([ConsentDocumentSeeder::class, GeographySeeder::class, OccupationSeeder::class, SkillSynonymSeeder::class, StepSeeder::class]);
+        $this->call([ConsentDocumentSeeder::class, GeographySeeder::class, OccupationSeeder::class, SkillSynonymSeeder::class, StepSeeder::class, CatalogueSeeder::class]);
 
         if (config('kasi.demo.enabled') === true) {
             $this->call(DemoSeeder::class);

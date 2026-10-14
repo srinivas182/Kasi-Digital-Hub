@@ -123,7 +123,17 @@ export default function Dashboard({ person, employer, employers, isAdmin, listin
                     <h2 id="listings" className="text-fg text-lg font-bold">
                         {t('work.employer.listings')}
                     </h2>
-                    <span className="text-fg-muted text-sm">{t('work.employer.active', { count: active, limit })}</span>
+                    <span className="text-fg-muted flex flex-wrap items-center gap-2 text-sm">
+                        {t('work.employer.active', { count: active, limit })}
+                        {isAdmin && (
+                            <Link
+                                href={`/commercial/buy/work_extra_advert?organisation=${employer.id}`}
+                                className="text-primary font-semibold hover:underline"
+                            >
+                                {t('work.employer.buy_slot')}
+                            </Link>
+                        )}
+                    </span>
                 </div>
                 <div className="mt-3">
                     <DataTable<Listing>

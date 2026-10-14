@@ -62,6 +62,15 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - commercial (4 minutes)
+
+1. As Sipho (072 000 0010, Mopani Fresh Market): KasiWork employer page -> "Add an extra advert" -> checkout (credit
+   goes to his hub) -> demo payment page -> Pay. The advert limit goes up by one for 30 days; download the receipt.
+2. As the Tsutsumani hub owner (072 000 0024): Hub finance -> point of sale: sell a desk day; see the statement (cash
+   royalty netted) and the readiness checklist.
+3. As Lucky (072 000 0040): Commercial console - revenue by stream, league table, catalogue and placeholder split
+   rules; propose a price change - a second admin must approve it.
+
 ## Demo script - mentoring (4 minutes)
 
 1. As Nomsa (072 000 0003): Mentoring -> "Your mentor Palesa": goals, sessions with notes, "Was this helpful?".

@@ -206,3 +206,11 @@ it('blocks submitting a course with an empty quiz or assignment', function (): v
 
     expect(collect(app(CourseChecks::class)->problems($c))->pluck('code'))->toContain('no_questions');
 });
+
+it('stores true/false questions in full (column long enough on MySQL)', function (): void {
+    $quiz = Quiz::query()->where('lesson_id', $this->graded->id)->firstOrFail();
+    $question = $quiz->questions()->create(['kind' => 'truefalse', 'prompt' => 'Email needs an address', 'position' => 9,
+        'options' => [['text' => 'True', 'correct' => true, 'feedback' => null], ['text' => 'False', 'correct' => false, 'feedback' => null]]]);
+
+    expect($question->refresh()->kind)->toBe('truefalse');
+});

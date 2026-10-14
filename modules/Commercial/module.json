@@ -5,13 +5,15 @@
     "description": "Price list, packages, royalties, attribution, split settlement, payouts",
     "group": "national",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.19.0",
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Commercial\\Providers\\CommercialServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": null,
@@ -35,8 +37,8 @@
                 "Commercial": "manage"
             },
             "permissions": [
-                "hubops.dashboard",
-                "hubops.compare"
+                "commercial.manage",
+                "commercial.view"
             ]
         },
         {
@@ -58,31 +60,40 @@
                 "Commercial": "manage"
             },
             "permissions": [
-                "hubops.dashboard",
-                "hubops.compare"
+                "commercial.finance",
+                "commercial.view"
             ]
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "commercial.manage",
+        "commercial.finance",
+        "commercial.hub",
+        "commercial.view"
+    ],
     "events": {
         "publishes": [],
-        "consumes": []
+        "listens": []
     },
     "impact_metrics": [],
-    "demo_seeders": [],
+    "demo_seeders": [
+        "Modules\\Commercial\\Database\\Seeders\\DemoCommercialSeeder"
+    ],
     "nav": {
         "icon": "coins",
         "href": "/commercial",
         "items": [
             {
-                "label": "nav.commercial.pricing",
+                "label": "nav.commercial.console",
                 "href": "/commercial",
-                "icon": "coins"
+                "icon": "coins",
+                "permission": "commercial.view"
             },
             {
-                "label": "nav.commercial.payouts",
-                "href": "/commercial/payouts",
-                "icon": "bar-chart"
+                "label": "nav.commercial.hub",
+                "href": "/commercial/hub",
+                "icon": "bar-chart",
+                "permission": "commercial.hub"
             }
         ]
     }

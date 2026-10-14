@@ -40,7 +40,14 @@ test('a young person applies for a job and follows the application', async ({ pa
 test('an employer moves an applicant and adds a team note', async ({ page }) => {
     await signIn(page, '072 000 0010');
     await page.goto('/work/employer');
-    await page.getByRole('link', { name: 'Applicants' }).first().click();
+    // Open the Cashier advert by name: other tests may publish newer adverts that appear first. The data table shows
+    // table rows on desktop and list items on phones; only the visible one can be clicked.
+    await page
+        .locator('tr:visible, li:visible')
+        .filter({ hasText: 'Cashier' })
+        .getByRole('link', { name: 'Applicants' })
+        .first()
+        .click();
     await expect(page.getByRole('heading', { level: 1, name: 'Applicants' })).toBeVisible();
     await expectAccessible(page);
     await page.getByRole('link', { name: 'Thandi Mabasa' }).first().click();

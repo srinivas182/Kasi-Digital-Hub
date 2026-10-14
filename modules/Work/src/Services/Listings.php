@@ -73,7 +73,7 @@ final readonly class Listings
             throw new DomainException(__('work.listing.not_verified'));
         }
 
-        $limit = (int) config($employer->community ? 'kasi.work.community_listing_limit' : 'kasi.work.free_listing_limit');
+        $limit = AdvertSlots::limit($employer);
         $active = JobListing::query()->where('organisation_id', $employer->id)->whereIn('status', JobListing::ACTIVE)->whereKeyNot($listing->id)->count();
         if ($active >= $limit) {
             throw new DomainException(__('work.listing.limit', ['limit' => $limit]));

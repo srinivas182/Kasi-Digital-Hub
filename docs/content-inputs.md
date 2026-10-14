@@ -68,3 +68,11 @@ language before switching any language on.
 - **Legal checks** for volunteer mentors of 16-17-year-olds (police clearance is required in the platform; confirm any
   others, e.g. checks against registers of people unsuitable to work with children).
 - **Who** the safeguarding officers and mentor coordinators are (roles: `safeguarding_officer`, `mentor_coordinator`).
+
+## Commercial (Sprint 19)
+
+- **Payment provider and merchant account** (Paystack recommended; Peach Payments or PayFast possible).
+- **Real prices and split percentages** (the seeded ones are placeholders).
+- **Franchise agreement** from a South African attorney (Consumer Protection Act franchise rules).
+- **Merchant of record and VAT treatment** confirmed by a tax adviser; Kasi's VAT number.
+- Live payments stay off until these are in place.

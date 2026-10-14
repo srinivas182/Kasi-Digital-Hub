@@ -19,6 +19,7 @@ use Modules\Core\Structure\Models\Municipality;
 use Modules\Core\Structure\Models\Organisation;
 use Modules\Core\Structure\Models\RoleAssignment;
 use Modules\Work\Models\JobListing;
+use Modules\Work\Services\AdvertSlots;
 use Modules\Work\Services\CurrentEmployer;
 use Modules\Work\Services\EmployerRegistration;
 use Modules\Work\Services\WorkSubject;
@@ -61,7 +62,7 @@ final class EmployerController extends WorkController
             'team' => RoleAssignment::query()->with('user:id,first_name,last_name,phone')->where('scope_type', 'organisation')->where('scope_id', $employer->id)
                 ->whereIn('role', ['employer_admin', 'recruiter'])->get()
                 ->map(static fn (RoleAssignment $a): array => ['userId' => $a->user_id, 'name' => $a->user?->fullName(), 'phone' => $a->user ? SaFormat::maskedPhone($a->user->phone) : null, 'role' => $a->role]),
-            'limit' => (int) config($employer->community ? 'kasi.work.community_listing_limit' : 'kasi.work.free_listing_limit'),
+            'limit' => AdvertSlots::limit($employer),
             'options' => ['sectors' => self::SECTORS, 'sizes' => self::SIZES],
         ]);
     }

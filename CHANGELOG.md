@@ -2,6 +2,19 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.19.0] - 2026-10-11 - Sprint 19: Commercial and finance console
+
+### Added
+- National catalogue with price bands and split rules (four-eyes), hub readiness, checkout with split settlement
+  (fake / Paystack drivers), point of sale, immutable ledger, statements, payouts, package invoices, reconciliation,
+  refunds, receipts / tax invoices; KasiWork extra advert slots (ADR-027).
+
+### Fixed
+- Quiz true/false questions: the question type column was too short for MySQL (S14).
+
+### Changed
+- CI keeps the test server's output and Laravel's log when browser tests fail; the test server runs with --no-reload.
+
 ## [0.18.0] - 2026-10-10 - Sprint 18: KasiConnect mentors
 
 ### Added

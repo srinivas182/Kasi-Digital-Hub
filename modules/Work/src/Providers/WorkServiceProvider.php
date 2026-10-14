@@ -7,6 +7,7 @@ namespace Modules\Work\Providers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Modules\Core\Commerce\Fulfiller;
 use Modules\Core\Events\ModerationDecided;
 use Modules\Core\Home\HomeRegistry;
 use Modules\Core\Home\SkillGapSource;
@@ -21,12 +22,14 @@ use Modules\Work\Matching\RefreshMatches;
 use Modules\Work\Matching\WorkSkillGaps;
 use Modules\Work\Models\JobListing;
 use Modules\Work\Search\JobSearchSource;
+use Modules\Work\Services\AdvertSlots;
 use Modules\Work\Services\Listings;
 
 final class WorkServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->tag([AdvertSlots::class], Fulfiller::TAG);
         $this->app->tag([WorkHomeContributor::class], HomeRegistry::TAG);
         $this->app->tag([WorkSkillGaps::class], SkillGapSource::TAG);
         $this->app->tag([JobSearchSource::class], SearchRegistry::TAG);

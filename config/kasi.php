@@ -203,6 +203,17 @@ return [
     'business_sectors' => ['food', 'retail', 'beauty', 'services', 'construction', 'agriculture', 'transport', 'manufacturing', 'creative', 'digital', 'care', 'other'],
 
     /*
+    | Commercial and finance (S19, ADR-027). Live payments stay off (fake driver) until Ku Tirhisana has a
+    | merchant account and legal/tax sign-off. Prices and split percentages live in the database.
+    */
+    'commercial' => [
+        'payments_driver' => env('KASI_PAYMENTS_DRIVER', 'fake'), // fake | paystack
+        'paystack_secret' => env('PAYSTACK_SECRET_KEY'),
+        'kasi_vat_registered' => (bool) env('KASI_VAT_REGISTERED', true),
+        'franchise_version' => env('KASI_FRANCHISE_VERSION', 'draft-2026-10'),
+    ],
+
+    /*
     | Partners (S17). The data-sharing agreement version partners must accept before receiving referrals.
     | DRAFT wording - to be replaced by Ku Tirhisana's legal adviser (bump the version when it changes).
     */

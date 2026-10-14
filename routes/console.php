@@ -49,3 +49,6 @@ Schedule::command('kasi:partner:daily')->dailyAt('09:45')->timezone('Africa/Joha
 
 // S18: mentoring reminders, group-session hours, end-of-agreement prompts (hourly, safe to repeat).
 Schedule::command('kasi:connect:daily')->hourly()->withoutOverlapping()->onSuccess($heartbeat('connect-daily'));
+
+// S19: reconciliation, invoice reminders; on the 1st, payouts and package invoices.
+Schedule::command('kasi:commercial:daily')->dailyAt('06:00')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('commercial-daily'));
