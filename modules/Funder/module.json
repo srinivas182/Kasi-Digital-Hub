@@ -5,13 +5,15 @@
     "description": "Programmes, targets, impact dashboards and exports for funders",
     "group": "operations",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.20.0",
     "depends_on": [
         "Core"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Funder\\Providers\\FunderServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": null,
@@ -25,7 +27,10 @@
             "access": {
                 "Learn": "view",
                 "Funder": "manage"
-            }
+            },
+            "permissions": [
+                "funder.portal"
+            ]
         },
         {
             "key": "funder_viewer",
@@ -35,29 +40,33 @@
             "staff": true,
             "access": {
                 "Funder": "view"
-            }
+            },
+            "permissions": [
+                "funder.portal"
+            ]
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "funder.portal",
+        "funder.admin"
+    ],
     "events": {
         "publishes": [],
-        "consumes": []
+        "listens": []
     },
     "impact_metrics": [],
-    "demo_seeders": [],
+    "demo_seeders": [
+        "Modules\\Funder\\Database\\Seeders\\DemoFunderSeeder"
+    ],
     "nav": {
         "icon": "landmark",
         "href": "/funder",
         "items": [
             {
-                "label": "nav.funder.impact",
-                "href": "/funder",
-                "icon": "bar-chart"
-            },
-            {
                 "label": "nav.funder.programmes",
-                "href": "/funder/programmes",
-                "icon": "landmark"
+                "href": "/funder",
+                "icon": "landmark",
+                "permission": "funder.portal"
             }
         ]
     }

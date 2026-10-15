@@ -76,3 +76,10 @@ language before switching any language on.
 - **Franchise agreement** from a South African attorney (Consumer Protection Act franchise rules).
 - **Merchant of record and VAT treatment** confirmed by a tax adviser; Kasi's VAT number.
 - Live payments stay off until these are in place.
+
+## Funders and regions (Sprint 20)
+
+- The **first real funder programmes** and their targets.
+- Whether funders need breakdowns by **sex, race or disability** - the platform doesn't collect these; collecting them
+  needs explicit consent and a clear purpose under POPIA.
+- **Story consent wording** for hubs (the young person's written agreement).

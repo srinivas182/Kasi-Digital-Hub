@@ -5,14 +5,16 @@
     "description": "City and provincial oversight across hubs",
     "group": "operations",
     "release": "r1",
-    "version": "0.3.0",
+    "version": "0.20.0",
     "depends_on": [
         "Core",
         "HubOps"
     ],
-    "providers": [],
+    "providers": [
+        "Modules\\Region\\Providers\\RegionServiceProvider"
+    ],
     "routes": {
-        "web": false,
+        "web": true,
         "api": false
     },
     "entitlement": null,
@@ -35,7 +37,8 @@
             "permissions": [
                 "hubops.dashboard",
                 "hubops.compare",
-                "work.insights"
+                "work.insights",
+                "region.console"
             ]
         },
         {
@@ -56,14 +59,17 @@
             "permissions": [
                 "hubops.dashboard",
                 "hubops.compare",
-                "work.insights"
+                "work.insights",
+                "region.console"
             ]
         }
     ],
-    "permissions": [],
+    "permissions": [
+        "region.console"
+    ],
     "events": {
         "publishes": [],
-        "consumes": []
+        "listens": []
     },
     "impact_metrics": [],
     "demo_seeders": [],
@@ -74,7 +80,8 @@
             {
                 "label": "nav.region.overview",
                 "href": "/region",
-                "icon": "map"
+                "icon": "map",
+                "permission": "region.console"
             }
         ]
     }

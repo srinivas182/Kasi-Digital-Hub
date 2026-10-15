@@ -50,6 +50,10 @@ use Modules\Core\Identity\Contracts\SmsSender;
 use Modules\Core\Identity\Drivers\FakeBotCheck;
 use Modules\Core\Identity\Drivers\LogSmsSender;
 use Modules\Core\Identity\Models\User;
+use Modules\Core\Insights\DocumentsWaiting;
+use Modules\Core\Insights\EventIndicator;
+use Modules\Core\Insights\HealthSignal;
+use Modules\Core\Insights\RegistersIndicators;
 use Modules\Core\Notifications\Contracts\WhatsAppSender;
 use Modules\Core\Notifications\Drivers\LogWhatsAppSender;
 use Modules\Core\Notifications\Listeners\SendCoreNotifications;
@@ -67,6 +71,11 @@ final class CoreServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->tag([DocumentsWaiting::class], HealthSignal::TAG);
+        // Outcome indicators for funders and coordinators (S20, ADR-028).
+        RegistersIndicators::add($this->app, [
+            new EventIndicator('reach.registered', ['core.user.registered']),
+        ]);
         $this->app->singleton(RoleRegistry::class);
         $this->app->singleton(PromptRegistry::class);
 

@@ -62,6 +62,14 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Demo script - funders and regions (3 minutes)
+
+1. As Naledi (072 000 0030, sample funder): Programmes and impact -> "Limpopo Youth Pathways 2026 (demo)": progress
+   against targets, month by month (current month provisional), breakdowns; small figures show "fewer than 10".
+   Download the impact report (QR verifiable) and the CSV.
+2. As the Limpopo provincial coordinator (072 000 0023): Regional overview - hubs with outcomes, "needs attention"
+   counts and activity alerts; message a hub's managers.
+
 ## Demo script - commercial (4 minutes)
 
 1. As Sipho (072 000 0010, Mopani Fresh Market): KasiWork employer page -> "Add an extra advert" -> checkout (credit

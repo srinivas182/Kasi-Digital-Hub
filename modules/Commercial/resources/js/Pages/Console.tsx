@@ -178,7 +178,12 @@ export default function Console({
                 </Card>
                 <Card className="lg:col-span-2">
                     <CardTitle>{t('commercial.console.catalogue')}</CardTitle>
-                    <div className="mt-2 overflow-x-auto">
+                    <div
+                        className="mt-2 overflow-x-auto"
+                        tabIndex={0}
+                        role="region"
+                        aria-label={t('commercial.console.catalogue')}
+                    >
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="text-fg-muted text-left">

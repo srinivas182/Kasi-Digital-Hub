@@ -1,0 +1,145 @@
+{
+    "assessor_moderator": [
+        "learn.assess"
+    ],
+    "city_coordinator": [
+        "hubops.compare",
+        "hubops.dashboard",
+        "region.console",
+        "work.insights"
+    ],
+    "commercial_admin": [
+        "commercial.manage",
+        "commercial.view",
+        "hubops.compare",
+        "hubops.dashboard"
+    ],
+    "content_reviewer": [
+        "admin.dashboard.view",
+        "admin.hubs.view",
+        "admin.moderation.review",
+        "admin.organisations.view",
+        "admin.people.view",
+        "learn.review"
+    ],
+    "course_author": [
+        "learn.provide"
+    ],
+    "employer_admin": [
+        "work.employ"
+    ],
+    "entrepreneur": [
+        "start.own"
+    ],
+    "finance_admin": [
+        "commercial.finance",
+        "commercial.view",
+        "hubops.compare",
+        "hubops.dashboard"
+    ],
+    "funder_manager": [
+        "funder.portal"
+    ],
+    "funder_viewer": [
+        "funder.portal"
+    ],
+    "hub_facilitator": [
+        "hubops.assist",
+        "hubops.checkin",
+        "hubops.dashboard",
+        "hubops.events",
+        "hubops.members"
+    ],
+    "hub_manager": [
+        "commercial.hub",
+        "hubops.*"
+    ],
+    "hub_owner": [
+        "commercial.hub",
+        "hubops.*"
+    ],
+    "job_seeker": [
+        "work.seek"
+    ],
+    "learner": [
+        "learn.study"
+    ],
+    "mentor": [
+        "connect.mentor"
+    ],
+    "mentor_coordinator": [
+        "connect.coordinate"
+    ],
+    "operations_admin": [
+        "admin.ai.view",
+        "admin.audit.view",
+        "admin.dashboard.view",
+        "admin.documents.verify",
+        "admin.enquiries.handle",
+        "admin.hubs.manage",
+        "admin.hubs.view",
+        "admin.moderation.review",
+        "admin.organisations.manage",
+        "admin.organisations.verify",
+        "admin.organisations.view",
+        "admin.people.suspend",
+        "admin.people.view",
+        "admin.roles.assign",
+        "connect.coordinate",
+        "funder.admin",
+        "funder.portal",
+        "hubops.compare",
+        "hubops.dashboard",
+        "learn.review",
+        "region.console",
+        "start.content",
+        "work.insights"
+    ],
+    "partner_admin": [
+        "partner.portal"
+    ],
+    "partner_agent": [
+        "partner.portal"
+    ],
+    "provider_admin": [
+        "learn.approve",
+        "learn.provide"
+    ],
+    "provincial_coordinator": [
+        "hubops.compare",
+        "hubops.dashboard",
+        "region.console",
+        "work.insights"
+    ],
+    "recruiter": [
+        "work.employ"
+    ],
+    "safeguarding_officer": [
+        "connect.safeguard"
+    ],
+    "super_admin": [
+        "admin.*",
+        "commercial.finance",
+        "commercial.manage",
+        "commercial.view",
+        "connect.coordinate",
+        "connect.safeguard",
+        "funder.admin",
+        "funder.portal",
+        "hubops.*",
+        "learn.review",
+        "region.console",
+        "start.content",
+        "work.insights"
+    ],
+    "support_agent": [
+        "admin.dashboard.view",
+        "admin.documents.verify",
+        "admin.enquiries.handle",
+        "admin.hubs.view",
+        "admin.moderation.review",
+        "admin.organisations.view",
+        "admin.people.view",
+        "hubops.dashboard"
+    ]
+}

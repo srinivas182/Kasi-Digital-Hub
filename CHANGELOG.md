@@ -2,6 +2,18 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.20.0] - 2026-10-11 - Sprint 20: Funder portal and regional console
+
+### Added
+- Indicator and health-signal extension points; funder programmes with targets, trends, breakdowns, frozen monthly
+  snapshots, verifiable impact reports and CSV, all with small-number suppression; regional console for city and
+  provincial coordinators (ADR-028).
+
+### Fixed
+- Commercial and finance admins regain access to hub dashboards and comparison (lost in S19).
+- Scrolling tables in the commercial console are reachable by keyboard.
+- Role permissions are now guarded by a snapshot test.
+
 ## [0.19.0] - 2026-10-11 - Sprint 19: Commercial and finance console
 
 ### Added

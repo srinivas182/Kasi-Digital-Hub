@@ -52,3 +52,6 @@ Schedule::command('kasi:connect:daily')->hourly()->withoutOverlapping()->onSucce
 
 // S19: reconciliation, invoice reminders; on the 1st, payouts and package invoices.
 Schedule::command('kasi:commercial:daily')->dailyAt('06:00')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('commercial-daily'));
+
+// S20: freeze last month's funder programme figures on the 5th.
+Schedule::command('kasi:funder:freeze')->monthlyOn(5, '04:00')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('funder-freeze'));

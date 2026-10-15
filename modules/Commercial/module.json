@@ -37,6 +37,8 @@
                 "Commercial": "manage"
             },
             "permissions": [
+                "hubops.dashboard",
+                "hubops.compare",
                 "commercial.manage",
                 "commercial.view"
             ]
@@ -60,6 +62,8 @@
                 "Commercial": "manage"
             },
             "permissions": [
+                "hubops.dashboard",
+                "hubops.compare",
                 "commercial.finance",
                 "commercial.view"
             ]

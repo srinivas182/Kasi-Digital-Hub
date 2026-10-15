@@ -46,7 +46,10 @@
                 "connect.safeguard",
                 "commercial.view",
                 "commercial.manage",
-                "commercial.finance"
+                "commercial.finance",
+                "funder.admin",
+                "funder.portal",
+                "region.console"
             ]
         },
         {
@@ -86,7 +89,10 @@
                 "work.insights",
                 "learn.review",
                 "start.content",
-                "connect.coordinate"
+                "connect.coordinate",
+                "funder.admin",
+                "funder.portal",
+                "region.console"
             ]
         },
         {

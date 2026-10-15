@@ -11,6 +11,8 @@ use InvalidArgumentException;
 use Modules\Core\Achievements\AchievementSource;
 use Modules\Core\Home\HomeRegistry;
 use Modules\Core\Hubs\HubSessionAttended;
+use Modules\Core\Insights\EventIndicator;
+use Modules\Core\Insights\RegistersIndicators;
 use Modules\Core\Search\SearchRegistry;
 use Modules\Learn\Console\LearnDailyCommand;
 use Modules\Learn\Home\LearnHomeContributor;
@@ -26,6 +28,11 @@ final class LearnServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        // Outcome indicators for funders and coordinators (S20, ADR-028).
+        RegistersIndicators::add($this->app, [
+            new EventIndicator('learn.enrolments', ['learn.enrolled']),
+            new EventIndicator('learn.completions', ['learn.course.completed']),
+        ]);
         $this->app->singleton(MediaConverter::class, fn (): MediaConverter => match (config('kasi.learn.media_driver')) {
             'fake' => new FakeMediaConverter,
             'ffmpeg' => new FfmpegConverter,
