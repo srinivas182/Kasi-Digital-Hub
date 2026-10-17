@@ -55,3 +55,6 @@ Schedule::command('kasi:commercial:daily')->dailyAt('06:00')->timezone('Africa/J
 
 // S20: freeze last month's funder programme figures on the 5th.
 Schedule::command('kasi:funder:freeze')->monthlyOn(5, '04:00')->timezone('Africa/Johannesburg')->withoutOverlapping()->onSuccess($heartbeat('funder-freeze'));
+
+// S21: AI budget alerts at 80% and 100%.
+Schedule::command('kasi:admin:hourly')->hourly()->withoutOverlapping()->onSuccess($heartbeat('admin-hourly'));

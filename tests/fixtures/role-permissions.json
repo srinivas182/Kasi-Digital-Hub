@@ -16,6 +16,7 @@
     ],
     "content_reviewer": [
         "admin.dashboard.view",
+        "admin.help.manage",
         "admin.hubs.view",
         "admin.moderation.review",
         "admin.organisations.view",
@@ -76,6 +77,7 @@
         "admin.dashboard.view",
         "admin.documents.verify",
         "admin.enquiries.handle",
+        "admin.help.manage",
         "admin.hubs.manage",
         "admin.hubs.view",
         "admin.moderation.review",
@@ -85,6 +87,8 @@
         "admin.people.suspend",
         "admin.people.view",
         "admin.roles.assign",
+        "admin.support.handle",
+        "admin.system.view",
         "connect.coordinate",
         "funder.admin",
         "funder.portal",
@@ -140,6 +144,7 @@
         "admin.moderation.review",
         "admin.organisations.view",
         "admin.people.view",
+        "admin.support.handle",
         "hubops.dashboard"
     ]
 }

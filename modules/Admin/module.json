@@ -92,7 +92,10 @@
                 "connect.coordinate",
                 "funder.admin",
                 "funder.portal",
-                "region.console"
+                "region.console",
+                "admin.support.handle",
+                "admin.system.view",
+                "admin.help.manage"
             ]
         },
         {
@@ -117,7 +120,8 @@
                 "admin.documents.verify",
                 "admin.enquiries.handle",
                 "hubops.dashboard",
-                "admin.moderation.review"
+                "admin.moderation.review",
+                "admin.support.handle"
             ]
         },
         {
@@ -138,7 +142,8 @@
                 "admin.hubs.view",
                 "admin.organisations.view",
                 "admin.moderation.review",
-                "learn.review"
+                "learn.review",
+                "admin.help.manage"
             ]
         }
     ],
@@ -231,6 +236,30 @@
                 "href": "/admin/audit",
                 "icon": "book-open",
                 "permission": "admin.audit.view"
+            },
+            {
+                "label": "nav.admin.support",
+                "href": "/admin/support",
+                "icon": "life-buoy",
+                "permission": "admin.support.handle"
+            },
+            {
+                "label": "nav.admin.inbox",
+                "href": "/admin/inbox",
+                "icon": "inbox",
+                "permission": "admin.moderation.review"
+            },
+            {
+                "label": "nav.admin.system",
+                "href": "/admin/system",
+                "icon": "activity",
+                "permission": "admin.system.view"
+            },
+            {
+                "label": "nav.admin.help",
+                "href": "/admin/help",
+                "icon": "book-open",
+                "permission": "admin.help.manage"
             }
         ]
     }

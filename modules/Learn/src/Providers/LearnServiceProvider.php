@@ -13,6 +13,7 @@ use Modules\Core\Home\HomeRegistry;
 use Modules\Core\Hubs\HubSessionAttended;
 use Modules\Core\Insights\EventIndicator;
 use Modules\Core\Insights\RegistersIndicators;
+use Modules\Core\Insights\ReviewSource;
 use Modules\Core\Search\SearchRegistry;
 use Modules\Learn\Console\LearnDailyCommand;
 use Modules\Learn\Home\LearnHomeContributor;
@@ -22,12 +23,14 @@ use Modules\Learn\Media\MediaConverter;
 use Modules\Learn\Models\Enrolment;
 use Modules\Learn\Search\CourseSearchSource;
 use Modules\Learn\Services\Certificates;
+use Modules\Learn\Services\CoursesInReview;
 use Modules\Learn\Services\Learning;
 
 final class LearnServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->tag([CoursesInReview::class], ReviewSource::TAG);
         // Outcome indicators for funders and coordinators (S20, ADR-028).
         RegistersIndicators::add($this->app, [
             new EventIndicator('learn.enrolments', ['learn.enrolled']),

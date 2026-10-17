@@ -8,6 +8,7 @@ use App\Support\Locale\Languages;
 use App\Support\Navigation\NavigationBuilder;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Modules\Admin\Http\Controllers\DemoController;
 use Modules\Core\Access\AccessResolver;
 use Modules\Core\Assist\AssistedSession;
 use Modules\Core\Identity\Models\User;
@@ -34,6 +35,10 @@ final class HandleInertiaRequests extends Middleware
 
         return [
             ...parent::share($request),
+            // Context help (S21): the help article for this page, if any.
+            // Demo mode (S21): banner and role switcher; never in production.
+            'demo' => DemoController::allowed(),
+            'helpArticle' => ((array) config('kasi.help_context'))[(string) $request->route()?->getName()] ?? null,
             'platform' => [
                 'brand' => config('kasi.brand.name'),
                 'fullName' => config('kasi.brand.full_name'),

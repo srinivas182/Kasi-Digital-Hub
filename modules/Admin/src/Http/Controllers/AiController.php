@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Admin\Support\AiAlerts;
 use Modules\Core\Ai\Models\AiFeatureSetting;
 use Modules\Core\Ai\Models\AiRequestLog;
 use Modules\Core\Ai\PromptRegistry;
@@ -35,6 +36,11 @@ final class AiController
             'allEnabled' => (bool) ($settings[AiFeatureSetting::ALL]->enabled ?? true),
             'budgets' => config('kasi.ai.budgets'),
             'monthCost' => (int) AiRequestLog::query()->where('created_at', '>=', $since)->sum('cost_cents'),
+            // S21: projection to month end (straight line from the days so far) and spend by hub.
+            'projectionCents' => AiAlerts::projection((int) AiRequestLog::query()->where('created_at', '>=', $since)->sum('cost_cents')),
+            'byHub' => DB::table('ai_requests')->join('hubs', 'hubs.id', '=', 'ai_requests.hub_id')->where('ai_requests.created_at', '>=', $since)
+                ->groupBy('hubs.name')->selectRaw('hubs.name as hub, sum(cost_cents) as cost, count(*) as calls')->orderByDesc('cost')->limit(10)->get()
+                ->map(static fn (object $r): array => ['hub' => (string) $r->hub, 'costCents' => (int) $r->cost, 'calls' => (int) $r->calls]),
             'features' => collect($prompts->features())->map(static fn (string $label, string $feature): array => [
                 'feature' => $feature,
                 'label' => $label,

@@ -275,6 +275,17 @@ return [
         'visit_retention_months' => 24,
     ],
 
+    /*
+    | Context help (S21): route name => help article shown as "Help with this page".
+    */
+    'help_context' => [
+        'work.profile' => 'job-profile', 'work.jobs' => 'finding-jobs', 'work.cv' => 'make-a-cv', 'work.matches' => 'finding-jobs', 'work.applications' => 'applying',
+        'work.employer' => 'employers', 'learn.courses' => 'courses', 'learn.my' => 'courses', 'learn.certificates' => 'certificates',
+        'learn.join' => 'cohorts', 'start.home' => 'register-business', 'start.business' => 'register-business', 'start.plan' => 'business-plan',
+        'support.home' => 'support-offers', 'connect.home' => 'staying-safe', 'connect.find' => 'get-a-mentor', 'connect.mentorship' => 'staying-safe',
+        'account' => 'your-data',
+    ],
+
     'demo' => [
         // Demo mode enables the demo banner, role switcher and demo reset command.
         // It must never be enabled in production.

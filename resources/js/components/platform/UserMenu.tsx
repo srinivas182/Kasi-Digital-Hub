@@ -1,5 +1,5 @@
 import { Link, router, usePage } from '@inertiajs/react';
-import { LogOut, UserRound } from 'lucide-react';
+import { LogOut, LifeBuoy, UserRound } from 'lucide-react';
 
 import { ThemeMenuItem } from '@/components/platform/chrome';
 import { Avatar } from '@/components/ui/display';
@@ -29,6 +29,10 @@ export function UserMenu({ fallbackName = 'Guest' }: { fallbackName?: string }) 
                     <Link href="/account" onClick={close} className={item}>
                         <UserRound className="size-4" aria-hidden />
                         {t('account.title')}
+                    </Link>
+                    <Link href="/help/requests" onClick={close} className={item}>
+                        <LifeBuoy className="size-4" aria-hidden />
+                        {t('support.get_help')}
                     </Link>
                     <ThemeMenuItem className={`${item} sm:hidden`} />
                     <button

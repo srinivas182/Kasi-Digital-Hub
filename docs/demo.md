@@ -62,6 +62,11 @@ Ubuntu Community Bank and Kasi Mutual Insurance (demo partners), three sample fu
 - Nomsa (072 000 0003): CIPC certificate shared with the demo bank, an expired tax clearance and a bank letter
   expiring soon.
 
+## Presenting the demo (S21)
+
+With demo mode on, open **/demo**: six guided stories with "what to notice" notes, a "Switch to a demo person" list
+(no PINs needed in demo mode) and "Reset all demo data". The DEMO banner shows on every page.
+
 ## Demo script - funders and regions (3 minutes)
 
 1. As Naledi (072 000 0030, sample funder): Programmes and impact -> "Limpopo Youth Pathways 2026 (demo)": progress

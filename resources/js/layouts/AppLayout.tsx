@@ -8,15 +8,26 @@ import { UserMenu } from '@/components/platform/UserMenu';
 import { LanguageSwitcher, ThemeToggle } from '@/components/platform/chrome';
 import { BottomNav, PortalSwitcher } from '@/components/platform/nav';
 
+import { useTranslation } from '@/lib/i18n';
+
 import { Shell } from './Shell';
 
 /** Hub home: top bar on desktop, bottom tab bar on phones. */
 export function AppLayout({ children, userName = 'Guest' }: { children: ReactNode; userName?: string }) {
-    const { navigation } = usePage().props;
+    const { navigation, helpArticle, demo } = usePage().props;
+    const { t } = useTranslation();
     const hub = navigation.portals.find((portal) => portal.module === 'Hub');
 
     return (
         <Shell>
+            {demo && (
+                <div className="bg-warning-soft text-warning-text px-4 py-1 text-center text-xs font-semibold">
+                    {t('demo.banner')}{' '}
+                    <a href="/demo" className="underline">
+                        {t('demo.stories_link')}
+                    </a>
+                </div>
+            )}
             <header className="bg-kasi-indigo sticky top-0 z-30 text-white">
                 <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2.5 sm:px-6">
                     <BrandMark inverse />
@@ -31,6 +42,13 @@ export function AppLayout({ children, userName = 'Guest' }: { children: ReactNod
                 </div>
             </header>
             <main id="main" className="mx-auto max-w-6xl px-4 pt-6 pb-24 sm:px-6 md:pb-10">
+                {helpArticle && (
+                    <p className="mb-2 text-right text-sm">
+                        <a href={`/help/${helpArticle}`} className="text-primary font-semibold hover:underline">
+                            {t('help.this_page')}
+                        </a>
+                    </p>
+                )}
                 {children}
             </main>
             {hub && <BottomNav items={hub.items} label={hub.title} />}

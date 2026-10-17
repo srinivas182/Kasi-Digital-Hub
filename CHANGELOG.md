@@ -2,6 +2,13 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.21.0] - 2026-10-11 - Sprint 21: Admin console part 2 and the complete demo
+
+### Added
+- Support requests and staff queue, safe person summaries, account help with one-time codes; help centre with
+  reviewed articles and context help; AI cost projection and budget alerts; review inbox; system status; demo
+  stories, role switcher, demo reset and a demo health check (ADR-029).
+
 ## [0.20.0] - 2026-10-11 - Sprint 20: Funder portal and regional console
 
 ### Added

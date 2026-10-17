@@ -83,3 +83,9 @@ language before switching any language on.
 - Whether funders need breakdowns by **sex, race or disability** - the platform doesn't collect these; collecting them
   needs explicit consent and a clear purpose under POPIA.
 - **Story consent wording** for hubs (the young person's written agreement).
+
+## Support and help (Sprint 21)
+
+- **Review of the 24 starter help articles** (Admin -> Help articles; each is marked "Starter - needs review").
+- **Support team:** who answers help requests, and in which hours (the target is a first reply within 2 working days).
+- **AI budgets per feature** (the platform budget is still the R2 000 placeholder).

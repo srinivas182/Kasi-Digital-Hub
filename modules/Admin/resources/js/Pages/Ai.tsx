@@ -43,6 +43,8 @@ interface Props {
     allEnabled: boolean;
     budgets: { per_person_day_calls: number; per_hub_month_cents: number; platform_month_cents: number };
     monthCost: number;
+    projectionCents?: number;
+    byHub?: { hub: string; costCents: number; calls: number }[];
     features: Feature[];
     daily: { day: string; calls: number; costCents: number }[];
     recent: Recent[];
@@ -126,7 +128,18 @@ function BudgetForm({
     );
 }
 
-export default function Ai({ driver, allEnabled, budgets, monthCost, features, daily, recent, canManage }: Props) {
+export default function Ai({
+    driver,
+    allEnabled,
+    budgets,
+    monthCost,
+    projectionCents = 0,
+    byHub = [],
+    features,
+    daily,
+    recent,
+    canManage,
+}: Props) {
     const { t } = useTranslation();
     const [open, setOpen] = useState<string | null>(null);
 
@@ -134,6 +147,7 @@ export default function Ai({ driver, allEnabled, budgets, monthCost, features, d
         <AdminPage title={t('admin.ai.title')} crumbs={[{ label: t('admin.ai.title') }]}>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard label={t('admin.ai.month_cost')} value={formatMoney(monthCost)} emphasis />
+                <StatCard label={t('admin.ai.projection')} value={formatMoney(projectionCents)} />
                 <StatCard label={t('admin.ai.platform_cap')} value={formatMoney(budgets.platform_month_cents)} />
                 <StatCard label={t('admin.ai.hub_cap')} value={formatMoney(budgets.per_hub_month_cents)} />
                 <StatCard label={t('admin.ai.person_cap')} value={String(budgets.per_person_day_calls)} />
@@ -263,6 +277,23 @@ export default function Ai({ driver, allEnabled, budgets, monthCost, features, d
                     ))}
                 </ul>
             </Card>
+            {byHub.length > 0 && (
+                <section className="mt-6" aria-labelledby="ai-by-hub">
+                    <h2 id="ai-by-hub" className="text-fg text-lg font-bold">
+                        {t('admin.ai.by_hub')}
+                    </h2>
+                    <ul className="mt-2 text-sm">
+                        {byHub.map((h) => (
+                            <li key={h.hub} className="text-fg flex justify-between gap-2">
+                                <span>{h.hub}</span>
+                                <span>
+                                    {formatMoney(h.costCents)} · {h.calls}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
         </AdminPage>
     );
 }

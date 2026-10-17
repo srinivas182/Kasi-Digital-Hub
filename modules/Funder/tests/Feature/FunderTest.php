@@ -61,7 +61,9 @@ it('shows numbers from 1 to 9 as "<10" everywhere a funder can see them', functi
 
 it('never puts personal data in funder or regional responses', function (): void {
     hires($this, 12, $this->hub->id);
+    // A distinctive person (factory names repeat - another user on the page could share a random surname).
     $person = User::query()->whereNotNull('home_hub_id')->latest('created_at')->firstOrFail();
+    $person->forceFill(['first_name' => 'Zinhlezenkosi', 'last_name' => 'Qwabe-Ntshangase', 'phone' => '+27729990001'])->save();
     Staff::signIn($this, $this->manager);
     $body = json_encode($this->get("/funder/programmes/{$this->programme->id}")->viewData('page'));
 

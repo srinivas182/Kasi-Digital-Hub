@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Site\Http\Controllers;
 
 use App\Support\Seo\Seo;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Platform\Models\Enquiry;
@@ -36,6 +37,8 @@ final class PageController
 
         return $this->page('Site/Help', 'help', '/help', [
             'questions' => $questions,
+            'categories' => HelpController::CATEGORIES,
+            'articles' => DB::table('help_articles')->where('status', 'published')->orderBy('title')->get(['slug', 'category', 'title', 'summary']),
         ], [[
             '@context' => 'https://schema.org',
             '@type' => 'FAQPage',

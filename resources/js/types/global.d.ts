@@ -50,6 +50,10 @@ export interface AuthUser {
 }
 
 export interface SharedProps extends InertiaPageProps {
+    /** S21: help article for the current page (context help). */
+    helpArticle?: string | null;
+    /** S21: demo mode (banner, role switcher) - never in production. */
+    demo?: boolean;
     platform: PlatformProps;
     i18n: I18nProps;
     navigation: { portals: NavPortal[] };
