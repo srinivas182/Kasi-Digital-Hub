@@ -8,6 +8,7 @@ use App\Support\Format\SaFormat;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,7 +32,7 @@ final class DeskController extends StaffController
         return Inertia::render('HubOps/CheckIn', [
             'hubs' => $this->hubProps($request, $hub),
             'q' => $q,
-            'results' => mb_strlen($q) >= 3 ? $this->search($q)->limit(10)->get()->map(fn (User $u): array => $this->personRow($u, $hub->id)) : [],
+            'results' => mb_strlen($q) >= 3 ? $this->rows($this->search($q)->with('homeHub')->limit(10)->get(), $hub->id) : [],
             'today' => HubVisit::query()->with('user:id,first_name,last_name')->where('hub_id', $hub->id)->whereDate('visit_date', $today)
                 ->latest('created_at')->limit(50)->get()
                 ->map(static fn (HubVisit $v): array => [
@@ -113,12 +114,26 @@ final class DeskController extends StaffController
         })->orderBy('first_name');
     }
 
+    /**
+     * S22: home hubs loaded with the people, and today's check-ins in one query (not one per person).
+     *
+     * @param  Collection<int, User>  $people
+     * @return list<array{id: string, name: string, phone: string, homeHub: string|null, here: bool, minor: bool}>
+     */
+    private function rows(Collection $people, string $hubId): array
+    {
+        $here = HubVisit::query()->where('hub_id', $hubId)->whereIn('user_id', $people->pluck('id'))
+            ->whereDate('visit_date', now('Africa/Johannesburg')->toDateString())->pluck('user_id')->flip();
+
+        return array_values($people->map(fn (User $u): array => $this->personRow($u, $here->has($u->id)))->all());
+    }
+
     /** @return array{id: string, name: string, phone: string, homeHub: string|null, here: bool, minor: bool} */
-    private function personRow(User $u, string $hubId): array
+    private function personRow(User $u, bool $here): array
     {
         return [
             'id' => $u->id, 'name' => $u->fullName(), 'phone' => SaFormat::maskedPhone($u->phone), 'homeHub' => $u->homeHub?->name,
-            'here' => HubVisit::query()->where('hub_id', $hubId)->where('user_id', $u->id)->whereDate('visit_date', now('Africa/Johannesburg')->toDateString())->exists(),
+            'here' => $here,
             'minor' => $u->isMinor(),
         ];
     }

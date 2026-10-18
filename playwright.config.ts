@@ -41,7 +41,8 @@ export default defineConfig({
         // Fresh demo database (file-based so it persists between requests), then serve. The server's output is kept in
         // storage/logs/e2e-server.log, which CI uploads with Laravel's log when the browser job fails (S18).
         // --no-reload: the server must never restart itself in the middle of a run.
-        command: `php artisan cache:clear && php artisan migrate:fresh --seed --force && php artisan serve --no-reload --host=127.0.0.1 --port=${PORT} 2>&1 | tee -a storage/logs/e2e-server.log`,
+        // OCTANE=1 runs the suite under Laravel Octane (Swoole), as production will (S22).
+        command: `php artisan cache:clear && php artisan migrate:fresh --seed --force && ${process.env.OCTANE ? `php artisan octane:start --server=swoole --workers=4 --max-requests=500 --host=127.0.0.1 --port=${PORT}` : `php artisan serve --no-reload --host=127.0.0.1 --port=${PORT}`} 2>&1 | tee -a storage/logs/e2e-server.log`,
         url: `http://127.0.0.1:${PORT}/up`,
         reuseExistingServer: !process.env.CI,
         timeout: 60_000,

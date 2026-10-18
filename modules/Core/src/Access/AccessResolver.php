@@ -110,6 +110,11 @@ final readonly class AccessResolver
         $permissions = [];
 
         $rows = RoleAssignment::query()->where('user_id', $user->id)->active()->get(['role', 'scope_type', 'scope_id']);
+        // S22: one query for the portals switched on at all the person's hubs (not one per role and portal).
+        $enabled = [];
+        foreach (HubModule::query()->whereIn('hub_id', $rows->where('scope_type', 'hub')->pluck('scope_id')->unique())->where('enabled', true)->get(['hub_id', 'module']) as $m) {
+            $enabled[$m->hub_id.'|'.$m->module] = true;
+        }
 
         foreach ($rows as $row) {
             $role = $this->roles->find($row->role);
@@ -123,7 +128,7 @@ final readonly class AccessResolver
 
             foreach ($role->access as $module => $level) {
                 if ($row->scope_type === 'hub' && HubEntitlements::isHubDelivered($module)
-                    && ! HubModule::query()->where('hub_id', $row->scope_id)->where('module', $module)->where('enabled', true)->exists()) {
+                    && ! isset($enabled[$row->scope_id.'|'.$module])) {
                     continue; // the hub's package does not include this portal
                 }
 

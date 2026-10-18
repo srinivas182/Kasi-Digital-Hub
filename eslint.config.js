@@ -24,4 +24,9 @@ export default tseslint.config(
             '@typescript-eslint/consistent-type-imports': 'error',
         },
     },
+    {
+        // S22: k6 load-test scripts run in k6, which provides these globals.
+        files: ['loadtest/**/*.js'],
+        languageOptions: { globals: { __ENV: 'readonly', __VU: 'readonly', __ITER: 'readonly' } },
+    },
 );

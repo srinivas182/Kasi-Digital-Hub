@@ -12,7 +12,7 @@ it('shares platform, language and navigation props with every page', function ()
         ->assertInertia(fn (Assert $page) => $page
             ->where('platform.brand', 'KasiHub')
             ->where('i18n.locale', 'en')
-            ->has('i18n.strings')
+            ->has('i18nStrings')
             ->has('i18n.languages', 3)
             ->has('navigation.portals', 0) // guests see no portal menus
         );

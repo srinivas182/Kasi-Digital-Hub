@@ -30,6 +30,17 @@ final class Languages
     }
 
     /**
+     * A short fingerprint of the text files for a language (S22): the browser keeps the text between pages and
+     * fetches it again only when the language or the files change (e.g. after a deployment).
+     */
+    public static function version(string $locale): string
+    {
+        $files = array_filter([lang_path('en.json'), lang_path($locale.'.json')], 'is_file');
+
+        return substr(md5(implode('|', array_map(static fn (string $f): string => $f.':'.filemtime($f).':'.filesize($f), $files))), 0, 10);
+    }
+
+    /**
      * Strings for the frontend: the requested language merged over English, so
      * untranslated keys still show readable English text.
      *

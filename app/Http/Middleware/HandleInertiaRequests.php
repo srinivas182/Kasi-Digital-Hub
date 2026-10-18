@@ -7,6 +7,7 @@ namespace App\Http\Middleware;
 use App\Support\Locale\Languages;
 use App\Support\Navigation\NavigationBuilder;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Inertia\Middleware;
 use Modules\Admin\Http\Controllers\DemoController;
 use Modules\Core\Access\AccessResolver;
@@ -47,9 +48,11 @@ final class HandleInertiaRequests extends Middleware
                 'version' => config('kasi.version.number'),
                 'demo' => config('kasi.demo.enabled') === true,
             ],
+            // S22: the text (~180 KB) is sent once per language and text version, then remembered by the browser -
+            // not repeated on every page. Changing language or deploying new text changes the key.
+            'i18nStrings' => Inertia::once(fn (): array => Languages::strings($locale))->as('strings.'.$locale.'.'.Languages::version($locale)),
             'i18n' => fn (): array => [
                 'locale' => $locale,
-                'strings' => Languages::strings($locale),
                 'languages' => array_map(
                     static fn (string $code, array $language): array => ['code' => $code, 'name' => $language['native'], 'draft' => $language['draft']],
                     array_keys(Languages::available()),

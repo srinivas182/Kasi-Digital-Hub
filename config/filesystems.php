@@ -42,7 +42,19 @@ return [
 
         // Private document vault - never served directly; downloads use signed, permission-checked links.
         // KasiLearn course media (S13), served through access-checked routes.
-        'learn' => [
+        // S22: local in development; S3-compatible object storage in production (LEARN_DISK_DRIVER=s3).
+        'learn' => env('LEARN_DISK_DRIVER', 'local') === 's3' ? [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION', 'af-south-1'),
+            'bucket' => env('LEARN_BUCKET'),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => (bool) env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => false,
+        ] : [
             'driver' => 'local',
             'root' => storage_path('app/private/learn'),
             'visibility' => 'private',
@@ -50,7 +62,19 @@ return [
             'report' => false,
         ],
 
-        'documents' => [
+        // S22: local in development; S3-compatible object storage in production (DOCUMENTS_DISK_DRIVER=s3).
+        'documents' => env('DOCUMENTS_DISK_DRIVER', 'local') === 's3' ? [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION', 'af-south-1'),
+            'bucket' => env('DOCUMENTS_BUCKET'),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => (bool) env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'visibility' => 'private',
+            'throw' => true,
+            'report' => false,
+        ] : [
             'driver' => 'local',
             'root' => storage_path('app/private/documents'),
             'visibility' => 'private',

@@ -9,6 +9,7 @@ use DomainException;
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\AuditLogger;
+use Modules\Core\Insights\AgeRange;
 use Modules\Core\Insights\Insights;
 use Modules\Funder\Models\Programme;
 
@@ -42,18 +43,9 @@ final readonly class Programmes
     }
 
     /** The programme's target group: people whose age (today) is within its range. */
-    public function person(Programme $p): callable
+    public function ages(Programme $p): AgeRange
     {
-        $cache = [];
-
-        return static function (string $userId) use (&$cache, $p): bool {
-            if (! array_key_exists($userId, $cache)) {
-                $dob = DB::table('users')->where('id', $userId)->value('date_of_birth');
-                $cache[$userId] = $dob === null ? null : CarbonImmutable::parse((string) $dob)->age;
-            }
-
-            return $cache[$userId] !== null && $cache[$userId] >= $p->age_min && $cache[$userId] <= $p->age_max;
-        };
+        return new AgeRange($p->age_min, $p->age_max);
     }
 
     /** @return list<string> */
@@ -75,7 +67,7 @@ final readonly class Programmes
                 'byHub' => $frozen->mapWithKeys(static fn (object $r): array => [(string) $r->indicator => (array) json_decode((string) $r->by_hub, true)])->all(), 'provisional' => false];
         }
         [$from, $to] = self::bounds($period);
-        $totals = $this->insights->totals($this->hubs($p), $from, $to, $this->indicators($p), $this->person($p));
+        $totals = $this->insights->totals($this->hubs($p), $from, $to, $this->indicators($p), $this->ages($p));
 
         return ['values' => array_map(static fn (array $t): int => $t['total'], $totals), 'byHub' => array_map(static fn (array $t): array => $t['byHub'], $totals), 'provisional' => true];
     }

@@ -24,8 +24,8 @@ interface Indicator
      * Value per hub for the period (only hubs with a value are returned). Hub-less records are under "".
      *
      * @param  list<string>|null  $hubIds  null = everywhere
-     * @param  callable(string): bool|null  $person  optional filter on the person id (e.g. an age band)
+     * @param  AgeRange|null  $ages  only people in this age range (e.g. a programme's target group or an age band)
      * @return array<string, int>
      */
-    public function byHub(?array $hubIds, CarbonImmutable $from, CarbonImmutable $to, ?callable $person = null): array;
+    public function byHub(?array $hubIds, CarbonImmutable $from, CarbonImmutable $to, ?AgeRange $ages = null): array;
 }

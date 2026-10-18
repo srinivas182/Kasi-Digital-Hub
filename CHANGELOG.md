@@ -2,6 +2,21 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.22.0] - 2026-10-17 - Sprint 22: Performance and scale
+
+### Added
+- Laravel Octane (Swoole) with memory-safety reset and test; browser suite under Octane in CI; query budgets;
+  presigned file delivery for object storage; trusted proxies by configuration; `kasi:perf:seed`; k6 load-test kit;
+  capacity document (ADR-030).
+
+### Changed
+- Indicators counted by the database with a covering index and a 5-minute cache.
+- Text sent once per language and version instead of with every page.
+
+### Fixed
+- Check-in desk search no longer queries per person.
+- Indicator age filter includes people on their birthday.
+
 ## [0.21.0] - 2026-10-11 - Sprint 21: Admin console part 2 and the complete demo
 
 ### Added

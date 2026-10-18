@@ -45,7 +45,8 @@ arch('the shared kernel does not depend on portals')
 */
 test('services never store the request from their constructor', function (): void {
     $offenders = [];
-    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(base_path('modules')));
+    $root = dirname(__DIR__, 2); // not base_path(): architecture tests don't boot the app
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root.'/modules'));
 
     foreach ($files as $file) {
         if (! $file->isFile() || ! str_ends_with($file->getPathname(), '.php') || ! str_contains($file->getPathname(), '/src/')) {
@@ -54,7 +55,7 @@ test('services never store the request from their constructor', function (): voi
 
         $code = (string) file_get_contents($file->getPathname());
         if (preg_match('/function __construct\([^)]*Request \$/s', $code) === 1) {
-            $offenders[] = str_replace(base_path().'/', '', $file->getPathname());
+            $offenders[] = str_replace($root.'/', '', $file->getPathname());
         }
     }
 

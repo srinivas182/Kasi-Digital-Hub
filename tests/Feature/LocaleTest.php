@@ -14,7 +14,7 @@ it('switches the interface language and remembers it', function (): void {
         ->get('/')
         ->assertInertia(fn (Assert $page) => $page
             ->where('i18n.locale', 'zu')
-            ->where('i18n.strings', fn ($strings) => $strings['nav.hub.home'] === 'Ekhaya'
+            ->where('i18nStrings', fn ($strings) => $strings['nav.hub.home'] === 'Ekhaya'
                 && $strings['common.skip_to_content'] === 'Skip to main content' // falls back to English
                 && ! isset($strings['_note']))
         );

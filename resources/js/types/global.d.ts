@@ -19,7 +19,6 @@ export interface LanguageOption {
 
 export interface I18nProps {
     locale: string;
-    strings: Record<string, string>;
     languages: LanguageOption[];
 }
 
@@ -56,6 +55,8 @@ export interface SharedProps extends InertiaPageProps {
     demo?: boolean;
     platform: PlatformProps;
     i18n: I18nProps;
+    /** S22: the text, sent once per language and text version (Inertia once-prop) and kept by the browser. */
+    i18nStrings?: Record<string, string>;
     navigation: { portals: NavPortal[] };
     auth: { user: AuthUser | null };
     flash: { status: string | null };

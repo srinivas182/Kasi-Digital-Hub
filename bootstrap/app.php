@@ -21,6 +21,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // S22: behind a load balancer, trust only its addresses (TRUSTED_PROXIES, comma-separated), so rate limits and
+        // audit logs see each person's real IP - not the balancer's. Off by default.
+        if (($proxies = env('TRUSTED_PROXIES')) !== null && $proxies !== '') {
+            $middleware->trustProxies(at: $proxies === '*' ? '*' : array_map('trim', explode(',', (string) $proxies)));
+        }
         $middleware->encryptCookies(except: ['kasi_locale']);
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/home');

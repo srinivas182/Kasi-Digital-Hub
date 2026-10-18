@@ -16,9 +16,9 @@ export function translate(strings: Translations, key: string, replace: Record<st
 }
 
 export function useTranslation() {
-    const { i18n } = usePage().props;
+    const { i18n, i18nStrings } = usePage().props;
     return {
-        t: (key: string, replace?: Record<string, string | number>) => translate(i18n.strings, key, replace),
+        t: (key: string, replace?: Record<string, string | number>) => translate(i18nStrings ?? {}, key, replace),
         locale: i18n.locale,
         languages: i18n.languages,
     };

@@ -21,7 +21,7 @@ use Modules\Core\Events\DocumentVerified;
 use Modules\Core\Identity\Models\User;
 use Modules\Core\Identity\Services\AuditLogger;
 use Modules\Core\Structure\Models\Organisation;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * The private document vault: upload (scanned before use), verify once / reuse everywhere,
@@ -161,7 +161,7 @@ final readonly class DocumentVault
         return URL::temporarySignedRoute('documents.download', now()->addMinutes((int) config('kasi.documents.link_minutes')), array_filter(['document' => $document->id, 'inline' => $inline ? 1 : null]));
     }
 
-    public function download(Document $document, User $by, bool $inline = false): StreamedResponse
+    public function download(Document $document, User $by, bool $inline = false): Response
     {
         $this->audit->record($inline ? 'document.viewed' : 'document.downloaded', $document->owner, meta: ['document' => $document->id], actor: $by->id === $document->user_id ? null : $by);
 
@@ -179,7 +179,7 @@ final readonly class DocumentVault
             $headers['Content-Security-Policy'] = "default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; sandbox";
         }
 
-        return Storage::disk($document->disk)->response($document->path, $name, $headers, $inline ? 'inline' : 'attachment');
+        return FileDelivery::send($document->disk, $document->path, $name, $headers, $inline ? 'inline' : 'attachment');
     }
 
     /** Phone photos of documents are often 4-12 MB; shrink to a readable size to save data and storage. */

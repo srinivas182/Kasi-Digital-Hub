@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
+use Illuminate\Support\Facades\DB;
 use Modules\Core\Access\Scope;
+use Modules\Core\Identity\Models\User;
 use Modules\Core\Tests\Structure;
 use Modules\HubOps\Tests\Staff;
 
@@ -45,4 +47,18 @@ it('lets a city coordinator choose between the hubs in their city only', functio
     Staff::as($this, 'city_coordinator', Scope::municipality(Structure::city('LIM331')));
 
     $this->get('/hub-ops')->assertInertia(fn ($page) => $page->where('hubs.options', fn ($options) => collect($options)->pluck('name')->every(fn ($n) => in_array($n, ['Tsutsumani Digital Hub', 'Giyani Central Hub'], true))));
+});
+
+it('searches the check-in desk with several matches without a query per person (S22)', function (): void {
+    $hub = Structure::hub('LP-GIY-TSU');
+    $facilitator = Structure::personWith('hub_facilitator', Scope::hub($hub));
+    foreach (range(1, 6) as $i) {
+        User::factory()->create(['first_name' => 'Zanele', 'home_hub_id' => $hub->id]);
+    }
+    Staff::signIn($this, $facilitator);
+    DB::enableQueryLog();
+    $this->get('/hub-ops/check-in?q=Zanele')->assertOk()->assertInertia(fn ($page) => $page->has('results', 6));
+    $visitChecks = collect(DB::getQueryLog())->filter(fn ($q) => str_contains($q['query'], 'hub_visits'))->count();
+
+    expect($visitChecks)->toBeLessThanOrEqual(2);
 });

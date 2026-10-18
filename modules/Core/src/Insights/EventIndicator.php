@@ -39,18 +39,32 @@ final readonly class EventIndicator implements Indicator
         return $this->unit;
     }
 
-    public function byHub(?array $hubIds, CarbonImmutable $from, CarbonImmutable $to, ?callable $person = null): array
+    /**
+     * Counted by the database (S22): one grouped query per indicator, using the (name, hub_id, occurred_at) index.
+     * Only indicators that check payload values or sum an amount read their (few) matching events in PHP, so JSON
+     * behaves the same on MySQL and SQLite.
+     */
+    public function byHub(?array $hubIds, CarbonImmutable $from, CarbonImmutable $to, ?AgeRange $ages = null): array
     {
-        $query = DB::table('platform_events')->whereIn('name', $this->events)->whereBetween('occurred_at', [$from->utc(), $to->utc()]);
+        $query = DB::table('platform_events')->whereIn('platform_events.name', $this->events)->whereBetween('platform_events.occurred_at', [$from->utc(), $to->utc()]);
         if ($hubIds !== null) {
-            $query->whereIn('hub_id', $hubIds);
+            $query->whereIn('platform_events.hub_id', $hubIds);
         }
+        if ($ages !== null) {
+            [$oldest, $youngest] = $ages->birthBetween();
+            // Compare as dates: a stored time part must not push someone out on their birthday.
+            $query->join('users', 'users.id', '=', 'platform_events.user_id')->whereDate('users.date_of_birth', '>=', $oldest)->whereDate('users.date_of_birth', '<=', $youngest);
+        }
+
+        if ($this->where === null && $this->measure !== 'sum') {
+            $count = $this->measure === 'people' ? 'COUNT(DISTINCT platform_events.user_id)' : 'COUNT(*)';
+
+            return array_map('intval', $query->groupBy('platform_events.hub_id')->selectRaw("COALESCE(platform_events.hub_id, '') as hub, {$count} as n")->pluck('n', 'hub')->all());
+        }
+
         $totals = [];
         $people = [];
-        foreach ($query->orderBy('occurred_at')->cursor() as $row) {
-            if ($person !== null && ($row->user_id === null || ! $person((string) $row->user_id))) {
-                continue;
-            }
+        foreach ($query->select(['platform_events.hub_id', 'platform_events.user_id', 'platform_events.payload'])->orderBy('platform_events.occurred_at')->cursor() as $row) {
             $payload = (array) json_decode((string) ($row->payload ?? '{}'), true);
             if ($this->where !== null && ! ($this->where)($payload)) {
                 continue;

@@ -14,12 +14,12 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Access\AccessResolver;
+use Modules\Core\Documents\FileDelivery;
 use Modules\Core\Identity\Models\User;
 use Modules\Learn\Models\Course;
 use Modules\Learn\Models\Media;
 use Modules\Learn\Services\CourseSuggestions;
 use Modules\Learn\Services\CurrentProvider;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * The course catalogue: browse, filter, course pages, previews, saved courses, public pages, and
@@ -115,7 +115,7 @@ final class CatalogueController
      * Course media: the provider's team and reviewers always; everyone else only for media used by
      * a published course (S14 limits non-preview lessons to enrolled learners).
      */
-    public function media(Request $request, Media $media, ?string $version = null): StreamedResponse
+    public function media(Request $request, Media $media, ?string $version = null): \Symfony\Component\HttpFoundation\Response
     {
         $user = $request->user();
         $team = $user instanceof User && (app(CurrentProvider::class)->all($user)->contains('id', $media->organisation_id)
@@ -131,7 +131,7 @@ final class CatalogueController
         $path = $version !== null ? ($media->renditions[$version]['path'] ?? null) : ($media->renditions['image']['path'] ?? $media->original_path);
         abort_if($path === null || ! Storage::disk('learn')->exists($path), 404);
 
-        return Storage::disk('learn')->response($path, null, ['Cache-Control' => 'private, max-age=86400', 'X-Content-Type-Options' => 'nosniff']);
+        return FileDelivery::send('learn', $path, null, ['Cache-Control' => 'private, max-age=86400', 'X-Content-Type-Options' => 'nosniff'], 'inline');
     }
 
     /** @return Builder<Course> */

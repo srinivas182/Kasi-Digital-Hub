@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Core\Insights;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -15,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 final class Insights
 {
     public const MIN_CELL = 10;
+
+    public const CACHE_MINUTES = 5;
 
     public const AGE_BANDS = ['16-17' => [16, 17], '18-24' => [18, 24], '25-29' => [25, 29], '30-35' => [30, 35], '36+' => [36, 200]];
 
@@ -38,14 +41,28 @@ final class Insights
      * @param  list<string>|null  $only
      * @return array<string, array{total: int, byHub: array<string, int>}>
      */
-    public function totals(?array $hubIds, CarbonImmutable $from, CarbonImmutable $to, ?array $only = null, ?callable $person = null): array
+    public function totals(?array $hubIds, CarbonImmutable $from, CarbonImmutable $to, ?array $only = null, ?AgeRange $ages = null): array
+    {
+        // S22: aggregates only, so a shared cache is safe; 5 minutes keeps "live" figures fresh enough while a
+        // busy funder or regional page doesn't recount every time (0.8-1.6 s at 500k events, measured).
+        $key = 'kasi:insights:'.md5((string) json_encode([$hubIds, $from->startOfMinute()->toIso8601String(), $to->startOfMinute()->toIso8601String(), $only, $ages]));
+
+        return Cache::remember($key, now()->addMinutes(self::CACHE_MINUTES), fn (): array => $this->count($hubIds, $from, $to, $only, $ages));
+    }
+
+    /**
+     * @param  list<string>|null  $hubIds
+     * @param  list<string>|null  $only
+     * @return array<string, array{total: int, byHub: array<string, int>}>
+     */
+    private function count(?array $hubIds, CarbonImmutable $from, CarbonImmutable $to, ?array $only, ?AgeRange $ages): array
     {
         $out = [];
         foreach ($this->indicators() as $key => $indicator) {
             if ($only !== null && ! in_array($key, $only, true)) {
                 continue;
             }
-            $byHub = $indicator->byHub($hubIds, $from, $to, $person);
+            $byHub = $indicator->byHub($hubIds, $from, $to, $ages);
             $out[$key] = ['total' => array_sum($byHub), 'byHub' => $byHub];
         }
 
@@ -80,14 +97,8 @@ final class Insights
         };
         $age = [];
         if ($indicator->unit() === 'count') {
-            $born = [];
             foreach (self::AGE_BANDS as $band => [$min, $max]) {
-                $age[$band] = array_sum($indicator->byHub($hubIds, $from, $to, function (string $userId) use (&$born, $min, $max): bool {
-                    $born[$userId] ??= DB::table('users')->where('id', $userId)->value('date_of_birth');
-                    $years = $born[$userId] !== null ? CarbonImmutable::parse((string) $born[$userId])->age : null;
-
-                    return $years !== null && $years >= $min && $years <= $max;
-                }));
+                $age[$band] = array_sum($indicator->byHub($hubIds, $from, $to, new AgeRange($min, $max)));
             }
         }
 

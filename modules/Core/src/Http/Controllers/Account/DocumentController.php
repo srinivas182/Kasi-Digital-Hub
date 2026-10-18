@@ -10,7 +10,7 @@ use Illuminate\Validation\Rule;
 use Modules\Core\Documents\DocumentVault;
 use Modules\Core\Documents\Models\Document;
 use Modules\Core\Identity\Models\User;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Upload, open (signed short-lived link) and delete documents in a person's vault.
@@ -35,7 +35,7 @@ final class DocumentController
     }
 
     /** Opened through a signed link that expires after a few minutes; permission is checked again here. */
-    public function download(Request $request, Document $document): StreamedResponse
+    public function download(Request $request, Document $document): Response
     {
         abort_unless($request->hasValidSignature(), 403);
         abort_unless($this->vault->canOpen($this->user($request), $document), 403);

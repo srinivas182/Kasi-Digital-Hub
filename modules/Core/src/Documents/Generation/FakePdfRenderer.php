@@ -19,4 +19,9 @@ final class FakePdfRenderer implements PdfRenderer
 
         return DemoDocumentsSeeder::dummyPdf('DEMO PDF - '.mb_substr($text, 0, 400));
     }
+
+    public static function reset(): void
+    {
+        self::$rendered = [];
+    }
 }
