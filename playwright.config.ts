@@ -28,6 +28,9 @@ const TEST_HOSTS = [
     'region.',
     'admin.',
 ].map((s) => `http://${s}kasi.test:${PORT}`);
+// CI uses Playwright's full Chromium in headless mode (not the stripped headless shell), like local runs, so the
+// "treat test addresses as secure" flag applies to service workers and location.
+const channel = executablePath ? undefined : 'chromium';
 const browserArgs = SUBDOMAINS
     ? [
           '--host-resolver-rules=MAP kasi.test 127.0.0.1, MAP *.kasi.test 127.0.0.1',
@@ -47,6 +50,7 @@ export default defineConfig({
     use: {
         baseURL: BASE,
         trace: 'retain-on-failure',
+        channel,
         launchOptions: { executablePath, args: browserArgs },
     },
     projects: [
@@ -55,6 +59,7 @@ export default defineConfig({
             use: {
                 ...devices['Pixel 5'],
                 viewport: { width: 360, height: 740 },
+                channel,
                 launchOptions: { executablePath, args: browserArgs },
             },
         },
@@ -63,6 +68,7 @@ export default defineConfig({
             use: {
                 ...devices['Desktop Chrome'],
                 viewport: { width: 1280, height: 800 },
+                channel,
                 launchOptions: { executablePath, args: browserArgs },
             },
         },
