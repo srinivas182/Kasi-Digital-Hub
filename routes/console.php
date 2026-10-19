@@ -58,3 +58,6 @@ Schedule::command('kasi:funder:freeze')->monthlyOn(5, '04:00')->timezone('Africa
 
 // S21: AI budget alerts at 80% and 100%.
 Schedule::command('kasi:admin:hourly')->hourly()->withoutOverlapping()->onSuccess($heartbeat('admin-hourly'));
+
+// S25: KasiMarket order reminders (24 h) and lapses (48 h).
+Schedule::command('kasi:market:hourly')->hourly()->withoutOverlapping()->onSuccess($heartbeat('market-hourly'));

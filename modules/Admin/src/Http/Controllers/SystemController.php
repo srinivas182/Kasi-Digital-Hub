@@ -20,7 +20,7 @@ final class SystemController
     public const JOBS = [
         'notifications-release' => 2, 'documents-expiry' => 26, 'prune' => 26, 'event-reminders' => 2, 'visit-retention' => 24 * 32, 'ai-purge' => 26,
         'search-reindex' => 24 * 8, 'work-listings' => 26, 'work-matches' => 26, 'work-hiring' => 26, 'learn-daily' => 26, 'partner-daily' => 26,
-        'connect-daily' => 2, 'commercial-daily' => 26, 'funder-freeze' => 24 * 32, 'admin-hourly' => 2,
+        'connect-daily' => 2, 'commercial-daily' => 26, 'funder-freeze' => 24 * 32, 'admin-hourly' => 2, 'market-hourly' => 2,
     ];
 
     public function index(): Response

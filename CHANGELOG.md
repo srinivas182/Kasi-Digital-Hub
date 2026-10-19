@@ -2,6 +2,13 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.25.0] - 2026-10-19 - Sprint 25: KasiMarket ordering
+
+### Added
+- Cart and checkout per shop; in-app and WhatsApp orders tracked by reference; stock reserved and given back; order
+  journey with 24-hour reminders and 48-hour lapses; moderated order messages; phone shared only by choice; assisted
+  ordering at hubs; trader orders dashboard and collection/delivery settings (ADR-033).
+
 ## [0.24.0] - 2026-10-19 - Sprint 24: KasiMarket shops and products
 
 ### Added

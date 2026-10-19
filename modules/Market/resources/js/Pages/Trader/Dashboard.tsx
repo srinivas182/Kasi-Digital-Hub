@@ -33,7 +33,14 @@ interface Props {
         whatsapp_public: boolean;
         away: boolean;
         logo: string | null;
+        offers_collection: boolean;
+        collection_note: string | null;
+        offers_delivery: boolean;
+        delivery_area: string | null;
+        delivery_fee_cents: number;
+        min_order_cents: number;
     };
+    newOrders: number;
     badges: string[];
     products: Row[];
     reviewed: { done: number; of: number };
@@ -42,7 +49,7 @@ interface Props {
 const tone = (s: string) =>
     s === 'published' ? 'success' : s === 'refused' ? 'danger' : s === 'review' ? 'warning' : 'neutral';
 
-export default function TraderDashboard({ shop, badges, products, reviewed }: Props) {
+export default function TraderDashboard({ shop, badges, products, reviewed, newOrders }: Props) {
     const { t } = useTranslation();
     const { auth, flash } = usePage().props;
     const form = useForm({
@@ -52,6 +59,12 @@ export default function TraderDashboard({ shop, badges, products, reviewed }: Pr
         whatsapp: shop.whatsapp ?? '',
         whatsapp_public: shop.whatsapp_public,
         away: shop.away,
+        offers_collection: shop.offers_collection,
+        collection_note: shop.collection_note ?? '',
+        offers_delivery: shop.offers_delivery,
+        delivery_area: shop.delivery_area ?? '',
+        delivery_fee: (shop.delivery_fee_cents / 100).toString(),
+        min_order: (shop.min_order_cents / 100).toString(),
     });
     return (
         <AppLayout userName={auth.user?.name}>
@@ -71,6 +84,10 @@ export default function TraderDashboard({ shop, badges, products, reviewed }: Pr
                 <span className="flex gap-2">
                     <Link href={`/market/shops/${shop.slug}`} className={buttonVariants({ variant: 'secondary' })}>
                         {t('market.dash.view_shop')}
+                    </Link>
+                    <Link href="/market/shop/orders" className={buttonVariants({ variant: 'secondary' })}>
+                        {t('market.trader_orders.title')}
+                        {newOrders > 0 ? ` (${newOrders})` : ''}
                     </Link>
                     <Link href="/market/shop/products/new" className={buttonVariants({})}>
                         <Plus className="size-4" aria-hidden /> {t('market.dash.add')}
@@ -167,6 +184,11 @@ export default function TraderDashboard({ shop, badges, products, reviewed }: Pr
                         className="mt-3 flex flex-col gap-3"
                         onSubmit={(e) => {
                             e.preventDefault();
+                            form.transform((d) => ({
+                                ...d,
+                                delivery_fee_cents: Math.round(Number(d.delivery_fee || 0) * 100),
+                                min_order_cents: Math.round(Number(d.min_order || 0) * 100),
+                            }));
                             form.put('/market/shop', { preserveScroll: true });
                         }}
                     >
@@ -200,6 +222,52 @@ export default function TraderDashboard({ shop, badges, products, reviewed }: Pr
                             checked={form.data.away}
                             onCheckedChange={(c) => form.setData('away', c === true)}
                         />
+                        <Checkbox
+                            label={t('market.dash.offers_collection')}
+                            checked={form.data.offers_collection}
+                            onCheckedChange={(c) => form.setData('offers_collection', c === true)}
+                        />
+                        {form.data.offers_collection && (
+                            <Field label={t('market.dash.collection_note')}>
+                                <Input
+                                    value={form.data.collection_note}
+                                    onChange={(e) => form.setData('collection_note', e.target.value)}
+                                />
+                            </Field>
+                        )}
+                        <Checkbox
+                            label={t('market.dash.offers_delivery')}
+                            checked={form.data.offers_delivery}
+                            onCheckedChange={(c) => form.setData('offers_delivery', c === true)}
+                        />
+                        {form.data.offers_delivery && (
+                            <>
+                                <Field label={t('market.dash.delivery_area')}>
+                                    <Input
+                                        value={form.data.delivery_area}
+                                        onChange={(e) => form.setData('delivery_area', e.target.value)}
+                                    />
+                                </Field>
+                                <Field label={t('market.dash.delivery_fee')}>
+                                    <Input
+                                        type="number"
+                                        min={0}
+                                        step="0.01"
+                                        value={form.data.delivery_fee}
+                                        onChange={(e) => form.setData('delivery_fee', e.target.value)}
+                                    />
+                                </Field>
+                            </>
+                        )}
+                        <Field label={t('market.dash.min_order')}>
+                            <Input
+                                type="number"
+                                min={0}
+                                step="0.01"
+                                value={form.data.min_order}
+                                onChange={(e) => form.setData('min_order', e.target.value)}
+                            />
+                        </Field>
                         <div>
                             <Button type="submit" size="sm" variant="secondary" loading={form.processing}>
                                 {t('work.save')}

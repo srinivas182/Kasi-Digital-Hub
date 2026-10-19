@@ -95,3 +95,8 @@ language before switching any language on.
 - **Prohibited and restricted items list** (the current list is a placeholder in `Modules\Market\Services\Safety`).
 - **Trader terms** (and later buyer terms, S25).
 - Confirm that **traders must be 18+** in Release 1.
+
+## KasiMarket ordering (Sprint 25)
+
+- **Buyer terms.**
+- Confirm the **48-hour response rule** for traders and the **18+ minimum for buyers**.

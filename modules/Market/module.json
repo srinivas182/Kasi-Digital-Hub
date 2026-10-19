@@ -40,7 +40,11 @@
         "publishes": [
             "market.shop.opened",
             "market.product.published",
-            "market.product.reported"
+            "market.product.reported",
+            "market.order.placed",
+            "market.order.accepted",
+            "market.order.completed",
+            "market.order.lapsed"
         ],
         "listens": [
             "core.moderation.decided"

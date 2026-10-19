@@ -78,7 +78,7 @@ final class MarketController
 
         return Inertia::render('Market/Product', [
             'product' => [...$this->card($product), 'description' => $product->description, 'unit' => $product->unit, 'stock_type' => $product->stock_type, 'stock' => $product->stock,
-                'options' => $product->options->map(fn ($o): array => ['label' => $o->label, 'price_cents' => $o->price_cents ?? $product->price_cents,
+                'options' => $product->options->map(fn ($o): array => ['id' => $o->id, 'label' => $o->label, 'price_cents' => $o->price_cents ?? $product->price_cents,
                     'soldOut' => $product->stock_type === 'quantity' && $o->stock !== null && $o->stock <= 0])->values(),
                 'photos' => $product->photos->map(fn ($ph): array => ['small' => asset('storage/'.$ph->small_path), 'medium' => asset('storage/'.$ph->medium_path), 'alt' => $ph->alt])->values()],
             'shop' => [...$this->shopCard($product->shop), 'whatsapp' => $product->shop->whatsapp_public ? $product->shop->whatsapp : null, 'away' => $product->shop->away],

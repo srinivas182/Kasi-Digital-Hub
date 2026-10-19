@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/Button';
@@ -19,11 +19,24 @@ interface Props {
 export default function MarketHome({ categories, newest, shops }: Props) {
     const { t } = useTranslation();
     const [q, setQ] = useState('');
+    const { auth } = usePage().props;
     return (
         <PublicLayout>
             <Head title={t('market.title')} />
             <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-                <h1 className="text-fg text-3xl font-bold">{t('market.title')}</h1>
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                    <h1 className="text-fg text-3xl font-bold">{t('market.title')}</h1>
+                    {auth.user && (
+                        <span className="flex gap-4 text-sm font-semibold">
+                            <Link href="/market/cart" className="text-primary hover:underline">
+                                {t('market.cart.title')}
+                            </Link>
+                            <Link href="/market/orders" className="text-primary hover:underline">
+                                {t('market.orders.title')}
+                            </Link>
+                        </span>
+                    )}
+                </div>
                 <p className="text-fg-muted mt-1">{t('market.lead')}</p>
                 <form
                     role="search"

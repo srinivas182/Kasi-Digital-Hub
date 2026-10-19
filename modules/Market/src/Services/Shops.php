@@ -80,7 +80,7 @@ final readonly class Shops
         if (array_key_exists('whatsapp', $data)) {
             $data['whatsapp'] = $data['whatsapp'] !== null && $data['whatsapp'] !== '' ? PhoneNumbers::normalise((string) $data['whatsapp']) : null;
         }
-        $shop->fill(array_intersect_key($data, array_flip(['name', 'description', 'area', 'whatsapp', 'whatsapp_public', 'hours', 'away'])))->save();
+        $shop->fill(array_intersect_key($data, array_flip(['name', 'description', 'area', 'whatsapp', 'whatsapp_public', 'hours', 'away', 'offers_collection', 'collection_note', 'offers_delivery', 'delivery_area', 'delivery_fee_cents', 'min_order_cents'])))->save();
         $this->audit->record('market.shop_updated', meta: ['shop' => $shop->id], actor: $by);
     }
 

@@ -1,11 +1,11 @@
-import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { MessageCircle, Share2 } from 'lucide-react';
 import { useState } from 'react';
 
 import { Alert } from '@/components/ui/Alert';
 import { Button } from '@/components/ui/Button';
 import { Badge, Card } from '@/components/ui/display';
-import { Field, Select, Textarea } from '@/components/ui/form';
+import { Field, Input, Select, Textarea } from '@/components/ui/form';
 import { PublicLayout } from '@/layouts/PublicLayout';
 import { formatMoney } from '@/lib/format';
 import { useTranslation } from '@/lib/i18n';
@@ -19,7 +19,7 @@ interface Props {
         description: string | null;
         unit: string;
         stock_type: string;
-        options: { label: string; price_cents: number; soldOut: boolean }[];
+        options: { id: number; label: string; price_cents: number; soldOut: boolean }[];
         photos: { small: string; medium: string; alt: string }[];
     };
     shop: { name: string; slug: string; hub: string | null; whatsapp: string | null; away: boolean };
@@ -31,6 +31,8 @@ export default function MarketProduct({ product, shop, shareUrl }: Props) {
     const { auth, flash } = usePage().props;
     const [photo, setPhoto] = useState(0);
     const [reporting, setReporting] = useState(false);
+    const [option, setOption] = useState(String(product.options.find((o) => !o.soldOut)?.id ?? ''));
+    const [quantity, setQuantity] = useState('1');
     const report = useForm({ reason: 'scam', note: '' });
     const message = encodeURIComponent(t('market.whatsapp_message', { title: product.title, url: shareUrl }));
     const current = product.photos[photo];
@@ -99,9 +101,9 @@ export default function MarketProduct({ product, shop, shareUrl }: Props) {
                         {shop.away && <Alert tone="warning" title={t('market.shop.away_notice')} />}
                         {product.options.length > 0 && (
                             <Field label={t('market.options')} className="mt-3">
-                                <Select>
+                                <Select value={option} onChange={(e) => setOption(e.target.value)}>
                                     {product.options.map((o) => (
-                                        <option key={o.label} disabled={o.soldOut}>
+                                        <option key={o.label} value={o.id} disabled={o.soldOut}>
                                             {o.label} - {formatMoney(o.price_cents)}
                                             {o.soldOut ? ` (${t('market.sold_out')})` : ''}
                                         </option>
@@ -111,6 +113,45 @@ export default function MarketProduct({ product, shop, shareUrl }: Props) {
                         )}
                         {product.description && (
                             <p className="text-fg mt-3 whitespace-pre-line">{product.description}</p>
+                        )}
+                        {!product.soldOut && (
+                            <div className="mt-4 flex flex-wrap items-end gap-2">
+                                <Field label={t('market.quantity')}>
+                                    <Input
+                                        type="number"
+                                        min={1}
+                                        max={50}
+                                        inputMode="numeric"
+                                        className="w-24"
+                                        value={quantity}
+                                        onChange={(e) => setQuantity(e.target.value)}
+                                    />
+                                </Field>
+                                <Button
+                                    onClick={() =>
+                                        auth.user
+                                            ? router.post(
+                                                  `/market/cart/${product.id}`,
+                                                  {
+                                                      quantity: Number(quantity) || 1,
+                                                      option_id: option ? Number(option) : null,
+                                                  },
+                                                  { preserveScroll: true },
+                                              )
+                                            : router.visit('/login')
+                                    }
+                                >
+                                    {t('market.cart.add')}
+                                </Button>
+                                {auth.user && (
+                                    <Link
+                                        href="/market/cart"
+                                        className="text-primary text-sm font-semibold hover:underline"
+                                    >
+                                        {t('market.cart.view')}
+                                    </Link>
+                                )}
+                            </div>
                         )}
                         <Card className="mt-4">
                             {shop.whatsapp ? (

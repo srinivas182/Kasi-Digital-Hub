@@ -14,6 +14,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Modules\Core\Enterprise\BusinessFacts;
 use Modules\Core\Identity\Models\User;
+use Modules\Market\Models\Order;
 use Modules\Market\Models\Product;
 use Modules\Market\Models\ProductPhoto;
 use Modules\Market\Models\Shop;
@@ -41,6 +42,7 @@ final class TraderController
             'badges' => $this->shops->badges($shop),
             'products' => $shop->products()->with('photos')->latest()->get()->map(fn (Product $p): array => $this->productRow($p)),
             'reviewed' => ['done' => min($shop->approved_products, 3), 'of' => 3],
+            'newOrders' => Order::query()->where('shop_id', $shop->id)->where('status', 'placed')->count(),
         ]);
     }
 
@@ -62,7 +64,9 @@ final class TraderController
     {
         [$user, $shop] = $this->mine($request);
         $data = $request->validate(['name' => ['required', 'string', 'max:80'], 'description' => ['nullable', 'string', 'max:600'], 'area' => ['nullable', 'string', 'max:120'],
-            'whatsapp' => ['nullable', 'string', 'max:20'], 'whatsapp_public' => ['boolean'], 'away' => ['boolean'], 'hours' => ['nullable', 'array'], 'hours.*' => ['nullable', 'string', 'max:20']]);
+            'whatsapp' => ['nullable', 'string', 'max:20'], 'whatsapp_public' => ['boolean'], 'away' => ['boolean'], 'hours' => ['nullable', 'array'], 'hours.*' => ['nullable', 'string', 'max:20'],
+            'offers_collection' => ['boolean'], 'collection_note' => ['nullable', 'string', 'max:200'], 'offers_delivery' => ['boolean'], 'delivery_area' => ['nullable', 'string', 'max:120'],
+            'delivery_fee_cents' => ['nullable', 'integer', 'min:0', 'max:1000000'], 'min_order_cents' => ['nullable', 'integer', 'min:0', 'max:10000000']]);
         $this->shops->update($shop, $user, $data);
 
         return back()->with('status', __('work.saved'));
@@ -165,7 +169,10 @@ final class TraderController
     {
         return ['id' => $shop->id, 'slug' => $shop->slug, 'name' => $shop->name, 'description' => $shop->description, 'area' => $shop->area, 'whatsapp' => $shop->whatsapp,
             'whatsapp_public' => $shop->whatsapp_public, 'hours' => $shop->hours ?? [], 'away' => $shop->away, 'status' => $shop->status,
-            'logo' => $shop->logo_path !== null ? asset('storage/'.$shop->logo_path) : null];
+            'logo' => $shop->logo_path !== null ? asset('storage/'.$shop->logo_path) : null,
+            'offers_collection' => (bool) $shop->getAttribute('offers_collection'), 'collection_note' => $shop->getAttribute('collection_note'),
+            'offers_delivery' => (bool) $shop->getAttribute('offers_delivery'), 'delivery_area' => $shop->getAttribute('delivery_area'),
+            'delivery_fee_cents' => (int) $shop->getAttribute('delivery_fee_cents'), 'min_order_cents' => (int) $shop->getAttribute('min_order_cents')];
     }
 
     /** @return array<string, mixed> */

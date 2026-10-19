@@ -30,7 +30,9 @@ final class DemoMarketSeeder extends Seeder
         $shop = Shop::query()->create(['business_id' => $business['id'], 'slug' => 'nomsa-hair-studio', 'name' => 'Nomsa Hair Studio', 'status' => 'open', 'away' => false,
             'description' => 'Braids, cornrows and treatments in Tsutsumani. Book on WhatsApp.', 'hub_id' => $nomsa->home_hub_id, 'area' => 'Tsutsumani, near the hub',
             'whatsapp' => '+27720000003', 'whatsapp_public' => true, 'hours' => ['tue' => '08:00-17:00', 'wed' => '08:00-17:00', 'thu' => '08:00-17:00', 'fri' => '08:00-18:00', 'sat' => '07:00-15:00'],
-            'approved_products' => 3, 'opened_by' => $nomsa->id]);
+            'approved_products' => 3, 'opened_by' => $nomsa->id,
+            'offers_collection' => true, 'collection_note' => 'At the salon next to Tsutsumani hub, Tue-Sat', 'offers_delivery' => true,
+            'delivery_area' => 'Tsutsumani and Giyani town', 'delivery_fee_cents' => 2000, 'min_order_cents' => 0]);
         app(RoleAssignments::class)->assign($nomsa, 'trader', Scope::self(), null);
         $beauty = (int) DB::table('market_categories')->where('slug', 'beauty')->value('id');
         foreach ([
