@@ -236,6 +236,12 @@ export default function StartBusiness({
                         {t(`start.stage.${business.stage}`)}
                         {business.legalForm && ` · ${t(`start.form_name.${business.legalForm}`)}`}
                     </p>
+                    <Link
+                        href="/market/shop"
+                        className="text-primary mt-1 inline-block text-sm font-semibold hover:underline"
+                    >
+                        {t('start.your_shop')}
+                    </Link>
                 </div>
                 {business.formalised && <Badge tone="success">{t('start.formalised')}</Badge>}
             </div>

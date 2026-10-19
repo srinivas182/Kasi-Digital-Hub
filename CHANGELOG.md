@@ -2,6 +2,13 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.24.0] - 2026-10-19 - Sprint 24: KasiMarket shops and products
+
+### Added
+- KasiMarket: shops for KasiStart businesses, products with options, stock and small WebP photos (metadata stripped),
+  prohibited-items checks, first-3 review and reports via the review inbox, public market on market. with WhatsApp
+  ordering and sharing, trader dashboard, demo shop (ADR-032).
+
 ## [0.23.0] - 2026-10-19 - Sprint 23: Portal subdomains and the public job board
 
 ### Added

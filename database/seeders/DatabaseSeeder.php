@@ -8,6 +8,7 @@ use Illuminate\Database\Seeder;
 use Modules\Commercial\Database\Seeders\CatalogueSeeder;
 use Modules\Core\Database\Seeders\ConsentDocumentSeeder;
 use Modules\Core\Database\Seeders\GeographySeeder;
+use Modules\Market\Database\Seeders\MarketCategorySeeder;
 use Modules\Site\Database\Seeders\HelpSeeder;
 use Modules\Start\Database\Seeders\StepSeeder;
 use Modules\Work\Database\Seeders\OccupationSeeder;
@@ -21,7 +22,7 @@ final class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call([ConsentDocumentSeeder::class, GeographySeeder::class, OccupationSeeder::class, SkillSynonymSeeder::class, StepSeeder::class, CatalogueSeeder::class, HelpSeeder::class]);
+        $this->call([ConsentDocumentSeeder::class, GeographySeeder::class, OccupationSeeder::class, SkillSynonymSeeder::class, StepSeeder::class, CatalogueSeeder::class, HelpSeeder::class, MarketCategorySeeder::class]);
 
         if (config('kasi.demo.enabled') === true) {
             $this->call(DemoSeeder::class);

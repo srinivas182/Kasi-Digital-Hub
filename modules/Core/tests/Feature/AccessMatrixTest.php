@@ -16,6 +16,7 @@ const AGREED_MATRIX = [
     'learner' => ['Learn' => 'use'],
     'entrepreneur' => ['Learn' => 'use', 'Start' => 'use', 'Connect' => 'use'],
     'mentor' => ['Connect' => 'use'],
+    'trader' => ['Market' => 'use'], // S24: given when someone opens a KasiMarket shop
     // S18 (ADR-026): national mentoring roles.
     'mentor_coordinator' => ['Connect' => 'manage'],
     'safeguarding_officer' => ['Connect' => 'manage'],
@@ -54,7 +55,7 @@ it('grants each role exactly the agreed access', function (string $role, array $
 })->with(fn () => array_map(null, array_keys(AGREED_MATRIX), array_values(AGREED_MATRIX)));
 
 it('requires the authenticator step for staff, organisation and national roles only', function (): void {
-    $individual = ['job_seeker', 'learner', 'entrepreneur', 'mentor'];
+    $individual = ['job_seeker', 'learner', 'entrepreneur', 'mentor', 'trader'];
 
     foreach (app(RoleRegistry::class)->all() as $key => $role) {
         expect($role->staff)->toBe(! in_array($key, $individual, true), "Role {$key}");

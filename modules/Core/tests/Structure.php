@@ -58,7 +58,7 @@ final class Structure
     public static function defaultScope(string $role): Scope
     {
         return match ($role) {
-            'job_seeker', 'learner', 'entrepreneur', 'mentor' => Scope::self(),
+            'job_seeker', 'learner', 'entrepreneur', 'mentor', 'trader' => Scope::self(),
             'employer_admin', 'recruiter' => Scope::organisation(self::org('Mopani Fresh Market')),
             'provider_admin', 'course_author', 'assessor_moderator' => Scope::organisation(self::org('HBM EduTech')),
             'partner_admin', 'partner_agent' => Scope::organisation(self::org('Ubuntu Community Bank (demo)')),

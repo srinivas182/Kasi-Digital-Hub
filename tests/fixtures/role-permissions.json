@@ -146,5 +146,8 @@
         "admin.people.view",
         "admin.support.handle",
         "hubops.dashboard"
+    ],
+    "trader": [
+        "market.trade"
     ]
 }

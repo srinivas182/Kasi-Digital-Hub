@@ -44,9 +44,10 @@
             "Modules\\Connect\\": "modules/Connect/src/",
             "Modules\\Core\\": "modules/Core/src/",
             "Modules\\Funder\\": "modules/Funder/src/",
-            "Modules\\Hub\\": "modules/Hub/src/",
             "Modules\\HubOps\\": "modules/HubOps/src/",
+            "Modules\\Hub\\": "modules/Hub/src/",
             "Modules\\Learn\\": "modules/Learn/src/",
+            "Modules\\Market\\": "modules/Market/src/",
             "Modules\\Partner\\": "modules/Partner/src/",
             "Modules\\Region\\": "modules/Region/src/",
             "Modules\\Site\\": "modules/Site/src/",
@@ -56,20 +57,21 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/",
             "Modules\\Admin\\Tests\\": "modules/Admin/tests/",
             "Modules\\Commercial\\Tests\\": "modules/Commercial/tests/",
             "Modules\\Connect\\Tests\\": "modules/Connect/tests/",
             "Modules\\Core\\Tests\\": "modules/Core/tests/",
             "Modules\\Funder\\Tests\\": "modules/Funder/tests/",
-            "Modules\\Hub\\Tests\\": "modules/Hub/tests/",
             "Modules\\HubOps\\Tests\\": "modules/HubOps/tests/",
+            "Modules\\Hub\\Tests\\": "modules/Hub/tests/",
             "Modules\\Learn\\Tests\\": "modules/Learn/tests/",
+            "Modules\\Market\\Tests\\": "modules/Market/tests/",
             "Modules\\Partner\\Tests\\": "modules/Partner/tests/",
             "Modules\\Region\\Tests\\": "modules/Region/tests/",
             "Modules\\Site\\Tests\\": "modules/Site/tests/",
             "Modules\\Start\\Tests\\": "modules/Start/tests/",
-            "Modules\\Work\\Tests\\": "modules/Work/tests/"
+            "Modules\\Work\\Tests\\": "modules/Work/tests/",
+            "Tests\\": "tests/"
         }
     },
     "scripts": {

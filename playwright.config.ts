@@ -27,6 +27,7 @@ const TEST_HOSTS = [
     'funder.',
     'region.',
     'admin.',
+    'market.',
 ].map((s) => `http://${s}kasi.test:${PORT}`);
 // CI uses Playwright's full Chromium in headless mode (not the stripped headless shell), like local runs, so the
 // "treat test addresses as secure" flag applies to service workers and location.

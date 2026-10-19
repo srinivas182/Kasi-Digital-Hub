@@ -1,0 +1,72 @@
+{
+    "name": "Market",
+    "slug": "market",
+    "title": "KasiMarket",
+    "description": "Shops and products for local traders",
+    "group": "service",
+    "release": "r1",
+    "version": "0.24.0",
+    "depends_on": [
+        "Core",
+        "Start"
+    ],
+    "providers": [
+        "Modules\\Market\\Providers\\MarketServiceProvider"
+    ],
+    "routes": {
+        "web": true,
+        "api": false
+    },
+    "entitlement": "market",
+    "roles": [
+        {
+            "key": "trader",
+            "label": "roles.trader",
+            "category": "individual",
+            "scope": "self",
+            "staff": false,
+            "access": {
+                "Market": "use"
+            },
+            "permissions": [
+                "market.trade"
+            ]
+        }
+    ],
+    "permissions": [
+        "market.trade"
+    ],
+    "events": {
+        "publishes": [
+            "market.shop.opened",
+            "market.product.published",
+            "market.product.reported"
+        ],
+        "listens": [
+            "core.moderation.decided"
+        ]
+    },
+    "impact_metrics": [
+        "market_shops",
+        "market_products"
+    ],
+    "demo_seeders": [
+        "Modules\\Market\\Database\\Seeders\\DemoMarketSeeder"
+    ],
+    "nav": {
+        "icon": "store",
+        "href": "/market/shop",
+        "items": [
+            {
+                "label": "nav.market.my_shop",
+                "href": "/market/shop",
+                "icon": "store"
+            },
+            {
+                "label": "nav.market.browse",
+                "href": "/market",
+                "icon": "shopping-bag"
+            }
+        ]
+    }
+}

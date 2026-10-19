@@ -89,3 +89,9 @@ language before switching any language on.
 - **Review of the 24 starter help articles** (Admin -> Help articles; each is marked "Starter - needs review").
 - **Support team:** who answers help requests, and in which hours (the target is a first reply within 2 working days).
 - **AI budgets per feature** (the platform budget is still the R2 000 placeholder).
+
+## KasiMarket (Sprint 24)
+
+- **Prohibited and restricted items list** (the current list is a placeholder in `Modules\Market\Services\Safety`).
+- **Trader terms** (and later buyer terms, S25).
+- Confirm that **traders must be 18+** in Release 1.
