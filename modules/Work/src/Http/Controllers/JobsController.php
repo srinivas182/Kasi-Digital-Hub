@@ -93,6 +93,39 @@ final class JobsController extends WorkController
     }
 
     /** Public, shareable job page with Google JobPosting data. No employer contact details. */
+    /**
+     * Public job board (S23): browse and search open jobs without an account. Only live adverts (published by
+     * verified employers, not past closing); no employer contact details or anything about applicants.
+     * Signed-in adults use the in-app board with match scores instead.
+     */
+    public function board(Request $request): Response|RedirectResponse
+    {
+        $user = $request->user();
+        if ($user instanceof User && ! $user->isMinor()) {
+            return to_route('work.jobs');
+        }
+        $data = $request->validate(['q' => ['nullable', 'string', 'max:80'], 'province' => ['nullable', 'integer'], 'municipality' => ['nullable', 'integer'],
+            'type' => ['nullable', 'string', 'in:full_time,part_time,temporary,piece_work,learnership,internship']]);
+        $jobs = JobListing::query()->live()->with(['organisation:id,name,trading_name', 'municipality:id,name,province_id'])
+            ->when($data['q'] ?? null, fn ($q, string $text) => $q->where(fn ($w) => $w->where('title', 'like', '%'.addcslashes($text, '%_').'%')->orWhere('place_name', 'like', '%'.addcslashes($text, '%_').'%')))
+            ->when($data['municipality'] ?? null, fn ($q, int $id) => $q->where('municipality_id', $id))
+            ->when(($data['province'] ?? null) !== null && ($data['municipality'] ?? null) === null, fn ($q) => $q->whereIn('municipality_id', DB::table('municipalities')->where('province_id', (int) $data['province'])->pluck('id')))
+            ->when($data['type'] ?? null, fn ($q, string $type) => $q->where('type', $type))
+            ->latest('published_at')->paginate(20)->withQueryString();
+
+        return Inertia::render('Work/Board', [
+            'jobs' => $jobs->through(static fn (JobListing $l): array => [
+                'id' => $l->id, 'title' => $l->title, 'employer' => $l->organisation->displayName(), 'place' => $l->place_name ?? $l->municipality?->name,
+                'type' => $l->type, 'payMin' => $l->pay_min_cents, 'payMax' => $l->pay_max_cents, 'payPeriod' => $l->pay_period,
+                'closes' => $l->closes_on->toDateString(), 'posted' => $l->published_at?->toDateString(),
+            ]),
+            'filters' => array_filter($data, static fn ($v) => $v !== null),
+            'provinces' => DB::table('provinces')->orderBy('name')->get(['id', 'name']),
+            'municipalities' => ($data['province'] ?? null) !== null ? DB::table('municipalities')->where('province_id', (int) $data['province'])->orderBy('name')->get(['id', 'name']) : [],
+            'seo' => Seo::page(__('work.board.title'), __('work.board.description'), '/jobs'),
+        ]);
+    }
+
     public function public(Request $request, JobListing $listing): Response|RedirectResponse
     {
         $user = $request->user();

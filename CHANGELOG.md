@@ -2,6 +2,13 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.23.0] - 2026-10-19 - Sprint 23: Portal subdomains and the public job board
+
+### Added
+- Portal subdomains (my., jobs., learn., start., connect., hub., partner., funder., region., admin.) with single
+  sign-on and sign-out, redirects that keep old links working, sign-in on the main domain with return; public job
+  board; PIN re-confirmation for sensitive staff actions; browser tests with subdomains on (ADR-031).
+
 ## [0.22.0] - 2026-10-17 - Sprint 22: Performance and scale
 
 ### Added

@@ -36,20 +36,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'account.ready', 'po
         Route::get('/support/{ticket}', [SupportController::class, 'ticket'])->name('support.ticket');
         Route::post('/support/{ticket}/reply', [SupportController::class, 'reply'])->name('support.reply');
         Route::get('/support/people/{person}', [SupportController::class, 'person'])->name('support.person');
-        Route::post('/support/people/{person}/code', [SupportController::class, 'code'])->middleware('throttle:10,60')->name('support.code');
-        Route::post('/support/people/{person}/act', [SupportController::class, 'act'])->middleware('throttle:20,60')->name('support.act');
+        Route::post('/support/people/{person}/code', [SupportController::class, 'code'])->middleware('throttle:10,60')->middleware('pin.confirmed')->name('support.code');
+        Route::post('/support/people/{person}/act', [SupportController::class, 'act'])->middleware('throttle:20,60')->middleware('pin.confirmed')->name('support.act');
     });
 
     Route::middleware('permission:admin.people.view')->group(function (): void {
         Route::get('/people', [PeopleController::class, 'index'])->name('people.index');
         Route::get('/people/{person}', [PeopleController::class, 'show'])->name('people.show');
     });
-    Route::post('/people/{person}/roles', [PeopleController::class, 'assignRole'])->middleware('permission:admin.roles.assign')->name('people.roles.assign');
+    Route::post('/people/{person}/roles', [PeopleController::class, 'assignRole'])->middleware('permission:admin.roles.assign')->middleware('pin.confirmed')->name('people.roles.assign');
     Route::delete('/people/{person}/roles/{assignment}', [PeopleController::class, 'revokeRole'])->middleware('permission:admin.roles.assign')->name('people.roles.revoke');
     Route::middleware('permission:admin.people.suspend')->group(function (): void {
-        Route::post('/people/{person}/suspend', [PeopleController::class, 'suspend'])->name('people.suspend');
-        Route::post('/people/{person}/reactivate', [PeopleController::class, 'reactivate'])->name('people.reactivate');
-        Route::post('/people/{person}/sign-out', [PeopleController::class, 'signOutEverywhere'])->name('people.sign-out');
+        Route::post('/people/{person}/suspend', [PeopleController::class, 'suspend'])->middleware('pin.confirmed')->name('people.suspend');
+        Route::post('/people/{person}/reactivate', [PeopleController::class, 'reactivate'])->middleware('pin.confirmed')->name('people.reactivate');
+        Route::post('/people/{person}/sign-out', [PeopleController::class, 'signOutEverywhere'])->middleware('pin.confirmed')->name('people.sign-out');
     });
 
     Route::get('/hubs', [HubsController::class, 'index'])->middleware('permission:admin.hubs.view')->name('hubs.index');
@@ -95,7 +95,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'account.ready', 'po
     });
 
     Route::get('/audit', [AuditController::class, 'index'])->middleware('permission:admin.audit.view')->name('audit.index');
-    Route::get('/audit/export', [AuditController::class, 'export'])->middleware(['permission:admin.audit.export', 'throttle:5,10'])->name('audit.export');
+    Route::get('/audit/export', [AuditController::class, 'export'])->middleware(['permission:admin.audit.export', 'throttle:5,10'])->middleware('pin.confirmed')->name('audit.export');
 });
 
 // People's own help requests (S21).
@@ -110,5 +110,5 @@ Route::prefix('help/requests')->name('help.')->middleware(['auth', 'account.read
 Route::prefix('demo')->name('demo.')->middleware(['auth'])->group(function (): void {
     Route::get('/', [DemoController::class, 'stories'])->name('stories');
     Route::post('/switch/{user}', [DemoController::class, 'switch'])->middleware('throttle:60,1')->name('switch');
-    Route::post('/reset', [DemoController::class, 'reset'])->middleware('throttle:3,10')->name('reset');
+    Route::post('/reset', [DemoController::class, 'reset'])->middleware('throttle:3,10')->middleware('pin.confirmed')->name('reset');
 });

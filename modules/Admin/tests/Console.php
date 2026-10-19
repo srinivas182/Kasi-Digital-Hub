@@ -19,7 +19,7 @@ final class Console
         $user = Structure::personWith($role);
         app(ConsentService::class)->record($user, ['platform' => true]);
         $device = $user->devices()->create(['name' => 'Test browser']);
-        $test->actingAs($user)->withSession(['device_id' => $device->id, 'last_activity_at' => now()->getTimestamp()]);
+        $test->actingAs($user)->withSession(['device_id' => $device->id, 'last_activity_at' => now()->getTimestamp(), 'pin_confirmed_at' => now()->getTimestamp()]); // S23: PIN freshly confirmed (ConfirmPinTest checks the step itself)
 
         return $user;
     }

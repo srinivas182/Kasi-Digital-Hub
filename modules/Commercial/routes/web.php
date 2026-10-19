@@ -33,10 +33,10 @@ Route::prefix('commercial')->name('commercial.')->middleware(['auth', 'account.r
         Route::get('/', [ConsoleController::class, 'overview'])->name('console');
         Route::post('/prices', [ConsoleController::class, 'proposePrice'])->name('prices');
         Route::post('/rules', [ConsoleController::class, 'proposeRule'])->name('rules');
-        Route::post('/approvals/{approval}', [ConsoleController::class, 'decide'])->whereNumber('approval')->name('approvals');
-        Route::post('/invoices/{invoice}/paid', [ConsoleController::class, 'invoicePaid'])->name('invoices.paid');
-        Route::post('/orders/{order}/refund', [ConsoleController::class, 'refund'])->name('orders.refund');
+        Route::post('/approvals/{approval}', [ConsoleController::class, 'decide'])->whereNumber('approval')->middleware('pin.confirmed')->name('approvals');
+        Route::post('/invoices/{invoice}/paid', [ConsoleController::class, 'invoicePaid'])->middleware('pin.confirmed')->name('invoices.paid');
+        Route::post('/orders/{order}/refund', [ConsoleController::class, 'refund'])->middleware('pin.confirmed')->name('orders.refund');
         Route::post('/issues/{issue}', [ConsoleController::class, 'resolveIssue'])->whereNumber('issue')->name('issues');
-        Route::get('/ledger.csv', [ConsoleController::class, 'ledger'])->name('ledger');
+        Route::get('/ledger.csv', [ConsoleController::class, 'ledger'])->middleware('pin.confirmed')->name('ledger');
     });
 });

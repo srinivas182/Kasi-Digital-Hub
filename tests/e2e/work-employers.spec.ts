@@ -67,8 +67,11 @@ test('a public job page is readable without signing in', async ({ page }) => {
         .first()
         .getAttribute('href');
     const id = href?.split('/').pop();
+    // Let the signed-in page finish its requests first: a late reply would set the session cookie again.
+    await page.waitForLoadState('networkidle');
     await page.context().clearCookies(); // now a visitor who is not signed in
     await page.goto(`/jobs/${id}`);
+    await expect(page).toHaveURL(new RegExp(`/jobs/${id}$`)); // the public page, not the signed-in one
     await expect(page.getByRole('heading', { level: 1, name: 'Cashier' })).toBeVisible();
     await expect(page.getByText(/Sign in or create a free account/)).toBeVisible();
     await expectAccessible(page);

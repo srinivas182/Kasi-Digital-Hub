@@ -24,9 +24,15 @@ test('a young person builds a job profile with writing help and makes a CV', asy
     await page.getByRole('button', { name: 'Help me write CV points' }).click();
     await expect(page.getByText('Suggestion - check it, change it or ignore it')).toBeVisible();
     await page.getByRole('button', { name: 'Use this' }).click();
+    // The suggestion panel closes when the save has finished - wait for it before leaving the page, or the
+    // save's reply can arrive after the next page and reset it.
+    await expect(page.getByText('Suggestion - check it, change it or ignore it')).toBeHidden();
     await expect(page.getByText('(Demo AI)').first()).toBeVisible();
 
     await page.goto('/work/profile?step=skills');
+    // Wait for the step to render before checking which suggestions are offered (a first visit to a portal's
+    // subdomain loads the app files fresh, so it can take a moment).
+    await expect(page.getByRole('combobox', { name: 'Add skill' })).toBeVisible();
     for (const skill of ['Customer service', 'Cleaning', 'Cooking']) {
         const add = page.getByRole('button', { name: `+ ${skill}` });
         if (await add.count()) await add.click(); // already added by the other screen size

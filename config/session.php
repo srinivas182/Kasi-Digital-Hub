@@ -158,7 +158,8 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN'),
+    // S23: with portal subdomains the session covers the whole domain (single sign-on and sign-out everywhere).
+    'domain' => env('SESSION_DOMAIN', (bool) env('KASI_SUBDOMAINS', false) ? '.'.env('KASI_DOMAIN', 'kasidigitalhub.co.za') : null),
 
     /*
     |--------------------------------------------------------------------------

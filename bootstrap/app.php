@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\ConfirmPin;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\PortalHost;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\ThrottlePerRoute;
 use App\Support\Errors\ErrorPage;
+use App\Support\Portals\Portals;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -27,10 +30,14 @@ return Application::configure(basePath: dirname(__DIR__))
             $middleware->trustProxies(at: $proxies === '*' ? '*' : array_map('trim', explode(',', (string) $proxies)));
         }
         $middleware->encryptCookies(except: ['kasi_locale']);
-        $middleware->redirectGuestsTo('/login');
+        // S23: with portal subdomains, sign-in happens on the main domain and returns to the page asked for.
+        $middleware->redirectGuestsTo(fn (): string => Portals::enabled() ? Portals::url('', '/login') : '/login');
         $middleware->redirectUsersTo('/home');
         // Rate limits per person and per route (see ThrottlePerRoute).
-        $middleware->alias(['throttle' => ThrottlePerRoute::class]);
+        $middleware->alias([
+            'pin.confirmed' => ConfirmPin::class, 'throttle' => ThrottlePerRoute::class]);
+        // S23: the portal host check runs for every request (also paths with no route, e.g. unknown subdomains).
+        $middleware->prepend(PortalHost::class);
         $middleware->web(append: [
             TrackDevice::class,
             SetLocale::class,

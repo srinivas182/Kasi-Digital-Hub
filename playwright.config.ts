@@ -9,6 +9,32 @@ import { closeSync, openSync } from 'node:fs';
 const PORT = Number(process.env.E2E_PORT ?? 8123);
 const executablePath = process.env.PW_CHROMIUM_PATH || undefined;
 
+// SUBDOMAINS=1 (S23): portals on real subdomains of kasi.test, all resolved to this machine by the browser,
+// exactly as production uses *.kasidigitalhub.co.za. CI runs the suite this way.
+const SUBDOMAINS = Boolean(process.env.SUBDOMAINS);
+const BASE = SUBDOMAINS ? `http://kasi.test:${PORT}` : `http://127.0.0.1:${PORT}`;
+// Service workers, location and offline storage need a secure address; production uses HTTPS, so the test
+// browser treats the http test addresses as secure.
+const TEST_HOSTS = [
+    '',
+    'my.',
+    'jobs.',
+    'learn.',
+    'start.',
+    'connect.',
+    'hub.',
+    'partner.',
+    'funder.',
+    'region.',
+    'admin.',
+].map((s) => `http://${s}kasi.test:${PORT}`);
+const browserArgs = SUBDOMAINS
+    ? [
+          '--host-resolver-rules=MAP kasi.test 127.0.0.1, MAP *.kasi.test 127.0.0.1',
+          `--unsafely-treat-insecure-origin-as-secure=${TEST_HOSTS.join(',')}`,
+      ]
+    : [];
+
 // The e2e database file must exist before migrations run.
 closeSync(openSync('database/e2e.sqlite', 'a'));
 
@@ -19,21 +45,25 @@ export default defineConfig({
     retries: process.env.CI ? 1 : 0,
     reporter: process.env.CI ? [['github'], ['list']] : 'list',
     use: {
-        baseURL: `http://127.0.0.1:${PORT}`,
+        baseURL: BASE,
         trace: 'retain-on-failure',
-        launchOptions: { executablePath },
+        launchOptions: { executablePath, args: browserArgs },
     },
     projects: [
         {
             name: 'phone',
-            use: { ...devices['Pixel 5'], viewport: { width: 360, height: 740 }, launchOptions: { executablePath } },
+            use: {
+                ...devices['Pixel 5'],
+                viewport: { width: 360, height: 740 },
+                launchOptions: { executablePath, args: browserArgs },
+            },
         },
         {
             name: 'desktop',
             use: {
                 ...devices['Desktop Chrome'],
                 viewport: { width: 1280, height: 800 },
-                launchOptions: { executablePath },
+                launchOptions: { executablePath, args: browserArgs },
             },
         },
     ],
@@ -55,6 +85,9 @@ export default defineConfig({
             QUEUE_CONNECTION: 'sync',
             MAIL_MAILER: 'log',
             KASI_DEMO_MODE: 'true',
+            ...(SUBDOMAINS
+                ? { KASI_SUBDOMAINS: 'true', KASI_DOMAIN: 'kasi.test', APP_URL: BASE, SESSION_DOMAIN: '.kasi.test' }
+                : {}),
             KASI_OTP_PER_IP_HOUR: '1000',
             KASI_THROTTLE_MULTIPLIER: '50',
             KASI_OTP_PER_PHONE_15_MIN: '50',

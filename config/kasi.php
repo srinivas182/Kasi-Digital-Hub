@@ -276,6 +276,35 @@ return [
     ],
 
     /*
+    | Portal subdomains (S23, ADR-031). Off: everything on one host, as before.
+    */
+    'subdomains' => [
+        'enabled' => (bool) env('KASI_SUBDOMAINS', false),
+        'domain' => env('KASI_DOMAIN', 'kasidigitalhub.co.za'),
+        // Subdomain => path prefixes it owns ("" = main domain). Paths not listed are served on any host.
+        'portals' => [
+            '' => ['/', '/login', '/signup', '/two-factor', '/help', '/hubs', '/about', '/contact', '/employers', '/funders', '/legal', '/verify'],
+            'my' => ['/home', '/account', '/my-documents', '/help/requests', '/events', '/check-in', '/consents'],
+            'jobs' => ['/work', '/jobs'],
+            'learn' => ['/learn'],
+            'start' => ['/start', '/support'],
+            'connect' => ['/connect'],
+            'hub' => ['/hub-ops', '/kiosk', '/commercial/hub'],
+            'partner' => ['/partner'],
+            'funder' => ['/funder'],
+            'region' => ['/region'],
+            'admin' => ['/admin', '/commercial', '/demo', '/horizon'],
+        ],
+        // What a portal's own address opens.
+        'homes' => [
+            'my' => '/home', 'jobs' => '/jobs', 'learn' => '/learn/courses', 'start' => '/start', 'connect' => '/connect', 'hub' => '/hub-ops',
+            'partner' => '/partner', 'funder' => '/funder', 'region' => '/region', 'admin' => '/admin',
+        ],
+        // Served on any host (checkout, payments, downloads): never redirected even inside an owned prefix.
+        'shared' => ['/commercial/buy', '/commercial/orders', '/commercial/fake-pay', '/commercial/webhooks'],
+    ],
+
+    /*
     | Context help (S21): route name => help article shown as "Help with this page".
     */
     'help_context' => [

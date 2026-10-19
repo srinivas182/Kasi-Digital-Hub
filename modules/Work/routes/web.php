@@ -102,5 +102,6 @@ Route::prefix('work')->name('work.')->middleware(['auth', 'account.ready'])->gro
 });
 
 // Public job pages: shareable and findable by search engines; no employer contact details.
+Route::get('/jobs', [JobsController::class, 'board'])->middleware('throttle:120,1')->name('jobs.board');
 Route::get('/jobs/{listing}', [JobsController::class, 'public'])->middleware('throttle:120,1')->name('jobs.public');
 Route::post('/jobs/{listing}/take-down', [JobsController::class, 'takeDown'])->middleware(['auth', 'account.ready'])->name('jobs.take_down');
