@@ -4,7 +4,7 @@ import { Alert } from '@/components/ui/Alert';
 import { Button } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Card, CardTitle } from '@/components/ui/display';
-import { Field, Input, Textarea } from '@/components/ui/form';
+import { Field, Input, Select, Textarea } from '@/components/ui/form';
 import { AppLayout } from '@/layouts/AppLayout';
 import { formatMoney } from '@/lib/format';
 import { useTranslation } from '@/lib/i18n';
@@ -31,6 +31,11 @@ interface Group {
         deliveryFee: number;
         minOrder: number;
         whatsapp: boolean;
+        online: boolean;
+        cash: boolean;
+        hubCollection: string | null;
+        zones: { name: string; fee_cents: number }[];
+        freeOver: number | null;
     };
     lines: Line[];
     items_cents: number;
@@ -39,19 +44,47 @@ interface Group {
 function Checkout({ group, canOrder }: { group: Group; canOrder: boolean }) {
     const { t } = useTranslation();
     const s = group.shop;
+    const firstWay = s.collection ? 'collection' : s.hubCollection ? 'hub' : 'delivery';
     const form = useForm({
-        fulfilment: s.collection ? 'collection' : 'delivery',
+        fulfilment: firstWay,
         address: '',
         note: '',
         channel: 'app',
         share_phone: false,
+        payment: s.cash ? 'cash' : 'online',
+        zone: s.zones[0]?.name ?? '',
     });
-    const fee = form.data.fulfilment === 'delivery' ? s.deliveryFee : 0;
-    const blocked = group.lines.some((l) => l.problem !== null) || group.items_cents < s.minOrder || !canOrder;
+    const free = s.freeOver !== null && s.freeOver > 0 && group.items_cents >= s.freeOver;
+    const zoneFee = s.zones.find((z) => z.name === form.data.zone)?.fee_cents;
+    const fee = form.data.fulfilment !== 'delivery' || free ? 0 : s.zones.length > 0 ? (zoneFee ?? 0) : s.deliveryFee;
+    const blocked =
+        group.lines.some((l) => l.problem !== null) ||
+        group.items_cents < s.minOrder ||
+        !canOrder ||
+        (!s.cash && !s.online);
     const send = (channel: string) => {
-        form.transform((d) => ({ ...d, channel, address: d.fulfilment === 'delivery' ? d.address : null }));
+        form.transform((d) => ({
+            ...d,
+            channel,
+            address: d.fulfilment === 'delivery' ? d.address : null,
+            zone: d.fulfilment === 'delivery' && s.zones.length > 0 ? d.zone : null,
+        }));
         form.post(`/market/cart/shops/${s.id}/order`);
     };
+    const option = (value: string, label: string, detail?: string | null) => (
+        <label key={value} className="text-fg mt-1 flex items-start gap-2 text-sm">
+            <input
+                type="radio"
+                name={`f-${s.id}`}
+                checked={form.data.fulfilment === value}
+                onChange={() => form.setData('fulfilment', value)}
+            />
+            <span>
+                {label}
+                {detail && <span className="text-fg-muted block">{detail}</span>}
+            </span>
+        </label>
+    );
     return (
         <form
             className="border-line mt-4 flex flex-col gap-3 border-t pt-3"
@@ -62,39 +95,49 @@ function Checkout({ group, canOrder }: { group: Group; canOrder: boolean }) {
         >
             <fieldset>
                 <legend className="text-fg text-sm font-semibold">{t('market.checkout.how')}</legend>
-                {s.collection && (
-                    <label className="text-fg mt-1 flex items-start gap-2 text-sm">
-                        <input
-                            type="radio"
-                            name={`f-${s.id}`}
-                            checked={form.data.fulfilment === 'collection'}
-                            onChange={() => form.setData('fulfilment', 'collection')}
-                        />
-                        <span>
-                            {t('market.checkout.collect')}
-                            {s.collectionNote && <span className="text-fg-muted block">{s.collectionNote}</span>}
-                        </span>
-                    </label>
-                )}
-                {s.delivery && (
-                    <label className="text-fg mt-1 flex items-start gap-2 text-sm">
-                        <input
-                            type="radio"
-                            name={`f-${s.id}`}
-                            checked={form.data.fulfilment === 'delivery'}
-                            onChange={() => form.setData('fulfilment', 'delivery')}
-                        />
-                        <span>
-                            {t('market.checkout.deliver', { fee: formatMoney(s.deliveryFee) })}
-                            {s.deliveryArea && <span className="text-fg-muted block">{s.deliveryArea}</span>}
-                        </span>
-                    </label>
-                )}
+                {s.collection && option('collection', t('market.checkout.collect'), s.collectionNote)}
+                {s.hubCollection &&
+                    option('hub', t('market.checkout.hub', { hub: s.hubCollection }), t('market.checkout.hub_detail'))}
+                {s.delivery &&
+                    option(
+                        'delivery',
+                        s.zones.length > 0
+                            ? t('market.checkout.deliver_zones')
+                            : t('market.checkout.deliver', { fee: formatMoney(s.deliveryFee) }),
+                        free ? t('market.checkout.free_delivery') : s.deliveryArea,
+                    )}
             </fieldset>
+            {form.data.fulfilment === 'delivery' && s.zones.length > 0 && (
+                <Field label={t('market.checkout.zone')}>
+                    <Select value={form.data.zone} onChange={(e) => form.setData('zone', e.target.value)}>
+                        {s.zones.map((z) => (
+                            <option key={z.name} value={z.name}>
+                                {z.name} - {formatMoney(z.fee_cents)}
+                            </option>
+                        ))}
+                    </Select>
+                </Field>
+            )}
             {form.data.fulfilment === 'delivery' && (
                 <Field label={t('market.checkout.address')}>
                     <Input value={form.data.address} onChange={(e) => form.setData('address', e.target.value)} />
                 </Field>
+            )}
+            {s.online && s.cash && (
+                <fieldset>
+                    <legend className="text-fg text-sm font-semibold">{t('market.checkout.pay_how')}</legend>
+                    {(['online', 'cash'] as const).map((p) => (
+                        <label key={p} className="text-fg mt-1 flex items-center gap-2 text-sm">
+                            <input
+                                type="radio"
+                                name={`p-${s.id}`}
+                                checked={form.data.payment === p}
+                                onChange={() => form.setData('payment', p)}
+                            />
+                            {t(`market.checkout.pay_${p}`)}
+                        </label>
+                    ))}
+                </fieldset>
             )}
             <Field label={t('market.checkout.note')}>
                 <Textarea rows={2} value={form.data.note} onChange={(e) => form.setData('note', e.target.value)} />
@@ -107,15 +150,17 @@ function Checkout({ group, canOrder }: { group: Group; canOrder: boolean }) {
             <p className="text-fg font-semibold">
                 {t('market.checkout.total', { total: formatMoney(group.items_cents + fee) })}
             </p>
-            <p className="text-fg-muted text-xs">{t('market.checkout.cash_note')}</p>
+            <p className="text-fg-muted text-xs">
+                {form.data.payment === 'online' ? t('market.checkout.online_note') : t('market.checkout.cash_note')}
+            </p>
             {group.items_cents < s.minOrder && (
                 <Alert tone="warning" title={t('market.checkout.minimum', { min: formatMoney(s.minOrder) })} />
             )}
             <div className="flex flex-wrap gap-2">
                 <Button type="submit" loading={form.processing} disabled={blocked}>
-                    {t('market.checkout.place')}
+                    {form.data.payment === 'online' ? t('market.checkout.pay_now') : t('market.checkout.place')}
                 </Button>
-                {s.whatsapp && (
+                {s.whatsapp && form.data.payment === 'cash' && (
                     <Button
                         type="button"
                         variant="secondary"

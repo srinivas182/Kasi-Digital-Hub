@@ -100,3 +100,11 @@ language before switching any language on.
 
 - **Buyer terms.**
 - Confirm the **48-hour response rule** for traders and the **18+ minimum for buyers**.
+
+## KasiMarket payments (Sprint 26)
+
+- **Market split percentages** (placeholder Kasi 5%, hub 3%, trader 92%; delivery fee 100% to the trader).
+- **Who bears the payment provider's fees** (Kasi in the placeholder setup).
+- Whether hubs should charge a **collection handling fee** (none in Release 1).
+- **Marketplace terms** covering refunds, uncollected parcels (7 days) and disputes - legal sign-off before live
+  payments.

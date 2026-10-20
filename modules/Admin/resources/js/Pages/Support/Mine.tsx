@@ -12,15 +12,17 @@ import { useTranslation } from '@/lib/i18n';
 export default function MyHelpRequests({
     tickets,
     categories,
+    subject = '',
 }: {
     tickets: { id: string; number: string; subject: string; status: string; created_at: string }[];
     categories: string[];
+    subject?: string;
 }) {
     const { t } = useTranslation();
     const { auth, flash } = usePage().props;
     const form = useForm<{ category: string; subject: string; body: string; screenshot: File | null }>({
-        category: 'account',
-        subject: '',
+        category: subject ? 'payments' : 'account',
+        subject,
         body: '',
         screenshot: null,
     });

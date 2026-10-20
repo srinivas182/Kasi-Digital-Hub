@@ -41,6 +41,17 @@ const entryKeys = closure(ENTRY);
 const entry = size(entryKeys);
 let failed = entry > ENTRY_BUDGET_KB;
 console.log(`Entry JS: ${entry.toFixed(1)} KB gzip (budget ${ENTRY_BUDGET_KB} KB)`);
+// S26: portals outside the first-paint path (public site, sign-in, hub home) load their page lists on demand.
+// If any of their page files are listed in the entry again, every new page grows the first load.
+const EAGER_PORTALS = ['Site', 'Core', 'Hub'];
+const leaked = [...entryKeys]
+    .filter((k) => manifest[k]?.file)
+    .flatMap((k) => [...readFileSync(`public/build/${manifest[k].file}`, 'utf8').matchAll(/modules\/([A-Za-z]+)\/resources\/js\/Pages\//g)].map((m) => m[1]))
+    .filter((m) => !EAGER_PORTALS.includes(m));
+if (leaked.length > 0) {
+    console.log(`Entry bundle lists pages of lazily-loaded portals: ${[...new Set(leaked)].join(', ')}  <-- use the portal's pages.ts registry`);
+    failed = true;
+}
 
 for (const key of Object.keys(manifest)) {
     if (!key.includes('/resources/js/Pages/') || !manifest[key].file.endsWith('.js')) continue;

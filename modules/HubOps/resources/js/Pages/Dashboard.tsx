@@ -38,6 +38,9 @@ export default function Dashboard({ hubs, period, metrics, canCompare }: Props) 
             hubs={hubs}
             actions={
                 <>
+                    <a href="/market/desk" className="text-primary self-center text-sm font-semibold hover:underline">
+                        {t('hubops.market_desk')}
+                    </a>
                     <Select
                         aria-label={t('hubops.dashboard.period')}
                         value={String(period)}

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Illuminate\Support\Facades\Route;
+use Modules\Market\Http\Controllers\DeskController;
 use Modules\Market\Http\Controllers\MarketController;
 use Modules\Market\Http\Controllers\OrderController;
 use Modules\Market\Http\Controllers\TraderController;
@@ -41,5 +42,12 @@ Route::prefix('market')->name('market.')->group(function (): void {
         Route::get('/shop/orders', [OrderController::class, 'traderOrders'])->name('shop.orders');
         Route::get('/shop/orders/{order}', [OrderController::class, 'show'])->name('shop.order');
         Route::post('/shop/orders/{order}/move', [OrderController::class, 'move'])->name('shop.order.move');
+        // S26: refunds, payment settings, hub collection desk.
+        Route::post('/shop/orders/{order}/refund', [OrderController::class, 'refund'])->middleware('throttle:20,60')->name('shop.order.refund');
+        Route::post('/shop/bank', [TraderController::class, 'bank'])->middleware('throttle:10,60')->name('shop.bank');
+        Route::get('/desk', [DeskController::class, 'index'])->name('desk');
+        Route::post('/desk/orders/{order}/check-in', [DeskController::class, 'checkIn'])->name('desk.checkin');
+        Route::post('/desk/orders/{order}/hand-over', [DeskController::class, 'handOver'])->middleware('throttle:30,10')->name('desk.handover');
+        Route::post('/desk/settings', [DeskController::class, 'settings'])->name('desk.settings');
     });
 });

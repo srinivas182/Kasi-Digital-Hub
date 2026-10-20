@@ -35,6 +35,16 @@ use Modules\Core\Identity\Models\User;
  * @property CarbonImmutable|null $completed_at
  * @property CarbonImmutable|null $closed_at
  * @property CarbonImmutable $created_at
+ * @property string $payment
+ * @property string $payment_status
+ * @property string|null $payment_ref
+ * @property int $refunded_cents
+ * @property CarbonImmutable|null $pay_by
+ * @property string|null $zone
+ * @property string|null $collection_hub_id
+ * @property string|null $collection_code_hash
+ * @property int $code_attempts
+ * @property CarbonImmutable|null $at_hub_at
  * @property-read Shop $shop
  * @property-read User $buyer
  * @property-read Collection<int, OrderItem> $items
@@ -51,7 +61,7 @@ final class Order extends Model
         'out_for_delivery' => ['completed', 'cancelled'],
     ];
 
-    public const OPEN = ['placed', 'accepted', 'ready', 'out_for_delivery'];
+    public const OPEN = ['placed', 'accepted', 'ready', 'out_for_delivery', 'at_hub'];
 
     protected $table = 'market_orders';
 

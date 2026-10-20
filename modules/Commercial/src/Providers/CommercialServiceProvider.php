@@ -10,12 +10,15 @@ use Modules\Commercial\Payments\FakeGateway;
 use Modules\Commercial\Payments\PaymentGateway;
 use Modules\Commercial\Payments\PaystackGateway;
 use Modules\Commercial\Services\OverdueInvoices;
+use Modules\Commercial\Services\SalePayments;
+use Modules\Core\Commerce\Payments;
 use Modules\Core\Insights\HealthSignal;
 
 final class CommercialServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(Payments::class, SalePayments::class);
         $this->app->tag([OverdueInvoices::class], HealthSignal::TAG);
         $this->app->singleton(PaymentGateway::class, static fn (): PaymentGateway => match (config('kasi.commercial.payments_driver')) {
             'paystack' => new PaystackGateway((string) config('kasi.commercial.paystack_secret')),

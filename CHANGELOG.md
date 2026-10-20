@@ -2,6 +2,20 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.26.0] - 2026-10-20 - Sprint 26: KasiMarket payments and delivery
+
+### Added
+- Online payment for KasiMarket orders with the split at source (trader, hub, Kasi) via a core Payments contract;
+  trader payment readiness (verified bank letter); 30-minute stock holds; automatic and partial refunds; hub
+  collection points with 6-digit codes, a staff desk and 7-day returns; delivery zones and free delivery; hub market
+  share in statements; "Get help" with the order (ADR-034).
+
+### Changed
+- Pages load per portal (first load 125.0 -> 120.2 KB), with a guard in the size check.
+
+### Fixed
+- Commercial merchant columns widened for marketplace sellers.
+
 ## [0.25.0] - 2026-10-19 - Sprint 25: KasiMarket ordering
 
 ### Added

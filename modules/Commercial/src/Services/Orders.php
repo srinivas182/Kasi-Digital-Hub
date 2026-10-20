@@ -97,11 +97,42 @@ final readonly class Orders
         ]);
     }
 
+    /**
+     * A marketplace sale (S26): the seller is the merchant (not VAT-registered in Release 1); the stream's split rule
+     * reads its "partner" column as the seller's share. The seller also receives `$sellerExtraCents` (e.g. delivery)
+     * in full. Without a hub, the hub's share goes to Kasi.
+     *
+     * @param  array<string, string|int|bool|null>  $meta
+     */
+    public function createSale(Product $product, int $itemsCents, int $sellerExtraCents, ?Hub $hub, string $payeeRef, User $buyer, array $meta): Order
+    {
+        $rule = $this->catalogue->rule($product->stream);
+        if ($rule === null || $itemsCents <= 0) {
+            throw new DomainException(__('commercial.order.no_rule'));
+        }
+        $split = Money::split($itemsCents, $rule['kasi_bp'] + ($hub === null ? $rule['hub_bp'] : 0), $hub === null ? 0 : $rule['hub_bp'], $rule['partner_bp']);
+        $shares = ['kasi' => $split['kasi'], 'hub' => $split['hub'], 'partner' => 0, 'trader' => $split['partner'] + $sellerExtraCents];
+        $total = $itemsCents + $sellerExtraCents;
+
+        return Order::query()->create([
+            'number' => self::number(), 'product_id' => $product->id, 'hub_id' => $hub?->id, 'attribution' => $hub !== null ? 'hub' : 'national', 'buyer_user_id' => $buyer->id,
+            'buyer_organisation_id' => null, 'buyer_name' => null, 'quantity' => 1, 'unit_price_cents' => $total, 'total_cents' => $total, 'vat_cents' => 0, 'merchant' => 'trader',
+            'split_rule_id' => $rule['id'], 'shares' => $shares, 'channel' => 'online', 'status' => 'pending', 'refunded_cents' => 0, 'meta' => $meta, 'created_by' => $buyer->id,
+            'payee_ref' => $payeeRef,
+        ]);
+    }
+
     /** @return array{url: string, reference: string} */
     public function checkout(Order $order, string $email, string $returnUrl): array
     {
-        $subaccount = $order->hub_id !== null ? DB::table('com_hub_finance')->where('hub_id', $order->hub_id)->value('provider_subaccount') : null;
-        $hubShare = $order->shares['hub'] + ($order->merchant === 'hub' ? $order->vat_cents : 0);
+        if ($order->getAttribute('payee_ref') !== null) {
+            // Marketplace sale: the seller's payout account receives the seller's share directly.
+            $subaccount = $order->meta['seller_subaccount'] ?? null;
+            $hubShare = $order->shares['trader'] ?? 0;
+        } else {
+            $subaccount = $order->hub_id !== null ? DB::table('com_hub_finance')->where('hub_id', $order->hub_id)->value('provider_subaccount') : null;
+            $hubShare = $order->shares['hub'] + ($order->merchant === 'hub' ? $order->vat_cents : 0);
+        }
         $start = $this->gateway->start($order, $subaccount !== null ? (string) $subaccount : null, $hubShare, $email, $returnUrl);
         $order->forceFill(['provider' => $this->gateway->name(), 'provider_ref' => $start['reference']])->save();
 
@@ -152,14 +183,14 @@ final readonly class Orders
             $net = $order->total_cents - $order->vat_cents;
             $netRefund = $order->vat_cents === 0 ? $amountCents : (int) round($net * $amountCents / $order->total_cents);
             $vat = $amountCents - $netRefund; // net + VAT refunded always equals the refund
-            $part = Money::proportion($order->shares, $netRefund, $net);
-            foreach (['kasi' => $part['kasi'], 'hub' => $part['hub'], 'partner' => $part['partner'], 'vat' => $vat] as $account => $amount) {
+            $part = Money::proportionAll($order->shares, $netRefund, $net);
+            foreach ([...$part, 'vat' => $vat] as $account => $amount) {
                 if ($amount !== 0) {
                     $this->entry($order, 'refund', $account, -$amount, 'Refund');
                 }
             }
             if ($order->channel === 'pos') {
-                $this->entry($order, 'royalty_due', 'hub', $part['kasi'] + $part['partner'], 'Royalty reversed on refund');
+                $this->entry($order, 'royalty_due', 'hub', $part['kasi'] + ($part['partner'] ?? 0), 'Royalty reversed on refund');
             }
             $refunded = $order->refunded_cents + $amountCents;
             $order->forceFill(['refunded_cents' => $refunded, 'status' => $refunded === $order->total_cents ? 'refunded' : 'part_refunded'])->save();
@@ -172,8 +203,8 @@ final readonly class Orders
 
     private function ledger(Order $order, string $kind, int $sign): void
     {
-        foreach (['kasi', 'hub', 'partner'] as $account) {
-            if ($order->shares[$account] !== 0) {
+        foreach (['kasi', 'hub', 'partner', 'trader'] as $account) {
+            if (($order->shares[$account] ?? 0) !== 0) {
                 $this->entry($order, $kind, $account, $sign * $order->shares[$account], $order->number);
             }
         }
@@ -186,6 +217,7 @@ final readonly class Orders
     {
         LedgerEntry::query()->create(['order_id' => $order->id, 'hub_id' => $order->hub_id,
             'partner_organisation_id' => $account === 'partner' ? $order->product->partner_organisation_id : null,
+            'payee_ref' => $account === 'trader' ? $order->getAttribute('payee_ref') : null,
             'kind' => $kind, 'account' => $account, 'amount_cents' => $amount, 'memo' => $memo, 'created_at' => now()]);
     }
 

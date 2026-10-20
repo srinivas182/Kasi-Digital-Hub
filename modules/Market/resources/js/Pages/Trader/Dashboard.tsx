@@ -6,6 +6,7 @@ import { Button, buttonVariants } from '@/components/ui/Button';
 import { Checkbox } from '@/components/ui/Checkbox';
 import { Badge, Card, CardTitle } from '@/components/ui/display';
 import { Field, Input, Textarea } from '@/components/ui/form';
+import { FileInput } from '@/components/ui/FileInput';
 import { AppLayout } from '@/layouts/AppLayout';
 import { formatMoney } from '@/lib/format';
 import { useTranslation } from '@/lib/i18n';
@@ -39,6 +40,13 @@ interface Props {
         delivery_area: string | null;
         delivery_fee_cents: number;
         min_order_cents: number;
+        accepts_online: boolean;
+        accepts_cash: boolean;
+        bank: 'none' | 'pending' | 'verified';
+        offers_hub_collection: boolean;
+        hubPoint: boolean;
+        delivery_zones: { name: string; fee_cents: number }[];
+        free_delivery_over_cents: number | null;
     };
     newOrders: number;
     badges: string[];
@@ -65,7 +73,13 @@ export default function TraderDashboard({ shop, badges, products, reviewed, newO
         delivery_area: shop.delivery_area ?? '',
         delivery_fee: (shop.delivery_fee_cents / 100).toString(),
         min_order: (shop.min_order_cents / 100).toString(),
+        accepts_online: shop.accepts_online,
+        accepts_cash: shop.accepts_cash,
+        offers_hub_collection: shop.offers_hub_collection,
+        zones: shop.delivery_zones.map((z) => ({ name: z.name, fee: (z.fee_cents / 100).toString() })),
+        free_over: shop.free_delivery_over_cents !== null ? (shop.free_delivery_over_cents / 100).toString() : '',
     });
+    const letter = useForm<{ letter: File | null }>({ letter: null });
     return (
         <AppLayout userName={auth.user?.name}>
             <Head title={t('market.dash.title')} />
@@ -259,6 +273,87 @@ export default function TraderDashboard({ shop, badges, products, reviewed, newO
                                 </Field>
                             </>
                         )}
+                        {form.data.offers_delivery && (
+                            <fieldset>
+                                <legend className="text-fg text-sm font-semibold">{t('market.dash.zones')}</legend>
+                                {form.data.zones.map((z, n) => (
+                                    <div key={n} className="mt-1 grid grid-cols-2 gap-2">
+                                        <Input
+                                            aria-label={t('market.dash.zone_name')}
+                                            placeholder={t('market.dash.zone_name')}
+                                            value={z.name}
+                                            onChange={(e) =>
+                                                form.setData(
+                                                    'zones',
+                                                    form.data.zones.map((x, j) =>
+                                                        j === n ? { ...x, name: e.target.value } : x,
+                                                    ),
+                                                )
+                                            }
+                                        />
+                                        <Input
+                                            aria-label={t('market.dash.zone_fee')}
+                                            placeholder={t('market.dash.zone_fee')}
+                                            type="number"
+                                            min={0}
+                                            step="0.01"
+                                            value={z.fee}
+                                            onChange={(e) =>
+                                                form.setData(
+                                                    'zones',
+                                                    form.data.zones.map((x, j) =>
+                                                        j === n ? { ...x, fee: e.target.value } : x,
+                                                    ),
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                ))}
+                                {form.data.zones.length < 5 && (
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() =>
+                                            form.setData('zones', [...form.data.zones, { name: '', fee: '' }])
+                                        }
+                                    >
+                                        {t('market.dash.add_zone')}
+                                    </Button>
+                                )}
+                                <Field label={t('market.dash.free_over')}>
+                                    <Input
+                                        type="number"
+                                        min={0}
+                                        step="0.01"
+                                        value={form.data.free_over}
+                                        onChange={(e) => form.setData('free_over', e.target.value)}
+                                    />
+                                </Field>
+                            </fieldset>
+                        )}
+                        {shop.hubPoint && (
+                            <Checkbox
+                                label={t('market.dash.hub_collection')}
+                                checked={form.data.offers_hub_collection}
+                                onCheckedChange={(c) => form.setData('offers_hub_collection', c === true)}
+                            />
+                        )}
+                        <fieldset>
+                            <legend className="text-fg text-sm font-semibold">{t('market.pay.title')}</legend>
+                            <Checkbox
+                                label={t('market.pay.accept_cash')}
+                                checked={form.data.accepts_cash}
+                                onCheckedChange={(c) => form.setData('accepts_cash', c === true)}
+                            />
+                            <Checkbox
+                                label={t('market.pay.accept_online')}
+                                checked={form.data.accepts_online}
+                                disabled={shop.bank !== 'verified'}
+                                onCheckedChange={(c) => form.setData('accepts_online', c === true)}
+                            />
+                            <p className="text-fg-muted text-xs">{t(`market.pay.bank_${shop.bank}`)}</p>
+                        </fieldset>
                         <Field label={t('market.dash.min_order')}>
                             <Input
                                 type="number"
@@ -274,6 +369,35 @@ export default function TraderDashboard({ shop, badges, products, reviewed, newO
                             </Button>
                         </div>
                     </form>
+                    {shop.bank !== 'verified' && (
+                        <form
+                            className="border-line mt-4 flex flex-col gap-2 border-t pt-3"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                letter.post('/market/shop/bank', { forceFormData: true, preserveScroll: true });
+                            }}
+                        >
+                            <Field label={t('market.pay.letter')} hint={t('market.pay.letter_hint')}>
+                                <FileInput
+                                    file={letter.data.letter}
+                                    onChange={(f) => letter.setData('letter', f)}
+                                    chooseLabel={t('documents.file')}
+                                    photoLabel={t('documents.take_photo')}
+                                />
+                            </Field>
+                            <div>
+                                <Button
+                                    type="submit"
+                                    size="sm"
+                                    variant="secondary"
+                                    disabled={!letter.data.letter}
+                                    loading={letter.processing}
+                                >
+                                    {t('market.pay.send_letter')}
+                                </Button>
+                            </div>
+                        </form>
+                    )}
                 </Card>
             </div>
         </AppLayout>

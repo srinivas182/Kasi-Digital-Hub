@@ -46,4 +46,7 @@ export async function signIn(page: Page, phone: string): Promise<void> {
     }
 
     await expect(home).toBeVisible();
+    // With portal subdomains, sign-in ends with a full-page switch to my.; let it settle so the next navigation
+    // isn't aborted by it (S26).
+    await page.waitForLoadState('networkidle');
 }

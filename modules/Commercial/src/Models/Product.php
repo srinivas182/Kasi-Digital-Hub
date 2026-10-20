@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 final class Product extends Model
 {
-    public const STREAMS = ['package', 'work', 'learn', 'start', 'onsite', 'licence'];
+    public const STREAMS = ['package', 'work', 'learn', 'start', 'onsite', 'licence', 'market'];
 
     protected $table = 'com_products';
 

@@ -12,6 +12,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Core\Documents\DocumentVault;
 use Modules\Core\Enterprise\BusinessFacts;
 use Modules\Core\Identity\Models\User;
 use Modules\Market\Models\Order;
@@ -66,10 +67,26 @@ final class TraderController
         $data = $request->validate(['name' => ['required', 'string', 'max:80'], 'description' => ['nullable', 'string', 'max:600'], 'area' => ['nullable', 'string', 'max:120'],
             'whatsapp' => ['nullable', 'string', 'max:20'], 'whatsapp_public' => ['boolean'], 'away' => ['boolean'], 'hours' => ['nullable', 'array'], 'hours.*' => ['nullable', 'string', 'max:20'],
             'offers_collection' => ['boolean'], 'collection_note' => ['nullable', 'string', 'max:200'], 'offers_delivery' => ['boolean'], 'delivery_area' => ['nullable', 'string', 'max:120'],
-            'delivery_fee_cents' => ['nullable', 'integer', 'min:0', 'max:1000000'], 'min_order_cents' => ['nullable', 'integer', 'min:0', 'max:10000000']]);
+            'delivery_fee_cents' => ['nullable', 'integer', 'min:0', 'max:1000000'], 'min_order_cents' => ['nullable', 'integer', 'min:0', 'max:10000000'],
+            'accepts_online' => ['boolean'], 'accepts_cash' => ['boolean'], 'offers_hub_collection' => ['boolean'], 'free_delivery_over_cents' => ['nullable', 'integer', 'min:0'],
+            'delivery_zones' => ['nullable', 'array', 'max:5'], 'delivery_zones.*.name' => ['required', 'string', 'max:40'], 'delivery_zones.*.fee_cents' => ['required', 'integer', 'min:0']]);
+        if (array_key_exists('delivery_zones', $data)) {
+            $data['delivery_zones'] = $data['delivery_zones'] === null || $data['delivery_zones'] === [] ? null : json_encode(array_values($data['delivery_zones']));
+        }
         $this->shops->update($shop, $user, $data);
 
         return back()->with('status', __('work.saved'));
+    }
+
+    /** Upload a bank confirmation letter; it goes to the document queue, and once verified the shop can take online payment. */
+    public function bank(Request $request, DocumentVault $vault): RedirectResponse
+    {
+        [$user, $shop] = $this->mine($request);
+        $request->validate(['letter' => ['required', File::types(['pdf', 'jpg', 'jpeg', 'png'])->max(10 * 1024)]]);
+        $letter = $vault->store($user, $request->file('letter'), 'bank_confirmation');
+        $shop->forceFill(['bank_document_id' => $letter->id, 'bank_verified' => false])->save();
+
+        return back()->with('status', __('market.pay.letter_sent'));
     }
 
     public function picture(Request $request): RedirectResponse
@@ -172,7 +189,13 @@ final class TraderController
             'logo' => $shop->logo_path !== null ? asset('storage/'.$shop->logo_path) : null,
             'offers_collection' => (bool) $shop->getAttribute('offers_collection'), 'collection_note' => $shop->getAttribute('collection_note'),
             'offers_delivery' => (bool) $shop->getAttribute('offers_delivery'), 'delivery_area' => $shop->getAttribute('delivery_area'),
-            'delivery_fee_cents' => (int) $shop->getAttribute('delivery_fee_cents'), 'min_order_cents' => (int) $shop->getAttribute('min_order_cents')];
+            'delivery_fee_cents' => (int) $shop->getAttribute('delivery_fee_cents'), 'min_order_cents' => (int) $shop->getAttribute('min_order_cents'),
+            'accepts_online' => (bool) $shop->getAttribute('accepts_online'), 'accepts_cash' => (bool) ($shop->getAttribute('accepts_cash') ?? true),
+            'bank' => $shop->getAttribute('bank_verified') ? 'verified' : ($shop->getAttribute('bank_document_id') !== null ? 'pending' : 'none'),
+            'offers_hub_collection' => (bool) $shop->getAttribute('offers_hub_collection'),
+            'hubPoint' => $shop->hub_id !== null && DB::table('market_collection_points')->where('hub_id', $shop->hub_id)->where('enabled', true)->exists(),
+            'delivery_zones' => (array) json_decode((string) ($shop->getAttributes()['delivery_zones'] ?? '[]'), true),
+            'free_delivery_over_cents' => $shop->getAttribute('free_delivery_over_cents') !== null ? (int) $shop->getAttribute('free_delivery_over_cents') : null];
     }
 
     /** @return array<string, mixed> */

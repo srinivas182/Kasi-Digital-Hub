@@ -33,6 +33,7 @@ final class SupportController
         return Inertia::render('Admin/Support/Mine', [
             'tickets' => DB::table('support_tickets')->where('user_id', $user->id)->latest('created_at')->get(['id', 'number', 'subject', 'status', 'created_at']),
             'categories' => Support::CATEGORIES,
+            'subject' => mb_substr((string) $request->query('subject', ''), 0, 140), // e.g. "Order KM-2026-000123" from KasiMarket (S26)
         ]);
     }
 

@@ -37,7 +37,11 @@ final class OrderController
                 'shop' => ['id' => $g['shop']->id, 'name' => $g['shop']->name, 'slug' => $g['shop']->slug, 'collection' => (bool) $g['shop']->getAttribute('offers_collection'),
                     'collectionNote' => $g['shop']->getAttribute('collection_note'), 'delivery' => (bool) $g['shop']->getAttribute('offers_delivery'),
                     'deliveryArea' => $g['shop']->getAttribute('delivery_area'), 'deliveryFee' => (int) $g['shop']->getAttribute('delivery_fee_cents'),
-                    'minOrder' => (int) $g['shop']->getAttribute('min_order_cents'), 'whatsapp' => $g['shop']->whatsapp_public && $g['shop']->whatsapp !== null],
+                    'minOrder' => (int) $g['shop']->getAttribute('min_order_cents'), 'whatsapp' => $g['shop']->whatsapp_public && $g['shop']->whatsapp !== null,
+                    'online' => Ordering::onlineReady($g['shop']), 'cash' => (bool) ($g['shop']->getAttribute('accepts_cash') ?? true),
+                    'hubCollection' => Ordering::hubCollection($g['shop']) ? (string) DB::table('hubs')->where('id', $g['shop']->hub_id)->value('name') : null,
+                    'zones' => (array) json_decode((string) ($g['shop']->getAttributes()['delivery_zones'] ?? '[]'), true),
+                    'freeOver' => $g['shop']->getAttribute('free_delivery_over_cents') !== null ? (int) $g['shop']->getAttribute('free_delivery_over_cents') : null],
                 'lines' => array_map(static fn (array $l): array => ['id' => $l['id'], 'productId' => $l['product']->id, 'title' => $l['product']->title, 'option' => $l['option']?->label,
                     'quantity' => $l['quantity'], 'unit_price_cents' => $l['unit_price_cents'], 'problem' => $l['problem']], $g['lines']),
                 'items_cents' => $g['items_cents'],
@@ -67,17 +71,23 @@ final class OrderController
         return back();
     }
 
-    public function place(Request $request, Shop $shop): RedirectResponse
+    public function place(Request $request, Shop $shop): \Symfony\Component\HttpFoundation\Response
     {
         [$user, $facilitator] = $this->buyer($request);
-        $data = $request->validate(['fulfilment' => ['required', Rule::in(['collection', 'delivery'])], 'address' => ['nullable', 'string', 'max:200'],
-            'note' => ['nullable', 'string', 'max:500'], 'channel' => ['required', Rule::in(['app', 'whatsapp'])], 'share_phone' => ['boolean']]);
+        $data = $request->validate(['fulfilment' => ['required', Rule::in(['collection', 'delivery', 'hub'])], 'address' => ['nullable', 'string', 'max:200'],
+            'note' => ['nullable', 'string', 'max:500'], 'channel' => ['required', Rule::in(['app', 'whatsapp'])], 'share_phone' => ['boolean'],
+            'payment' => ['nullable', Rule::in(['cash', 'online'])], 'zone' => ['nullable', 'string', 'max:40']]);
         try {
-            $order = $this->ordering->place($user, $shop, $data['fulfilment'], $data['address'] ?? null, $data['note'] ?? null, $data['channel'], $facilitator);
+            $order = $this->ordering->place($user, $shop, $data['fulfilment'], $data['address'] ?? null, $data['note'] ?? null, $data['channel'], $facilitator,
+                $data['payment'] ?? 'cash', $data['zone'] ?? null);
         } catch (DomainException $e) {
             return back()->withErrors(['order' => $e->getMessage()]);
         }
         $order->forceFill(['phone_shared' => (bool) ($data['share_phone'] ?? false)])->save();
+        if ($order->payment === 'online') {
+            // To the payment page (the demo page in CI and demos); back to the order afterwards.
+            return Inertia::location($this->ordering->startPayment($order->load('shop'), $user));
+        }
 
         return to_route('market.orders.show', $order)->with('status', __($data['channel'] === 'whatsapp' ? 'market.order.placed_whatsapp' : 'market.order.placed'));
     }
@@ -107,7 +117,9 @@ final class OrderController
                 'fulfilment' => $order->fulfilment, 'address' => $order->delivery_address, // only buyer and trader reach this page 'note' => $order->note,
                 'items_cents' => $order->items_cents, 'fee_cents' => $order->delivery_fee_cents, 'total_cents' => $order->total_cents, 'placed' => $order->created_at->toIso8601String(),
                 'items' => $order->items->map(static fn ($i): array => ['title' => $i->title, 'option' => $i->option_label, 'quantity' => $i->quantity, 'unit_price_cents' => $i->unit_price_cents])->values(),
-                'buyerConfirmed' => $order->buyer_confirmed,
+                'buyerConfirmed' => $order->buyer_confirmed, 'payment' => $order->getAttribute('payment'), 'paymentStatus' => $order->getAttribute('payment_status'),
+                'refunded_cents' => (int) $order->getAttribute('refunded_cents'),
+                'collectionHub' => $order->getAttribute('collection_hub_id') !== null ? DB::table('hubs')->where('id', $order->getAttribute('collection_hub_id'))->first(['name', 'address']) : null,
             ],
             'shop' => ['name' => $shop->name, 'slug' => $shop->slug, 'collectionNote' => $shop->getAttribute('collection_note'),
                 'whatsapp' => $shop->whatsapp_public ? $shop->whatsapp : null],
@@ -160,6 +172,15 @@ final class OrderController
                 'fulfilment' => $o->fulfilment, 'total_cents' => $o->total_cents, 'placed' => $o->created_at->toIso8601String(), 'eta' => $o->eta]),
             'counts' => ['new' => $orders->where('status', 'placed')->count(), 'active' => $orders->whereIn('status', ['accepted', 'ready', 'out_for_delivery'])->count()],
         ]);
+    }
+
+    public function refund(Request $request, Order $order): RedirectResponse
+    {
+        $shop = $this->myShop($request);
+        abort_unless($order->shop_id === $shop->id, 404);
+        $data = $request->validate(['amount_cents' => ['required', 'integer', 'min:1'], 'reason' => ['required', 'string', 'min:3', 'max:300']]);
+
+        return $this->attempt(fn () => $this->ordering->partialRefund($order, $this->user($request), (int) $data['amount_cents'], $data['reason']), 'market.refund.done');
     }
 
     public function move(Request $request, Order $order): RedirectResponse

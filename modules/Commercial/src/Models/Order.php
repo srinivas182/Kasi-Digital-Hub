@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $vat_cents
  * @property string $merchant
  * @property int|null $split_rule_id
- * @property array{kasi: int, hub: int, partner: int} $shares
+ * @property array{kasi: int, hub: int, partner: int, trader?: int} $shares
  * @property string $channel
  * @property string $status
  * @property string|null $provider

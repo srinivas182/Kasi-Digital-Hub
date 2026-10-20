@@ -58,6 +58,29 @@ final class Money
         return ['kasi' => $total - $hub - $partner, 'hub' => $hub, 'partner' => $partner];
     }
 
+    /**
+     * Reverse any set of shares proportionally (S26: also with a seller), with the same rounding rule: every share
+     * except Kasi's rounds down, Kasi takes the remaining cent(s), so the parts always add up.
+     *
+     * @param  array<string, int>  $shares
+     * @return array<string, int>
+     */
+    public static function proportionAll(array $shares, int $part, int $whole): array
+    {
+        if ($whole <= 0 || $part < 0 || $part > $whole) {
+            throw new InvalidArgumentException('Bad proportion');
+        }
+        $total = intdiv(array_sum($shares) * $part, $whole);
+        $out = [];
+        foreach ($shares as $key => $value) {
+            if ($key !== 'kasi') {
+                $out[$key] = intdiv($value * $part, $whole);
+            }
+        }
+
+        return ['kasi' => $total - array_sum($out)] + $out;
+    }
+
     public static function format(int $cents): string
     {
         return ($cents < 0 ? '-' : '').'R'.number_format(abs($cents) / 100, 2, '.', ' ');

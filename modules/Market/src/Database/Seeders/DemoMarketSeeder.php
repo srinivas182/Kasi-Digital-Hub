@@ -28,11 +28,17 @@ final class DemoMarketSeeder extends Seeder
             return;
         }
         $shop = Shop::query()->create(['business_id' => $business['id'], 'slug' => 'nomsa-hair-studio', 'name' => 'Nomsa Hair Studio', 'status' => 'open', 'away' => false,
-            'description' => 'Braids, cornrows and treatments in Tsutsumani. Book on WhatsApp.', 'hub_id' => $nomsa->home_hub_id, 'area' => 'Tsutsumani, near the hub',
+            'description' => 'Braids, cornrows and treatments in Soweto. Book on WhatsApp.', 'hub_id' => $nomsa->home_hub_id, 'area' => 'Soweto, near the hub',
             'whatsapp' => '+27720000003', 'whatsapp_public' => true, 'hours' => ['tue' => '08:00-17:00', 'wed' => '08:00-17:00', 'thu' => '08:00-17:00', 'fri' => '08:00-18:00', 'sat' => '07:00-15:00'],
             'approved_products' => 3, 'opened_by' => $nomsa->id,
-            'offers_collection' => true, 'collection_note' => 'At the salon next to Tsutsumani hub, Tue-Sat', 'offers_delivery' => true,
-            'delivery_area' => 'Tsutsumani and Giyani town', 'delivery_fee_cents' => 2000, 'min_order_cents' => 0]);
+            'offers_collection' => true, 'collection_note' => 'At the salon next to Soweto hub, Tue-Sat', 'offers_delivery' => true,
+            'delivery_area' => 'Soweto and Johannesburg south', 'delivery_fee_cents' => 2000, 'min_order_cents' => 0,
+            // S26: ready for (demo) online payment; collection at the hub too.
+            'accepts_online' => true, 'accepts_cash' => true, 'bank_verified' => true, 'payout_subaccount' => 'DEMO-NOMSA', 'offers_hub_collection' => true]);
+        if ($nomsa->home_hub_id !== null) {
+            DB::table('market_collection_points')->insertOrIgnore(['hub_id' => $nomsa->home_hub_id, 'enabled' => true, 'hours' => 'Mon-Sat 08:00-17:00',
+                'created_at' => now(), 'updated_at' => now()]);
+        }
         app(RoleAssignments::class)->assign($nomsa, 'trader', Scope::self(), null);
         $beauty = (int) DB::table('market_categories')->where('slug', 'beauty')->value('id');
         foreach ([

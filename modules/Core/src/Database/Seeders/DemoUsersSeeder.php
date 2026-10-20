@@ -32,6 +32,7 @@ final class DemoUsersSeeder extends Seeder
         ['phone' => '+27720000012', 'first' => 'Herman', 'last' => 'Moolman', 'dob' => '1960-04-02', 'staff' => true, 'story' => 'Training provider (HBM EduTech)'],
         ['phone' => '+27720000020', 'first' => 'Rhulani', 'last' => 'Baloyi', 'dob' => '1993-03-12', 'staff' => true, 'story' => 'Hub facilitator - Tsutsumani'],
         ['phone' => '+27720000021', 'first' => 'Tsakani', 'last' => 'Mathebula', 'dob' => '1990-08-25', 'staff' => true, 'story' => 'Hub manager - Tsutsumani'],
+        ['phone' => '+27720000025', 'first' => 'Zanele', 'last' => 'Dube', 'dob' => '1994-03-12', 'staff' => true, 'story' => 'Hub facilitator - Soweto (KasiMarket collection desk)'],
         ['phone' => '+27720000022', 'first' => 'Vusi', 'last' => 'Ngobeni', 'dob' => '1987-02-11', 'staff' => true, 'story' => 'City coordinator - Greater Giyani'],
         ['phone' => '+27720000023', 'first' => 'Lerato', 'last' => 'Mokoena', 'dob' => '1983-10-30', 'staff' => true, 'story' => 'Provincial coordinator - Limpopo'],
         ['phone' => '+27720000024', 'first' => 'Bongani', 'last' => 'Nkosi', 'dob' => '1979-05-08', 'staff' => true, 'story' => 'Hub owner (operator) - Tsutsumani'],

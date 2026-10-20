@@ -27,6 +27,10 @@ interface Props {
         placed: string;
         items: { title: string; option: string | null; quantity: number; unit_price_cents: number }[];
         buyerConfirmed: boolean;
+        payment: string;
+        paymentStatus: string;
+        refunded_cents: number;
+        collectionHub: { name: string; address: string | null } | null;
     };
     shop: { name: string; slug: string; collectionNote: string | null; whatsapp: string | null };
     buyer: { name: string; phone: string | null; phoneMasked: string } | null;
@@ -41,6 +45,7 @@ export default function OrderPage({ order, shop, buyer, viewer, moves, messages 
     const { auth, flash, errors } = usePage().props;
     const [reason, setReason] = useState('');
     const [eta, setEta] = useState(order.eta ?? '');
+    const refund = useForm({ amount: '', reason: '' });
     const message = useForm({ body: '' });
     const whatsappText = encodeURIComponent(
         [
@@ -80,6 +85,39 @@ export default function OrderPage({ order, shop, buyer, viewer, moves, messages 
             {errors?.order && (
                 <div className="mt-3">
                     <Alert tone="danger" title={errors.order} />
+                </div>
+            )}
+            <p className="mt-2 flex flex-wrap gap-2">
+                <Badge
+                    tone={
+                        order.paymentStatus === 'paid'
+                            ? 'success'
+                            : order.paymentStatus === 'pending'
+                              ? 'warning'
+                              : 'neutral'
+                    }
+                >
+                    {order.payment === 'online' ? t(`market.pay.status.${order.paymentStatus}`) : t('market.pay.cash')}
+                </Badge>
+                {order.refunded_cents > 0 && (
+                    <Badge tone="neutral">
+                        {t('market.pay.refunded', { amount: formatMoney(order.refunded_cents) })}
+                    </Badge>
+                )}
+            </p>
+            {order.collectionHub && viewer === 'buyer' && (
+                <div className="mt-3">
+                    <Alert
+                        tone="info"
+                        title={
+                            order.status === 'at_hub'
+                                ? t('market.order.at_hub_buyer', { hub: order.collectionHub.name })
+                                : t('market.order.hub_buyer', { hub: order.collectionHub.name })
+                        }
+                    />
+                    {order.collectionHub.address && (
+                        <p className="text-fg-muted mt-1 text-sm">{order.collectionHub.address}</p>
+                    )}
                 </div>
             )}
             {order.reason && (
@@ -194,6 +232,59 @@ export default function OrderPage({ order, shop, buyer, viewer, moves, messages 
                                 {t('market.order.received')}
                             </Button>
                         )}
+                    {viewer === 'trader' && ['paid', 'part_refunded'].includes(order.paymentStatus) && (
+                        <form
+                            className="border-line mt-4 flex flex-col gap-2 border-t pt-3"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                refund.transform((d) => ({
+                                    amount_cents: Math.round(Number(d.amount) * 100),
+                                    reason: d.reason,
+                                }));
+                                refund.post(`/market/shop/orders/${order.id}/refund`, {
+                                    preserveScroll: true,
+                                    onSuccess: () => refund.reset(),
+                                });
+                            }}
+                        >
+                            <p className="text-fg text-sm font-semibold">{t('market.refund.title')}</p>
+                            <Field label={t('market.refund.amount')}>
+                                <Input
+                                    type="number"
+                                    min={0}
+                                    step="0.01"
+                                    value={refund.data.amount}
+                                    onChange={(e) => refund.setData('amount', e.target.value)}
+                                />
+                            </Field>
+                            <Field label={t('market.refund.reason')}>
+                                <Input
+                                    value={refund.data.reason}
+                                    onChange={(e) => refund.setData('reason', e.target.value)}
+                                />
+                            </Field>
+                            <div>
+                                <Button
+                                    type="submit"
+                                    size="sm"
+                                    variant="secondary"
+                                    disabled={!refund.data.amount || refund.data.reason.length < 3}
+                                >
+                                    {t('market.refund.send')}
+                                </Button>
+                            </div>
+                        </form>
+                    )}
+                    {viewer === 'buyer' && (
+                        <p className="mt-4 text-sm">
+                            <Link
+                                href={`/help/requests?subject=${encodeURIComponent(t('market.order.help_subject', { number: order.number }))}`}
+                                className="text-primary font-semibold hover:underline"
+                            >
+                                {t('market.order.get_help')}
+                            </Link>
+                        </p>
+                    )}
                     <CardTitle className="mt-4">{t('market.order.messages')}</CardTitle>
                     <ul className="mt-2 flex flex-col gap-2 text-sm">
                         {messages.map((m) => (

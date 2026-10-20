@@ -20,7 +20,7 @@ final readonly class Settlement
 {
     public function __construct(private PaymentGateway $gateway) {}
 
-    /** @return array{sales: int, online_hub: int, cash: int, royalty_due: int, delivery_fees: int, balance: int} */
+    /** @return array{sales: int, online_hub: int, cash: int, royalty_due: int, delivery_fees: int, market_shares: int, balance: int} */
     public function statement(Hub $hub, string $period): array
     {
         [$from, $to] = [$period.'-01 00:00:00', CarbonImmutable::parse($period.'-01')->endOfMonth()->toDateTimeString()];
@@ -28,12 +28,16 @@ final readonly class Settlement
         $entries = LedgerEntry::query()->where('hub_id', $hub->id)->whereBetween('created_at', [$from, $to]);
         $royalty = (int) (clone $entries)->where('kind', 'royalty_due')->sum('amount_cents');
         $fees = (int) (clone $entries)->whereNotNull('invoice_id')->where('account', 'hub')->sum('amount_cents');
+        // S26: on marketplace sales the seller is paid at source and Kasi's account receives the Kasi and hub
+        // shares, so the hub's share (net of refunds) is owed to the hub.
+        $market = (int) (clone $entries)->where('account', 'hub')->whereIn('kind', ['sale', 'refund'])
+            ->whereIn('order_id', DB::table('com_orders')->whereNotNull('payee_ref')->where('hub_id', $hub->id)->pluck('id'))->sum('amount_cents');
 
         return [
             'sales' => (int) $orders->sum('total_cents') - (int) $orders->sum('refunded_cents'),
             'online_hub' => (int) $orders->where('channel', 'online')->sum(static fn (object $o): int => (int) ((array) json_decode((string) $o->shares, true))['hub']),
             'cash' => (int) $orders->where('channel', 'pos')->sum('total_cents'),
-            'royalty_due' => $royalty, 'delivery_fees' => $fees, 'balance' => $fees + $royalty,
+            'royalty_due' => $royalty, 'delivery_fees' => $fees, 'market_shares' => $market, 'balance' => $fees + $royalty + $market,
         ];
     }
 

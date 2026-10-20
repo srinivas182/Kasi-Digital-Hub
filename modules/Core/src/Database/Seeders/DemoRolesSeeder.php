@@ -27,6 +27,7 @@ final class DemoRolesSeeder extends Seeder
         ['phone' => '+27720000012', 'hub' => null, 'org' => 'HBM EduTech', 'roles' => [['provider_admin', 'organisation:HBM EduTech']]],
         ['phone' => '+27720000020', 'hub' => 'LP-GIY-TSU', 'roles' => [['hub_facilitator', 'hub:LP-GIY-TSU']]],
         ['phone' => '+27720000021', 'hub' => 'LP-GIY-TSU', 'roles' => [['hub_manager', 'hub:LP-GIY-TSU']]],
+        ['phone' => '+27720000025', 'hub' => 'GP-JHB-SOW', 'roles' => [['hub_facilitator', 'hub:GP-JHB-SOW']]], // S26: Soweto collection desk
         ['phone' => '+27720000022', 'hub' => null, 'roles' => [['city_coordinator', 'municipality:LIM331']]],
         ['phone' => '+27720000023', 'hub' => null, 'roles' => [['provincial_coordinator', 'province:LP']]],
         ['phone' => '+27720000024', 'hub' => 'LP-GIY-TSU', 'org' => 'Tsutsumani Youth Development Co-operative', 'roles' => [['hub_owner', 'hub:LP-GIY-TSU']]],

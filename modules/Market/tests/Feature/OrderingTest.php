@@ -107,7 +107,7 @@ it('lets buyers cancel only before the trader accepts', function (): void {
 it('reminds traders at 24 hours and lapses orders at 48 hours, giving stock back', function (): void {
     $order = cartAndOrder($this);
     $this->travel(25)->hours();
-    expect(app(Ordering::class)->sweep())->toBe(['reminded' => 1, 'lapsed' => 0]);
+    expect(app(Ordering::class)->sweep())->toBe(['reminded' => 1, 'lapsed' => 0, 'unpaid' => 0, 'uncollected' => 0]);
     $this->travel(24)->hours();
     expect(app(Ordering::class)->sweep()['lapsed'])->toBe(1)
         ->and($order->refresh()->status)->toBe('lapsed')->and($this->oil->refresh()->stock)->toBe(10);

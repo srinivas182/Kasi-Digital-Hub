@@ -25,6 +25,8 @@ final class CatalogueSeeder extends Seeder
         'onsite_print_page' => ['onsite', 'Printing (A4 page)', 'page', 'hub', 300, 200],
         'onsite_desk_day' => ['onsite', 'Desk for a day', 'day', 'hub', 10000, 6000],
         'onsite_room_hour' => ['onsite', 'Meeting room (hour)', 'hour', 'hub', 15000, 10000],
+        // S26: KasiMarket orders paid online - the amount comes from the order (price band not used).
+        'market_order' => ['market', 'KasiMarket order', 'order', 'trader', 1, 1],
     ];
 
     /** stream => [kasi %, hub %, partner %] - placeholders following "who delivers the value" */
@@ -35,6 +37,7 @@ final class CatalogueSeeder extends Seeder
         'start' => [20, 80, 0],  // the hub delivers the service
         'onsite' => [10, 90, 0], // the hub delivers the service
         'licence' => [100, 0, 0],
+        'market' => [5, 3, 92], // S26: Kasi, hub, seller ("partner" column = the trader) - PLACEHOLDER
     ];
 
     public function run(): void
