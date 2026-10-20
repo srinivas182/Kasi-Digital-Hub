@@ -19,7 +19,9 @@ use Modules\Market\Models\Order;
 use Modules\Market\Models\Product;
 use Modules\Market\Models\Shop;
 use Modules\Market\Services\Cart;
+use Modules\Market\Services\Disputes;
 use Modules\Market\Services\Ordering;
+use Modules\Market\Services\Reviews;
 
 /** Cart and orders for buyers, and order handling for traders (S25). */
 final class OrderController
@@ -127,6 +129,16 @@ final class OrderController
             'buyer' => $isTrader ? ['name' => $order->buyer->first_name, 'phone' => $order->phone_shared ? $order->buyer->phone : null,
                 'phoneMasked' => SaFormat::maskedPhone($order->buyer->phone)] : null,
             'viewer' => $isTrader ? 'trader' : 'buyer',
+            // S27: review and dispute.
+            'canReview' => $isBuyer && app(Reviews::class)->canReview($order, $user),
+            'review' => ($r = DB::table('market_reviews')->where('order_id', $order->id)->first(['rating', 'body', 'status'])) !== null
+                ? ['rating' => (int) $r->rating, 'body' => $r->body !== null ? (string) $r->body : null, 'held' => $r->status === 'held'] : null,
+            'canDispute' => $isBuyer && app(Disputes::class)->canOpen($order, $user),
+            'dispute' => ($d = DB::table('market_disputes')->where('order_id', $order->id)->first()) !== null
+                ? ['id' => (string) $d->id, 'status' => (string) $d->status, 'reason' => (string) $d->reason, 'details' => (string) $d->details,
+                    'response' => $d->trader_response !== null ? (string) $d->trader_response : null, 'outcome' => $d->outcome !== null ? (string) $d->outcome : null,
+                    'note' => $d->outcome_note !== null ? (string) $d->outcome_note : null, 'respondBy' => (string) $d->respond_by] : null,
+            'canNoShow' => $isTrader && $order->getAttribute('payment') === 'cash' && in_array($order->status, ['accepted', 'ready'], true),
             'moves' => $isTrader ? (Order::TRADER_MOVES[$order->status] ?? []) : [],
             'messages' => DB::table('market_order_messages')->where('order_id', $order->id)
                 ->where(fn ($q) => $q->where('status', 'sent')->orWhere('sender_id', $user->id))->orderBy('created_at')->get(['id', 'sender_id', 'body', 'status', 'created_at'])

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { Alert } from '@/components/ui/Alert';
 import { Button } from '@/components/ui/Button';
 import { Badge, Card, CardTitle } from '@/components/ui/display';
-import { Field, Input, Textarea } from '@/components/ui/form';
+import { Field, Input, Select, Textarea } from '@/components/ui/form';
 import { AppLayout } from '@/layouts/AppLayout';
 import { formatDateTime, formatMoney } from '@/lib/format';
 import { useTranslation } from '@/lib/i18n';
@@ -37,15 +37,49 @@ interface Props {
     viewer: 'buyer' | 'trader';
     moves: string[];
     messages: { id: string; mine: boolean; body: string; held: boolean; at: string }[];
+    canReview: boolean;
+    review: { rating: number; body: string | null; held: boolean } | null;
+    canDispute: boolean;
+    dispute: {
+        id: string;
+        status: string;
+        reason: string;
+        details: string;
+        response: string | null;
+        outcome: string | null;
+        note: string | null;
+        respondBy: string;
+    } | null;
+    canNoShow: boolean;
 }
 
 /** One order, for its buyer or its trader (S25). */
-export default function OrderPage({ order, shop, buyer, viewer, moves, messages }: Props) {
+export default function OrderPage({
+    order,
+    shop,
+    buyer,
+    viewer,
+    moves,
+    messages,
+    canReview,
+    review,
+    canDispute,
+    dispute,
+    canNoShow,
+}: Props) {
     const { t } = useTranslation();
     const { auth, flash, errors } = usePage().props;
     const [reason, setReason] = useState('');
     const [eta, setEta] = useState(order.eta ?? '');
     const refund = useForm({ amount: '', reason: '' });
+    const reviewForm = useForm({ rating: 5, body: '' });
+    const disputeForm = useForm<{ reason: string; details: string; photos: File[] }>({
+        reason: 'not_received',
+        details: '',
+        photos: [],
+    });
+    const responseForm = useForm<{ response: string; photos: File[] }>({ response: '', photos: [] });
+    const [disputing, setDisputing] = useState(false);
     const message = useForm({ body: '' });
     const whatsappText = encodeURIComponent(
         [
@@ -82,9 +116,9 @@ export default function OrderPage({ order, shop, buyer, viewer, moves, messages 
                     <Alert tone="success" title={flash.status} />
                 </div>
             )}
-            {errors?.order && (
+            {(errors?.order || errors?.trust) && (
                 <div className="mt-3">
-                    <Alert tone="danger" title={errors.order} />
+                    <Alert tone="danger" title={errors.order ?? errors.trust ?? ''} />
                 </div>
             )}
             <p className="mt-2 flex flex-wrap gap-2">
@@ -136,6 +170,223 @@ export default function OrderPage({ order, shop, buyer, viewer, moves, messages 
                         <MessageCircle className="size-4" aria-hidden /> {t('market.order.open_whatsapp')}
                     </a>
                 </Card>
+            )}
+            {dispute && (
+                <Card className="mt-4">
+                    <CardTitle>{t('market.dispute.title')}</CardTitle>
+                    <p className="text-fg mt-1 text-sm">
+                        <Badge
+                            tone={dispute.status === 'resolved' || dispute.status === 'settled' ? 'success' : 'warning'}
+                        >
+                            {t(`market.dispute.status.${dispute.status}`)}
+                        </Badge>{' '}
+                        {t(`market.dispute.reason.${dispute.reason}`)}
+                    </p>
+                    <p className="text-fg mt-2 text-sm whitespace-pre-line">{dispute.details}</p>
+                    {dispute.response && (
+                        <p className="text-fg mt-2 text-sm">
+                            <span className="font-semibold">{t('market.dispute.trader_said')}</span> {dispute.response}
+                        </p>
+                    )}
+                    {dispute.outcome && (
+                        <p className="text-fg mt-2 text-sm">
+                            <span className="font-semibold">{t(`market.dispute.outcome.${dispute.outcome}`)}</span>
+                            {dispute.note ? ` - ${dispute.note}` : ''}
+                        </p>
+                    )}
+                    {viewer === 'buyer' && ['open', 'responded'].includes(dispute.status) && (
+                        <Button
+                            className="mt-3"
+                            size="sm"
+                            variant="secondary"
+                            onClick={() =>
+                                router.post(`/market/disputes/${dispute.id}/settle`, {}, { preserveScroll: true })
+                            }
+                        >
+                            {t('market.dispute.settle')}
+                        </Button>
+                    )}
+                    {viewer === 'trader' && ['open', 'responded'].includes(dispute.status) && (
+                        <form
+                            className="mt-3 flex flex-col gap-2"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                responseForm.post(`/market/shop/disputes/${dispute.id}/respond`, {
+                                    forceFormData: true,
+                                    preserveScroll: true,
+                                });
+                            }}
+                        >
+                            <Field
+                                label={t('market.dispute.your_response')}
+                                hint={t('market.dispute.respond_by', { date: formatDateTime(dispute.respondBy) })}
+                            >
+                                <Textarea
+                                    rows={3}
+                                    value={responseForm.data.response}
+                                    onChange={(e) => responseForm.setData('response', e.target.value)}
+                                />
+                            </Field>
+                            <Field label={t('market.dispute.photos')}>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    multiple
+                                    aria-label={t('market.dispute.photos')}
+                                    onChange={(e) =>
+                                        responseForm.setData('photos', Array.from(e.target.files ?? []).slice(0, 4))
+                                    }
+                                />
+                            </Field>
+                            <div>
+                                <Button
+                                    type="submit"
+                                    size="sm"
+                                    disabled={responseForm.data.response.trim().length < 5}
+                                    loading={responseForm.processing}
+                                >
+                                    {t('market.dispute.send_response')}
+                                </Button>
+                            </div>
+                        </form>
+                    )}
+                </Card>
+            )}
+            {viewer === 'buyer' && (canReview || review) && (
+                <Card className="mt-4">
+                    <CardTitle>{t('market.review.title')}</CardTitle>
+                    {review ? (
+                        <p className="text-fg mt-1 text-sm">
+                            {'★'.repeat(review.rating)}
+                            {'☆'.repeat(5 - review.rating)} {review.body}
+                            {review.held && (
+                                <span className="text-fg-muted block text-xs">{t('market.message.held_badge')}</span>
+                            )}
+                        </p>
+                    ) : (
+                        <form
+                            className="mt-2 flex flex-col gap-2"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                reviewForm.post(`/market/orders/${order.id}/review`, { preserveScroll: true });
+                            }}
+                        >
+                            <fieldset>
+                                <legend className="text-fg text-sm font-semibold">{t('market.review.stars')}</legend>
+                                <div className="mt-1 flex gap-3">
+                                    {[1, 2, 3, 4, 5].map((n) => (
+                                        <label key={n} className="text-fg flex items-center gap-1 text-sm">
+                                            <input
+                                                type="radio"
+                                                name="rating"
+                                                checked={reviewForm.data.rating === n}
+                                                onChange={() => reviewForm.setData('rating', n)}
+                                            />
+                                            {t('market.review.n_stars', { n })}
+                                        </label>
+                                    ))}
+                                </div>
+                            </fieldset>
+                            <Field label={t('market.review.text')}>
+                                <Textarea
+                                    rows={2}
+                                    maxLength={500}
+                                    value={reviewForm.data.body}
+                                    onChange={(e) => reviewForm.setData('body', e.target.value)}
+                                />
+                            </Field>
+                            <div>
+                                <Button type="submit" size="sm" loading={reviewForm.processing}>
+                                    {t('market.review.send')}
+                                </Button>
+                            </div>
+                        </form>
+                    )}
+                </Card>
+            )}
+            {viewer === 'buyer' && canDispute && !dispute && (
+                <div className="mt-4">
+                    {disputing ? (
+                        <Card>
+                            <CardTitle>{t('market.dispute.open_title')}</CardTitle>
+                            <form
+                                className="mt-2 flex flex-col gap-2"
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    disputeForm.post(`/market/orders/${order.id}/dispute`, {
+                                        forceFormData: true,
+                                        preserveScroll: true,
+                                    });
+                                }}
+                            >
+                                <Field label={t('market.dispute.what')}>
+                                    <Select
+                                        value={disputeForm.data.reason}
+                                        onChange={(e) => disputeForm.setData('reason', e.target.value)}
+                                    >
+                                        {['not_received', 'not_described', 'damaged', 'charged_wrongly', 'other'].map(
+                                            (r) => (
+                                                <option key={r} value={r}>
+                                                    {t(`market.dispute.reason.${r}`)}
+                                                </option>
+                                            ),
+                                        )}
+                                    </Select>
+                                </Field>
+                                <Field label={t('market.dispute.details')} error={disputeForm.errors.details}>
+                                    <Textarea
+                                        rows={3}
+                                        value={disputeForm.data.details}
+                                        onChange={(e) => disputeForm.setData('details', e.target.value)}
+                                    />
+                                </Field>
+                                <Field label={t('market.dispute.photos')}>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        aria-label={t('market.dispute.photos')}
+                                        onChange={(e) =>
+                                            disputeForm.setData('photos', Array.from(e.target.files ?? []).slice(0, 4))
+                                        }
+                                    />
+                                </Field>
+                                <p className="text-fg-muted text-xs">{t('market.dispute.how_it_works')}</p>
+                                <div>
+                                    <Button
+                                        type="submit"
+                                        size="sm"
+                                        disabled={disputeForm.data.details.trim().length < 10}
+                                        loading={disputeForm.processing}
+                                    >
+                                        {t('market.dispute.open')}
+                                    </Button>
+                                </div>
+                            </form>
+                        </Card>
+                    ) : (
+                        <button
+                            type="button"
+                            className="text-fg-muted text-sm underline"
+                            onClick={() => setDisputing(true)}
+                        >
+                            {t('market.dispute.problem')}
+                        </button>
+                    )}
+                </div>
+            )}
+            {viewer === 'trader' && canNoShow && (
+                <p className="mt-3 text-sm">
+                    <button
+                        type="button"
+                        className="text-fg-muted underline"
+                        onClick={() =>
+                            router.post(`/market/shop/orders/${order.id}/no-show`, {}, { preserveScroll: true })
+                        }
+                    >
+                        {t('market.noshow.button')}
+                    </button>
+                </p>
             )}
             <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_22rem]">
                 <Card>

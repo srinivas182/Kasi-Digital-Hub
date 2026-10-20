@@ -44,7 +44,10 @@
             "market.order.placed",
             "market.order.accepted",
             "market.order.completed",
-            "market.order.lapsed"
+            "market.order.lapsed",
+            "market.review.added",
+            "market.dispute.opened",
+            "market.dispute.resolved"
         ],
         "listens": [
             "core.moderation.decided"

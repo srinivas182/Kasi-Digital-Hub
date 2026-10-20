@@ -22,7 +22,14 @@ interface Props {
         options: { id: number; label: string; price_cents: number; soldOut: boolean }[];
         photos: { small: string; medium: string; alt: string }[];
     };
-    shop: { name: string; slug: string; hub: string | null; whatsapp: string | null; away: boolean };
+    shop: {
+        name: string;
+        slug: string;
+        hub: string | null;
+        whatsapp: string | null;
+        away: boolean;
+        rating: number | null;
+    };
     shareUrl: string;
 }
 
@@ -98,6 +105,11 @@ export default function MarketProduct({ product, shop, shareUrl }: Props) {
                             </span>
                         </p>
                         {product.soldOut && <Badge tone="warning">{t('market.sold_out')}</Badge>}
+                        {shop.rating !== null && (
+                            <p className="text-fg-muted text-sm">
+                                {t('market.review.shop_rating', { shop: shop.name, rating: shop.rating })}
+                            </p>
+                        )}
                         {shop.away && <Alert tone="warning" title={t('market.shop.away_notice')} />}
                         {product.options.length > 0 && (
                             <Field label={t('market.options')} className="mt-3">

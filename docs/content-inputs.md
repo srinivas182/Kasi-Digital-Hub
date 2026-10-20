@@ -108,3 +108,9 @@ language before switching any language on.
 - Whether hubs should charge a **collection handling fee** (none in Release 1).
 - **Marketplace terms** covering refunds, uncollected parcels (7 days) and disputes - legal sign-off before live
   payments.
+
+## KasiMarket trust and safety (Sprint 27)
+
+- Review and dispute rules for the **marketplace terms** (reviews within 30 days; disputes within 14 days; trader
+  response in 3 days; refunds only for online payments, mediation for cash).
+- The **strike and suspension policy** (3 strikes in 180 days) and the buyer **no-show rule** (3 in 90 days).

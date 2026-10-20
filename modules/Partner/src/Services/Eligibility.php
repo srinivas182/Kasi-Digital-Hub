@@ -57,6 +57,17 @@ final class Eligibility
         if (! empty($c['min_readiness'])) {
             $add('readiness', $facts['readiness'] >= (int) $c['min_readiness'], ['score' => (int) $c['min_readiness']]);
         }
+        // S27: facts from other portals (business signals), e.g. trading on KasiMarket.
+        $signals = $facts['signals'] ?? [];
+        if (! empty($c['has_shop'])) {
+            $add('has_shop', (bool) ($signals['market.has_shop'] ?? false));
+        }
+        if (! empty($c['min_market_orders'])) {
+            $add('market_orders', (int) ($signals['market.orders_6m'] ?? 0) >= (int) $c['min_market_orders'], ['count' => (int) $c['min_market_orders']]);
+        }
+        if (! empty($c['min_shop_rating'])) {
+            $add('shop_rating', ($signals['market.rating'] ?? null) !== null && (float) $signals['market.rating'] >= (float) $c['min_shop_rating'], ['rating' => (string) $c['min_shop_rating']]);
+        }
 
         $met = count(array_filter($checks, static fn (array $x): bool => $x['met']));
 

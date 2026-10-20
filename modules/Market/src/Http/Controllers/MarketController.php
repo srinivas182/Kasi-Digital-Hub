@@ -17,7 +17,9 @@ use Modules\Core\Identity\Models\User;
 use Modules\Market\Events\ProductReported;
 use Modules\Market\Models\Product;
 use Modules\Market\Models\Shop;
+use Modules\Market\Services\Reviews;
 use Modules\Market\Services\Shops;
+use Modules\Market\Services\Trust;
 
 /** Public KasiMarket (S24): home, search, shop and product pages, reporting. Nothing personal is shown. */
 final class MarketController
@@ -63,7 +65,9 @@ final class MarketController
 
         return Inertia::render('Market/Shop', [
             'shop' => [...$this->shopCard($shop), 'description' => $shop->description, 'area' => $shop->area, 'hours' => $shop->hours ?? [], 'away' => $shop->away,
-                'whatsapp' => $shop->whatsapp_public ? $shop->whatsapp : null, 'badges' => $this->shops->badges($shop)],
+                'whatsapp' => $shop->whatsapp_public ? $shop->whatsapp : null, 'badges' => [...$this->shops->badges($shop), ...(Trust::repliesQuickly($shop) ? ['quick'] : [])],
+                'rating' => Reviews::rating($shop->id), 'reviewCount' => DB::table('market_reviews')->where('shop_id', $shop->id)->where('status', 'sent')->count()],
+            'reviews' => Reviews::shown($shop->id),
             'products' => $this->cards(Product::query()->listed()->where('shop_id', $shop->id)->latest('published_at')->limit(60)),
             'seo' => Seo::page($shop->name, (string) ($shop->description ?? __('market.seo')), '/market/shops/'.$shop->slug),
         ]);
@@ -81,7 +85,8 @@ final class MarketController
                 'options' => $product->options->map(fn ($o): array => ['id' => $o->id, 'label' => $o->label, 'price_cents' => $o->price_cents ?? $product->price_cents,
                     'soldOut' => $product->stock_type === 'quantity' && $o->stock !== null && $o->stock <= 0])->values(),
                 'photos' => $product->photos->map(fn ($ph): array => ['small' => asset('storage/'.$ph->small_path), 'medium' => asset('storage/'.$ph->medium_path), 'alt' => $ph->alt])->values()],
-            'shop' => [...$this->shopCard($product->shop), 'whatsapp' => $product->shop->whatsapp_public ? $product->shop->whatsapp : null, 'away' => $product->shop->away],
+            'shop' => [...$this->shopCard($product->shop), 'whatsapp' => $product->shop->whatsapp_public ? $product->shop->whatsapp : null, 'away' => $product->shop->away,
+                'rating' => Reviews::rating($product->shop->id)],
             'shareUrl' => $url,
             'seo' => Seo::page($product->title, mb_substr((string) ($product->description ?? $product->title), 0, 150), '/market/products/'.$product->id, [[
                 '@context' => 'https://schema.org', '@type' => 'Product', 'name' => $product->title, 'description' => (string) $product->description,

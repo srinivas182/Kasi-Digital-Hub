@@ -2,6 +2,13 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.27.0] - 2026-10-20 - Sprint 27: KasiMarket trust and safety
+
+### Added
+- Reviews and trader replies, ratings from 3 reviews, "Replies quickly" badge, private reliability signals, buyer
+  no-shows, disputes with private evidence and support decisions, shop reports, strikes and suspension, trader
+  insights and CSV, business signals for partner eligibility (ADR-035). KasiMarket is complete.
+
 ## [0.26.0] - 2026-10-20 - Sprint 26: KasiMarket payments and delivery
 
 ### Added

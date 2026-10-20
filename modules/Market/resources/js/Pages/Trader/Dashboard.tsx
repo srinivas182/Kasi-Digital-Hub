@@ -95,9 +95,12 @@ export default function TraderDashboard({ shop, badges, products, reviewed, newO
                         {shop.away && <Badge tone="warning">{t('market.dash.away')}</Badge>}
                     </p>
                 </div>
-                <span className="flex gap-2">
+                <span className="flex flex-wrap gap-2">
                     <Link href={`/market/shops/${shop.slug}`} className={buttonVariants({ variant: 'secondary' })}>
                         {t('market.dash.view_shop')}
+                    </Link>
+                    <Link href="/market/shop/insights" className={buttonVariants({ variant: 'secondary' })}>
+                        {t('market.insights.title')}
                     </Link>
                     <Link href="/market/shop/orders" className={buttonVariants({ variant: 'secondary' })}>
                         {t('market.trader_orders.title')}

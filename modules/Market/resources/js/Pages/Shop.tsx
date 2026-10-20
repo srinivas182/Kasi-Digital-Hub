@@ -1,8 +1,11 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 
 import { Alert } from '@/components/ui/Alert';
+import { Button } from '@/components/ui/Button';
 import { Badge, Card } from '@/components/ui/display';
+import { Field, Select, Textarea } from '@/components/ui/form';
 import { PublicLayout } from '@/layouts/PublicLayout';
 import { useTranslation } from '@/lib/i18n';
 
@@ -20,12 +23,18 @@ interface Props {
         away: boolean;
         whatsapp: string | null;
         badges: string[];
+        rating: number | null;
+        reviewCount: number;
     };
+    reviews: { rating: number; body: string | null; by: string; at: string; reply: string | null }[];
     products: CardProduct[];
 }
 
-export default function MarketShop({ shop, products }: Props) {
+export default function MarketShop({ shop, products, reviews }: Props) {
     const { t } = useTranslation();
+    const { auth, flash } = usePage().props;
+    const [reporting, setReporting] = useState(false);
+    const report = useForm({ reason: 'scam', note: '' });
     return (
         <PublicLayout>
             <Head title={shop.name} />
@@ -48,6 +57,16 @@ export default function MarketShop({ shop, products }: Props) {
                         <p className="text-fg-muted">{[shop.area, shop.hub].filter(Boolean).join(' · ')}</p>
                     </div>
                 </div>
+                <p className="text-fg mt-2 text-sm">
+                    {shop.rating !== null
+                        ? t('market.review.rating', { rating: shop.rating, count: shop.reviewCount })
+                        : t('market.review.too_few')}
+                </p>
+                {flash.status && (
+                    <div className="mt-2">
+                        <Alert tone="success" title={flash.status} />
+                    </div>
+                )}
                 <p className="mt-2 flex flex-wrap gap-1">
                     {shop.badges.map((b) => (
                         <Badge key={b} tone="success">
@@ -73,6 +92,79 @@ export default function MarketShop({ shop, products }: Props) {
                                 <li className="text-fg-muted col-span-full">{t('market.shop.empty')}</li>
                             )}
                         </ul>
+                        <section className="mt-8" aria-labelledby="reviews">
+                            <h2 id="reviews" className="text-fg text-xl font-bold">
+                                {t('market.review.heading')}
+                            </h2>
+                            <ul className="mt-2 flex flex-col gap-3">
+                                {reviews.map((r, n) => (
+                                    <li key={n} className="border-line border-b pb-2 text-sm">
+                                        <p className="text-fg">
+                                            <span role="img" aria-label={t('market.review.n_stars', { n: r.rating })}>
+                                                {'★'.repeat(r.rating)}
+                                                {'☆'.repeat(5 - r.rating)}
+                                            </span>{' '}
+                                            <span className="font-semibold">{r.by}</span>
+                                        </p>
+                                        {r.body && <p className="text-fg">{r.body}</p>}
+                                        {r.reply && (
+                                            <p className="text-fg-muted mt-1">
+                                                {t('market.review.reply_from', { shop: shop.name })} {r.reply}
+                                            </p>
+                                        )}
+                                    </li>
+                                ))}
+                                {reviews.length === 0 && (
+                                    <li className="text-fg-muted text-sm">{t('market.review.none')}</li>
+                                )}
+                            </ul>
+                        </section>
+                        {auth.user &&
+                            (reporting ? (
+                                <form
+                                    className="mt-6 flex max-w-md flex-col gap-2"
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        report.post(`/market/shops/${shop.slug}/report`, {
+                                            preserveScroll: true,
+                                            onSuccess: () => setReporting(false),
+                                        });
+                                    }}
+                                >
+                                    <Field label={t('market.report.why_shop')}>
+                                        <Select
+                                            value={report.data.reason}
+                                            onChange={(e) => report.setData('reason', e.target.value)}
+                                        >
+                                            {['prohibited', 'scam', 'wrong_info', 'offensive', 'other'].map((r) => (
+                                                <option key={r} value={r}>
+                                                    {t(`market.report.reason.${r}`)}
+                                                </option>
+                                            ))}
+                                        </Select>
+                                    </Field>
+                                    <Field label={t('market.report.note')}>
+                                        <Textarea
+                                            rows={2}
+                                            value={report.data.note}
+                                            onChange={(e) => report.setData('note', e.target.value)}
+                                        />
+                                    </Field>
+                                    <div>
+                                        <Button type="submit" size="sm" variant="secondary">
+                                            {t('market.report.send')}
+                                        </Button>
+                                    </div>
+                                </form>
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="text-fg-muted mt-6 text-sm underline"
+                                    onClick={() => setReporting(true)}
+                                >
+                                    {t('market.report.shop_link')}
+                                </button>
+                            ))}
                     </div>
                     <Card className="h-fit">
                         <h2 className="text-fg font-semibold">{t('market.how_to_order')}</h2>

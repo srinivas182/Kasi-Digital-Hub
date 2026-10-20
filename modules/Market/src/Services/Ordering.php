@@ -81,6 +81,9 @@ final readonly class Ordering
         if ($payment === 'online' ? ! self::onlineReady($shop) : ! (bool) ($shop->getAttribute('accepts_cash') ?? true)) {
             throw new DomainException(__('market.order.payment_unavailable'));
         }
+        if ($payment === 'cash' && Trust::onlineOnly($buyer->id)) {
+            throw new DomainException(__('market.order.online_only')); // S27: after 3 no-shows in 90 days
+        }
         if ($buyer->date_of_birth->age < self::MIN_AGE) {
             throw new DomainException(__('market.order.age'));
         }
@@ -241,6 +244,16 @@ final readonly class Ordering
         }
         $this->transition($order, $to, $reason, $eta, $by);
         $this->tellBuyer($order, $to === 'cancelled' ? 'order_cancelled_by_trader' : 'order_'.$to); // 'order_cancelled' is the trader's message
+    }
+
+    /** KasiHub cancels an open order (e.g. the shop was suspended): stock back, refund if paid, the buyer is told. */
+    public function forceCancel(Order $order, User $by, string $reason): void
+    {
+        if (! in_array($order->status, Order::OPEN, true)) {
+            return;
+        }
+        $this->transition($order, 'cancelled', $reason, null, $by);
+        $this->tellBuyer($order, 'order_cancelled_by_trader');
     }
 
     /** The buyer cancels - only before the trader accepts. */

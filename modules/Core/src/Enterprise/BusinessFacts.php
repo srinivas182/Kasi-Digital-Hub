@@ -16,7 +16,7 @@ interface BusinessFacts
     /**
      * @return array{id: string, name: string, stage: string, sector: string, legal_form: string|null, municipality_id: int|null,
      *     province_id: int|null, hub_id: string|null, people: int, turnover_band: string|null, readiness: int, steps_done: list<string>,
-     *     owner_ids: list<string>, youngest_owner_age: int|null}|null
+     *     owner_ids: list<string>, youngest_owner_age: int|null, signals: array<string, int|float|bool|null>}|null
      */
     public function facts(string $businessId): ?array;
 

@@ -7,6 +7,7 @@ use Modules\Market\Http\Controllers\DeskController;
 use Modules\Market\Http\Controllers\MarketController;
 use Modules\Market\Http\Controllers\OrderController;
 use Modules\Market\Http\Controllers\TraderController;
+use Modules\Market\Http\Controllers\TrustController;
 
 /* KasiMarket (S24). Public browsing on market.; the trader's pages need an account. */
 Route::prefix('market')->name('market.')->group(function (): void {
@@ -49,5 +50,20 @@ Route::prefix('market')->name('market.')->group(function (): void {
         Route::post('/desk/orders/{order}/check-in', [DeskController::class, 'checkIn'])->name('desk.checkin');
         Route::post('/desk/orders/{order}/hand-over', [DeskController::class, 'handOver'])->middleware('throttle:30,10')->name('desk.handover');
         Route::post('/desk/settings', [DeskController::class, 'settings'])->name('desk.settings');
+
+        // S27: trust and safety.
+        Route::post('/orders/{order}/review', [TrustController::class, 'review'])->middleware('throttle:10,60')->name('orders.review');
+        Route::post('/orders/{order}/dispute', [TrustController::class, 'openDispute'])->middleware('throttle:5,60')->name('orders.dispute');
+        Route::post('/disputes/{dispute}/settle', [TrustController::class, 'settleDispute'])->name('disputes.settle');
+        Route::post('/shop/reviews/{review}/reply', [TrustController::class, 'reply'])->whereNumber('review')->middleware('throttle:30,60')->name('shop.reviews.reply');
+        Route::post('/shop/disputes/{dispute}/respond', [TrustController::class, 'respondDispute'])->middleware('throttle:10,60')->name('shop.disputes.respond');
+        Route::post('/shop/orders/{order}/no-show', [TrustController::class, 'noShow'])->name('shop.order.noshow');
+        Route::get('/shop/insights', [TrustController::class, 'insights'])->name('shop.insights');
+        Route::get('/shop/insights.csv', [TrustController::class, 'csv'])->name('shop.insights.csv');
+        Route::post('/shops/{slug}/report', [TrustController::class, 'reportShop'])->middleware('throttle:10,60')->name('shops.report');
+        Route::get('/disputes/{dispute}', [TrustController::class, 'showDispute'])->middleware('permission:admin.support.handle')->name('disputes.show');
+        Route::post('/disputes/{dispute}/decide', [TrustController::class, 'decideDispute'])->middleware(['permission:admin.support.handle', 'pin.confirmed'])->name('disputes.decide');
+        Route::get('/moderate/{slug}', [TrustController::class, 'moderate'])->middleware('permission:admin.moderation.review')->name('moderate');
+        Route::post('/moderate/{slug}', [TrustController::class, 'moderateAction'])->middleware(['permission:admin.moderation.review', 'pin.confirmed'])->name('moderate.action');
     });
 });

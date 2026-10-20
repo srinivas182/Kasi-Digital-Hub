@@ -6,6 +6,7 @@ namespace Modules\Start\Services;
 
 use Illuminate\Support\Facades\DB;
 use Modules\Core\Enterprise\BusinessFacts;
+use Modules\Core\Enterprise\Signals;
 use Modules\Core\Identity\Models\User;
 use Modules\Start\Models\Business;
 use Modules\Start\Models\Step;
@@ -30,6 +31,7 @@ final readonly class StartBusinessFacts implements BusinessFacts
             'hub_id' => $b->hub_id, 'people' => $b->people, 'turnover_band' => $b->turnover_band, 'readiness' => $b->readiness,
             'steps_done' => array_values(array_map('strval', Step::query()->whereIn('id', DB::table('start_business_steps')->where('business_id', $b->id)->pluck('step_id'))->pluck('key')->all())),
             'owner_ids' => $ownerIds, 'youngest_owner_age' => $ages === [] ? null : (int) min($ages),
+            'signals' => Signals::for($b->id), // S27: other portals' facts (e.g. KasiMarket)
         ];
     }
 
