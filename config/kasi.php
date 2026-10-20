@@ -122,8 +122,8 @@ return [
         'packages' => [
             'base' => ['HubOps', 'Work'],
             'growth' => ['HubOps', 'Work', 'Learn'],
-            'enterprise' => ['HubOps', 'Work', 'Learn', 'Start', 'Market'],
-            'full' => ['HubOps', 'Work', 'Learn', 'Start', 'Connect', 'Market'],
+            'enterprise' => ['HubOps', 'Work', 'Learn', 'Start', 'Market', 'Biz'],
+            'full' => ['HubOps', 'Work', 'Learn', 'Start', 'Connect', 'Market', 'Biz'],
         ],
     ],
 
@@ -140,7 +140,7 @@ return [
         'types' => [
             'id_document', 'matric_certificate', 'qualification', 'cipc_certificate',
             'proof_of_address', 'bank_confirmation', 'tax_clearance', 'learning_evidence',
-            'tax_registration', 'bbbee_affidavit', 'trading_permit', 'uif_registration', 'health_certificate', 'dispute_evidence', 'other',
+            'tax_registration', 'bbbee_affidavit', 'trading_permit', 'uif_registration', 'health_certificate', 'dispute_evidence', 'receipt', 'other',
         ],
         'expiry_reminder_days' => 30,
     ],
@@ -295,11 +295,12 @@ return [
             'region' => ['/region'],
             'admin' => ['/admin', '/commercial', '/demo', '/horizon'],
             'market' => ['/market'],
+            'biz' => ['/biz'],
         ],
         // What a portal's own address opens.
         'homes' => [
             'my' => '/home', 'jobs' => '/jobs', 'learn' => '/learn/courses', 'start' => '/start', 'connect' => '/connect', 'hub' => '/hub-ops',
-            'partner' => '/partner', 'funder' => '/funder', 'region' => '/region', 'admin' => '/admin', 'market' => '/market',
+            'partner' => '/partner', 'funder' => '/funder', 'region' => '/region', 'admin' => '/admin', 'market' => '/market', 'biz' => '/biz',
         ],
         // Served on any host (checkout, payments, downloads): never redirected even inside an owned prefix.
         'shared' => ['/commercial/buy', '/commercial/orders', '/commercial/fake-pay', '/commercial/webhooks'],

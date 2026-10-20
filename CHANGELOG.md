@@ -2,6 +2,16 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.28.0] - 2026-10-20 - Sprint 28: KasiBiz part 1 (money)
+
+### Added
+- KasiBiz: cash book with categories, payment types, opening balances and private receipts; profit versus cash;
+  30-day corrections with history; KasiMarket sales imported through a core extension point; customers, suppliers
+  and money owed with WhatsApp reminders; month summary, CSV and PDF; partner signals (ADR-036).
+
+### Fixed
+- Missing success text colour token (15 places) and a wrong "text on primary" class (4 places).
+
 ## [0.27.0] - 2026-10-20 - Sprint 27: KasiMarket trust and safety
 
 ### Added

@@ -255,7 +255,7 @@ jobs:
             - run: cp .env.example .env && php artisan key:generate
             - run: npm run build
             - name: Test domain for portal subdomains (S23)
-              run: echo "127.0.0.1 kasi.test my.kasi.test jobs.kasi.test learn.kasi.test start.kasi.test connect.kasi.test hub.kasi.test partner.kasi.test funder.kasi.test region.kasi.test admin.kasi.test market.kasi.test" | sudo tee -a /etc/hosts
+              run: echo "127.0.0.1 kasi.test my.kasi.test jobs.kasi.test learn.kasi.test start.kasi.test connect.kasi.test hub.kasi.test partner.kasi.test funder.kasi.test region.kasi.test admin.kasi.test market.kasi.test biz.kasi.test" | sudo tee -a /etc/hosts
             - run: npx playwright test
               env:
                   OCTANE: '1' # S22: the browser suite runs under Laravel Octane (Swoole), as production will

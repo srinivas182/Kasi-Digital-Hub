@@ -40,6 +40,7 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "Modules\\Admin\\": "modules/Admin/src/",
+            "Modules\\Biz\\": "modules/Biz/src/",
             "Modules\\Commercial\\": "modules/Commercial/src/",
             "Modules\\Connect\\": "modules/Connect/src/",
             "Modules\\Core\\": "modules/Core/src/",
@@ -58,6 +59,7 @@
     "autoload-dev": {
         "psr-4": {
             "Modules\\Admin\\Tests\\": "modules/Admin/tests/",
+            "Modules\\Biz\\Tests\\": "modules/Biz/tests/",
             "Modules\\Commercial\\Tests\\": "modules/Commercial/tests/",
             "Modules\\Connect\\Tests\\": "modules/Connect/tests/",
             "Modules\\Core\\Tests\\": "modules/Core/tests/",

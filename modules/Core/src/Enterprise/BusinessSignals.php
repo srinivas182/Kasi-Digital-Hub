@@ -13,6 +13,6 @@ interface BusinessSignals
 {
     public const TAG = 'kasi.business_signals';
 
-    /** @return array<string, int|float|bool|null> */
+    /** @return array<string, int|float|bool|string|null> */
     public function signals(string $businessId): array;
 }

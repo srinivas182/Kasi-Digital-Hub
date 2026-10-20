@@ -14,9 +14,9 @@ use Modules\Core\Tests\Structure;
 const AGREED_MATRIX = [
     'job_seeker' => ['Work' => 'use', 'Learn' => 'use'],
     'learner' => ['Learn' => 'use'],
-    'entrepreneur' => ['Learn' => 'use', 'Start' => 'use', 'Connect' => 'use'],
+    'entrepreneur' => ['Learn' => 'use', 'Start' => 'use', 'Connect' => 'use', 'Biz' => 'use'], // S28: + KasiBiz
     'mentor' => ['Connect' => 'use'],
-    'trader' => ['Market' => 'use'], // S24: given when someone opens a KasiMarket shop
+    'trader' => ['Market' => 'use', 'Biz' => 'use'], // S24: given when someone opens a KasiMarket shop
     // S18 (ADR-026): national mentoring roles.
     'mentor_coordinator' => ['Connect' => 'manage'],
     'safeguarding_officer' => ['Connect' => 'manage'],

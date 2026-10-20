@@ -142,7 +142,7 @@ export default function Board({ jobs, filters, provinces, municipalities }: Prop
                                     key={i}
                                     href={l.url}
                                     preserveScroll
-                                    className={`rounded border px-3 py-1 text-sm ${l.active ? 'bg-primary text-on-primary' : 'border-line text-fg'}`}
+                                    className={`rounded border px-3 py-1 text-sm ${l.active ? 'bg-primary text-primary-fg' : 'border-line text-fg'}`}
                                     aria-current={l.active ? 'page' : undefined}
                                 >
                                     <span dangerouslySetInnerHTML={{ __html: l.label }} />

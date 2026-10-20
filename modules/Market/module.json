@@ -26,7 +26,8 @@
             "scope": "self",
             "staff": false,
             "access": {
-                "Market": "use"
+                "Market": "use",
+                "Biz": "use"
             },
             "permissions": [
                 "market.trade"

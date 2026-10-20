@@ -1,0 +1,52 @@
+{
+    "name": "Biz",
+    "slug": "biz",
+    "title": "KasiBiz",
+    "description": "Simple bookkeeping for small and informal businesses",
+    "group": "service",
+    "release": "r1",
+    "version": "0.28.0",
+    "depends_on": [
+        "Core",
+        "Start"
+    ],
+    "providers": [
+        "Modules\\Biz\\Providers\\BizServiceProvider"
+    ],
+    "routes": {
+        "web": true,
+        "api": false
+    },
+    "entitlement": "biz",
+    "roles": [],
+    "permissions": [],
+    "events": {
+        "publishes": [
+            "biz.entry.recorded"
+        ],
+        "listens": []
+    },
+    "impact_metrics": [
+        "biz_entries",
+        "biz_businesses_recording"
+    ],
+    "demo_seeders": [
+        "Modules\\Biz\\Database\\Seeders\\DemoBizSeeder"
+    ],
+    "nav": {
+        "icon": "wallet",
+        "href": "/biz",
+        "items": [
+            {
+                "label": "nav.biz.books",
+                "href": "/biz",
+                "icon": "wallet"
+            },
+            {
+                "label": "nav.biz.owed",
+                "href": "/biz/owed",
+                "icon": "users"
+            }
+        ]
+    }
+}

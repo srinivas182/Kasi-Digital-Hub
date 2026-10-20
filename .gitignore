@@ -31,3 +31,4 @@ Thumbs.db
 /playwright-report
 /database/e2e.sqlite
 /database/demo.sqlite
+dump.rdb

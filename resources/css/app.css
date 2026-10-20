@@ -30,6 +30,7 @@
     --kasi-primary-soft: #ecebfb;
     --kasi-focus: #3b34b5;
     --kasi-danger-text: #b42f2f;
+    --kasi-success-text: #1f7a3d; /* S28: was missing - text-success-text produced no style */
     color-scheme: light;
 }
 
@@ -46,6 +47,7 @@
     --kasi-primary-soft: #26245a;
     --kasi-focus: #b3aef7;
     --kasi-danger-text: #f19494;
+    --kasi-success-text: #7fd49a;
     color-scheme: dark;
 }
 
@@ -83,6 +85,7 @@
     --color-primary-soft: var(--kasi-primary-soft);
     --color-focus: var(--kasi-focus);
     --color-danger-text: var(--kasi-danger-text);
+    --color-success-text: var(--kasi-success-text);
 
     --radius-control: 0.625rem;
     --radius-card: 0.875rem;

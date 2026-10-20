@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Commerce\Fulfiller;
 use Modules\Core\Enterprise\BusinessSignals;
+use Modules\Core\Enterprise\BusinessTransactions;
 use Modules\Core\Events\DocumentVerified;
 use Modules\Core\Events\ModerationDecided;
 use Modules\Core\Insights\EventIndicator;
@@ -20,6 +21,7 @@ use Modules\Market\Listeners\BankLetterVerified;
 use Modules\Market\Search\MarketSearchSource;
 use Modules\Market\Services\DisputesWaiting;
 use Modules\Market\Services\MarketSignals;
+use Modules\Market\Services\MarketTransactions;
 use Modules\Market\Services\OrderPayments;
 
 final class MarketServiceProvider extends ServiceProvider
@@ -37,6 +39,7 @@ final class MarketServiceProvider extends ServiceProvider
         ]);
         $this->app->tag([MarketSearchSource::class], SearchRegistry::TAG);
         $this->app->tag([OrderPayments::class], Fulfiller::TAG); // S26: payments confirmed
+        $this->app->tag([MarketTransactions::class], BusinessTransactions::TAG); // S28: sales into KasiBiz
         $this->app->tag([MarketSignals::class], BusinessSignals::TAG); // S27
         $this->app->tag([DisputesWaiting::class], ReviewSource::TAG); // S27
     }

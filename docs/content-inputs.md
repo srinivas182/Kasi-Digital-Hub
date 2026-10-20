@@ -114,3 +114,8 @@ language before switching any language on.
 - Review and dispute rules for the **marketplace terms** (reviews within 30 days; disputes within 14 days; trader
   response in 3 days; refunds only for online payments, mediation for cash).
 - The **strike and suspension policy** (3 strikes in 180 days) and the buyer **no-show rule** (3 in 90 days).
+
+## KasiBiz (Sprint 28)
+
+- Confirm the **categories and plain-language wording** (ideally with a few hub entrepreneurs).
+- Whether the **monthly summary PDF** should carry Kasi branding or be neutral for banks.

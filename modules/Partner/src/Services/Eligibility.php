@@ -59,6 +59,9 @@ final class Eligibility
         }
         // S27: facts from other portals (business signals), e.g. trading on KasiMarket.
         $signals = $facts['signals'] ?? [];
+        if (! empty($c['keeps_records'])) {
+            $add('keeps_records', (bool) ($signals['biz.keeps_records'] ?? false)); // S28: KasiBiz
+        }
         if (! empty($c['has_shop'])) {
             $add('has_shop', (bool) ($signals['market.has_shop'] ?? false));
         }

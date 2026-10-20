@@ -27,7 +27,8 @@
             "access": {
                 "Learn": "use",
                 "Start": "use",
-                "Connect": "use"
+                "Connect": "use",
+                "Biz": "use"
             },
             "permissions": [
                 "start.own"
