@@ -6,6 +6,7 @@ import {
     CalendarDays,
     ClipboardList,
     Coins,
+    Globe,
     Handshake,
     Home,
     Landmark,
@@ -39,6 +40,7 @@ export const NAV_ICONS: Record<string, LucideIcon> = {
     handshake: Handshake,
     home: Home,
     landmark: Landmark,
+    globe: Globe, // S31: KasiBrand website
     grid: LayoutGrid,
     map: Map,
     qr: QrCode,

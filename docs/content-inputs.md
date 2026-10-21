@@ -130,3 +130,10 @@ language before switching any language on.
 
 - Feedback on the **8 palettes and the templates** (ideally from a few hub entrepreneurs).
 - Whether designs should carry **"Made with KasiHub"** (subtle, or none).
+
+## KasiBrand websites (Sprint 31)
+
+- The **reserved and blocked website names** (placeholder lists in `Modules\Brand\Services\Sites`).
+- Whether websites show a small **"Made with KasiHub"** footer.
+- **Website terms**: what may be published, and the take-down policy.
+- Confirmation of the shared **prohibited-items list** (now in `Modules\Core\Safety\ProhibitedItems`).

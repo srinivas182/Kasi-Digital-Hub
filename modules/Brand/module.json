@@ -23,7 +23,9 @@
     "events": {
         "publishes": [
             "brand.kit.saved",
-            "brand.design.exported"
+            "brand.design.exported",
+            "brand.site.published",
+            "brand.post.posted"
         ],
         "listens": []
     },
@@ -57,6 +59,16 @@
                 "label": "nav.brand.catalogue",
                 "href": "/brand/catalogue",
                 "icon": "store"
+            },
+            {
+                "label": "nav.brand.site",
+                "href": "/brand/site",
+                "icon": "globe"
+            },
+            {
+                "label": "nav.brand.calendar",
+                "href": "/brand/calendar",
+                "icon": "calendar"
             }
         ]
     }

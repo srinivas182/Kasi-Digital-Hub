@@ -14,6 +14,8 @@ Every event is written to the platform event log and can be used by any portal t
 | `biz.obligation.done` | KasiBiz | - | A business marked a compliance deadline as done in KasiBiz. |
 | `brand.design.exported` | KasiBrand | - | A business downloaded a KasiBrand design (PNG or PDF). |
 | `brand.kit.saved` | KasiBrand | - | A business saved its KasiBrand brand kit. |
+| `brand.post.posted` | KasiBrand | - | A business marked a planned post as posted in its KasiBrand calendar. |
+| `brand.site.published` | KasiBrand | - | A business published its KasiBrand website. |
 | `connect.concern.raised` | KasiConnect | - | A safeguarding concern was reported (no details in the event). |
 | `connect.mentor.approved` | KasiConnect | - | A mentor passed vetting and was approved. |
 | `connect.mentorship.ended` | KasiConnect | - | A mentorship ended, with goals met. |

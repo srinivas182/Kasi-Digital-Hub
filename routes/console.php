@@ -64,3 +64,6 @@ Schedule::command('kasi:market:hourly')->hourly()->withoutOverlapping()->onSucce
 
 // S29: KasiBiz compliance reminders and low-stock messages (06:30 SAST).
 Schedule::command('kasi:biz:daily')->dailyAt('06:30')->withoutOverlapping()->onSuccess($heartbeat('biz-daily'));
+
+// S31: KasiBrand content calendar reminders.
+Schedule::command('kasi:brand:reminders')->everyFifteenMinutes()->withoutOverlapping()->onSuccess($heartbeat('brand-reminders'));

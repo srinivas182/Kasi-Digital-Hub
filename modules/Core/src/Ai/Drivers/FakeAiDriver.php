@@ -76,7 +76,7 @@ final class FakeAiDriver implements AiDriver
                 $field === 'verdict' => 'allow',
                 $field === 'reasons' => [],
                 // List fields (bullets, questions, must_skills...) get short demo items.
-                in_array($field, ['bullets', 'questions', 'must_skills', 'nice_skills', 'skills', 'taglines'], true) => ['(Demo AI) '.ucfirst(str_replace('_', ' ', rtrim($field, 's')))],
+                in_array($field, ['bullets', 'questions', 'must_skills', 'nice_skills', 'skills', 'taglines', 'ideas'], true) => ['(Demo AI) '.ucfirst(str_replace('_', ' ', rtrim($field, 's')))],
                 default => '(Demo AI) '.$summary,
             };
         }

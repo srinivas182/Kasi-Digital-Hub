@@ -1,4 +1,8 @@
 {
+    "brand.month_plan": {
+        "version": 1,
+        "sha256": "d64f6209c91eade51249fe3f9cf5902203bfaac1159436334ae7d7dfb7964bd8"
+    },
     "brand.tagline": {
         "version": 1,
         "sha256": "3ad94ceca33935420010d4006e85b9bc2f00cc7bbb521f097aa754014f53f411"

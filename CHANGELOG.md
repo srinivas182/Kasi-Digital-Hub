@@ -2,6 +2,16 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.31.0] - 2026-10-21 - Sprint 31: KasiBrand part 2 (websites, content calendar)
+
+### Added
+- One-page business websites at name.<domain> and /b/name (core PublicSites contract), verified-ID publishing,
+  moderation, take-down, cookie-free statistics; content calendar with an AI month plan from the South African
+  calendar and reminders (ADR-039). KasiBrand - and every Release 1 portal - is complete.
+
+### Changed
+- The prohibited-items list moved to Core (shared by KasiMarket and KasiBrand).
+
 ## [0.30.0] - 2026-10-21 - Sprint 30: KasiBrand part 1 (brand kit, designs, catalogue)
 
 ### Added

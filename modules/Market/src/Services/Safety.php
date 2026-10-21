@@ -6,6 +6,7 @@ namespace Modules\Market\Services;
 
 use Modules\Core\Ai\Moderation\ModerationService;
 use Modules\Core\Identity\Models\User;
+use Modules\Core\Safety\ProhibitedItems;
 use Modules\Market\Models\Product;
 
 /**
@@ -17,31 +18,15 @@ final readonly class Safety
 {
     public const FIRST_REVIEWED = 3;
 
-    /** term => reason key (market.prohibited.<key>) */
-    public const PROHIBITED = [
-        'alcohol' => 'alcohol', 'beer' => 'alcohol', 'wine' => 'alcohol', 'brandy' => 'alcohol', 'whisky' => 'alcohol', 'vodka' => 'alcohol', 'liquor' => 'alcohol',
-        'cigarette' => 'tobacco', 'tobacco' => 'tobacco', 'vape' => 'tobacco', 'hubbly' => 'tobacco', 'snuff' => 'tobacco',
-        'dagga' => 'drugs', 'cannabis' => 'drugs', 'weed' => 'drugs', 'pills' => 'medicine', 'medicine' => 'medicine', 'antibiotic' => 'medicine', 'muti' => 'medicine',
-        'gun' => 'weapons', 'firearm' => 'weapons', 'ammunition' => 'weapons', 'pepper spray' => 'weapons', 'knife set' => null,
-        'replica' => 'counterfeit', 'fake' => 'counterfeit', 'first copy' => 'counterfeit',
-        'adult' => 'adult', 'sexy' => 'adult',
-        'puppy' => 'animals', 'puppies' => 'animals', 'kitten' => 'animals', 'live chicken' => 'animals',
-        'airtime voucher' => 'airtime', 'free money' => 'scam', 'investment' => 'scam', 'loan' => 'scam',
-    ];
+    /** term => reason key; the list now lives in Core (S31). */
+    public const PROHIBITED = ProhibitedItems::LIST;
 
     public function __construct(private ModerationService $moderation) {}
 
     /** Reason key when the text clearly names a prohibited item, else null. */
     public function prohibited(string $text): ?string
     {
-        $haystack = ' '.mb_strtolower((string) preg_replace('/[^\p{L}\p{N}]+/u', ' ', $text)).' ';
-        foreach (self::PROHIBITED as $term => $reason) {
-            if ($reason !== null && str_contains($haystack, ' '.$term.' ')) {
-                return $reason;
-            }
-        }
-
-        return null;
+        return ProhibitedItems::reason($text);
     }
 
     /**

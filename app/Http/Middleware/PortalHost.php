@@ -8,6 +8,7 @@ use App\Support\Portals\Portals;
 use Closure;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Modules\Core\Enterprise\PublicSites;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -34,6 +35,17 @@ final class PortalHost
         if ($current === null) {
             // An unknown subdomain of our domain goes to the main site. Any other host (the server's IP, a load
             // balancer's health check) is served as it is - never redirected.
+            // S31: a business's published website (name.<domain>), when KasiBrand is installed.
+            if (Portals::isOurs($request) && app()->bound(PublicSites::class)) {
+                $name = strtolower(substr($request->getHost(), 0, -strlen('.'.(string) config('kasi.subdomains.domain'))));
+                if (preg_match('/^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/', $name) === 1) {
+                    $site = app(PublicSites::class)->respond($name, $request);
+                    if ($site !== null) {
+                        return $site;
+                    }
+                }
+            }
+
             return Portals::isOurs($request) ? redirect()->away(Portals::url('', '/'), 302) : $next($request);
         }
 

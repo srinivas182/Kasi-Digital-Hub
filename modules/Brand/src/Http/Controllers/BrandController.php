@@ -12,20 +12,19 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Brand\Http\Concerns\ResolvesBusiness;
 use Modules\Brand\Services\Catalogue;
 use Modules\Brand\Services\Designs;
 use Modules\Brand\Services\Kits;
-use Modules\Core\Assist\AssistedSession;
-use Modules\Core\Enterprise\BusinessFacts;
 use Modules\Core\Enterprise\BusinessProducts;
-use Modules\Core\Identity\Models\User;
-use Modules\Core\Structure\Models\HubModule;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 /** KasiBrand (S30): brand kit, designs from templates, and the WhatsApp catalogue. */
 final class BrandController
 {
-    public function __construct(private readonly Kits $kits, private readonly Designs $designs, private readonly Catalogue $catalogue, private readonly BusinessFacts $businesses) {}
+    use ResolvesBusiness;
+
+    public function __construct(private readonly Kits $kits, private readonly Designs $designs, private readonly Catalogue $catalogue) {}
 
     public function home(Request $request): Response
     {
@@ -182,27 +181,5 @@ final class BrandController
                 ($kit['contact']['area'] ?? false) ? ($shop['area'] ?? null) : null,
             ])),
             'shop_url' => $shop['url'] ?? null];
-    }
-
-    /** @return array{0: User, 1: User|null} */
-    private function who(Request $request): array
-    {
-        $user = $request->user();
-        abort_unless($user instanceof User, 401);
-        $helped = app(AssistedSession::class)->person($user);
-
-        return [$helped ?? $user, $helped !== null ? $user : null];
-    }
-
-    /** @return array{id: string, name: string} */
-    private function business(Request $request, User $person): array
-    {
-        $mine = $this->businesses->businessesOf($person);
-        $b = collect($mine)->firstWhere('id', (string) $request->input('business', '')) ?? ($mine[0] ?? null);
-        abort_if($b === null, 404);
-        $hubId = $this->businesses->facts($b['id'])['hub_id'] ?? $person->home_hub_id;
-        abort_unless($hubId !== null && HubModule::query()->where('hub_id', $hubId)->where('module', 'Brand')->where('enabled', true)->exists(), 404);
-
-        return ['id' => (string) $b['id'], 'name' => (string) $b['name']];
     }
 }
