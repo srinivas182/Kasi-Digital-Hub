@@ -36,9 +36,9 @@ be published).
   in parallel - or two co-owners in production) could both insert and fail on the duplicate key. All four now use an
   atomic upsert (tested on SQLite and MySQL).
 - The browser job is now two parallel jobs (phone, desktop), each well inside the 10-minute limit.
+- A HubOps search test (S22) expected exactly 6 people named "Zanele"; random test data occasionally produced a 7th
+  match. It now uses a made-up name random data can't produce.
 
 ## Noted for Sprint 33 (stability)
 
-- `HubOpsAccessTest` "searches the check-in desk with several matches..." failed once on MySQL in the full run and
-  passed 3/3 alone - it counts queries over randomly named people; to be made deterministic.
 - CI marked three desktop browser tests flaky in S30 (passed on retry).

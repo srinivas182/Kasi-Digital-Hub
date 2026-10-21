@@ -53,11 +53,12 @@ it('searches the check-in desk with several matches without a query per person (
     $hub = Structure::hub('LP-GIY-TSU');
     $facilitator = Structure::personWith('hub_facilitator', Scope::hub($hub));
     foreach (range(1, 6) as $i) {
-        User::factory()->create(['first_name' => 'Zanele', 'home_hub_id' => $hub->id]);
+        // A made-up name random test data can't produce (a random 'Zanele' elsewhere once gave 7 results).
+        User::factory()->create(['first_name' => 'Zqxvanele', 'home_hub_id' => $hub->id]);
     }
     Staff::signIn($this, $facilitator);
     DB::enableQueryLog();
-    $this->get('/hub-ops/check-in?q=Zanele')->assertOk()->assertInertia(fn ($page) => $page->has('results', 6));
+    $this->get('/hub-ops/check-in?q=Zqxvanele')->assertOk()->assertInertia(fn ($page) => $page->has('results', 6));
     $visitChecks = collect(DB::getQueryLog())->filter(fn ($q) => str_contains($q['query'], 'hub_visits'))->count();
 
     expect($visitChecks)->toBeLessThanOrEqual(2);
