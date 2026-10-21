@@ -17,6 +17,9 @@ catalogue maker; the business-products core contract; "has a brand kit" signal a
   now show.
 - The new tagline prompt wasn't in the prompt lock (`docs/ai-prompts.lock.json`); recorded with `kasi:ai:lock` (only
   the new entry was added).
+- CI (browser tests): the S29 KasiBiz browser test let phone and desktop mark the same deadline done at the same time
+  (they share Nomsa's demo business) and wasn't retry-safe; each project now uses its own deadline and unique names.
+  The KasiStart plan-builder check for "20" matched two elements; it now reads the value next to its label.
 - Before creating the module, checked that no KasiBrand work existed anywhere (lesson from S28); the extra `'brand'`
   config match is the platform's branding settings, not a duplicate.
 

@@ -40,7 +40,10 @@ test('an entrepreneur works out a price in the plan builder', async ({ page }) =
     await page.getByRole('spinbutton', { name: 'Or your price (R)' }).fill('');
     await page.getByRole('spinbutton', { name: 'Fixed costs a month (R)' }).fill('1000');
     await expect(page.getByText('R150.00')).toBeVisible();
-    await expect(page.getByText('20', { exact: true })).toBeVisible();
+    // Break-even: R1,000 fixed costs / R50 profit per item = 20 items (read next to its own label).
+    await expect(
+        page.locator('dt', { hasText: 'Items a month to cover fixed costs' }).locator('xpath=following-sibling::dd[1]'),
+    ).toHaveText('20');
     await expectAccessible(page);
 });
 

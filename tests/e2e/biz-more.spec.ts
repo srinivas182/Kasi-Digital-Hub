@@ -11,7 +11,9 @@ async function expectAccessible(page: Page) {
 
 test('an owner keeps stock, meets a deadline and shares a summary', async ({ page, browser }) => {
     test.setTimeout(120_000);
-    const name = `Hair gel ${test.info().project.name}`;
+    // Unique per attempt (retry-safe); phone and desktop share Nomsa's demo business, so each uses its own records.
+    const name = `Hair gel ${test.info().project.name} ${test.info().retry}-${Date.now() % 100000}`;
+    const mine = test.info().project.name === 'phone' ? 0 : 1;
     await signIn(page, '072 000 0003');
 
     await page.goto('/biz/stock');
@@ -34,7 +36,7 @@ test('an owner keeps stock, meets a deadline and shares a summary', async ({ pag
     await page.getByRole('checkbox', { name: /I employ people/ }).check();
     await page.getByRole('button', { name: 'Save', exact: true }).click();
     await expect(page.getByText('SARS EMP201 (PAYE and UIF)').first()).toBeVisible();
-    await page.getByRole('button', { name: 'Mark as done' }).first().click();
+    await page.getByRole('button', { name: 'Mark as done' }).nth(mine).click(); // a different deadline per project
     await expect(page.getByText('Marked as done.')).toBeVisible();
     await expectAccessible(page);
 
