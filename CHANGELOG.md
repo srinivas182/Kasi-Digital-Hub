@@ -2,6 +2,13 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.30.0] - 2026-10-21 - Sprint 30: KasiBrand part 1 (brand kit, designs, catalogue)
+
+### Added
+- KasiBrand on brand.: brand kit (uploaded or generated text logo, tested palettes with a WCAG contrast check,
+  lettering, tagline ideas), designs from 8 templates with a live preview, PNG made on the phone and PDF for printing,
+  WhatsApp catalogue from KasiMarket products, core BusinessProducts contract, "has a brand kit" signal (ADR-038).
+
 ## [0.29.0] - 2026-10-21 - Sprint 29: KasiBiz part 2 (stock, compliance, summaries)
 
 ### Added

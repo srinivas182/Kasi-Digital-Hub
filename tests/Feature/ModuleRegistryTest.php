@@ -7,7 +7,7 @@ use App\Support\Modules\ModuleRegistry;
 
 const RELEASE_ONE_MODULES = [
     'Core', 'Site', 'Hub', 'HubOps', 'Work', 'Learn', 'Start', 'Connect',
-    'Region', 'Funder', 'Partner', 'Admin', 'Commercial', 'Market', 'Biz', // S24 KasiMarket, S28 KasiBiz
+    'Region', 'Funder', 'Partner', 'Admin', 'Commercial', 'Market', 'Biz', 'Brand', // S24 KasiMarket, S28 KasiBiz, S30 KasiBrand
 ];
 
 it('discovers every release 1 module with a valid manifest', function (): void {

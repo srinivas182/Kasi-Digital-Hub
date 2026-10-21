@@ -28,7 +28,8 @@
                 "Learn": "use",
                 "Start": "use",
                 "Connect": "use",
-                "Biz": "use"
+                "Biz": "use",
+                "Brand": "use"
             },
             "permissions": [
                 "start.own"

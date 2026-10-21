@@ -1,0 +1,63 @@
+{
+    "name": "Brand",
+    "slug": "brand",
+    "title": "KasiBrand",
+    "description": "Brand kit, designs and a WhatsApp catalogue for small businesses",
+    "group": "service",
+    "release": "r1",
+    "version": "0.30.0",
+    "depends_on": [
+        "Core",
+        "Start"
+    ],
+    "providers": [
+        "Modules\\Brand\\Providers\\BrandServiceProvider"
+    ],
+    "routes": {
+        "web": true,
+        "api": false
+    },
+    "entitlement": "brand",
+    "roles": [],
+    "permissions": [],
+    "events": {
+        "publishes": [
+            "brand.kit.saved",
+            "brand.design.exported"
+        ],
+        "listens": []
+    },
+    "impact_metrics": [
+        "brand_kits",
+        "brand_exports"
+    ],
+    "demo_seeders": [
+        "Modules\\Brand\\Database\\Seeders\\DemoBrandSeeder"
+    ],
+    "nav": {
+        "icon": "palette",
+        "href": "/brand",
+        "items": [
+            {
+                "label": "nav.brand.home",
+                "href": "/brand",
+                "icon": "palette"
+            },
+            {
+                "label": "nav.brand.kit",
+                "href": "/brand/kit",
+                "icon": "settings"
+            },
+            {
+                "label": "nav.brand.designs",
+                "href": "/brand/designs",
+                "icon": "grid"
+            },
+            {
+                "label": "nav.brand.catalogue",
+                "href": "/brand/catalogue",
+                "icon": "store"
+            }
+        ]
+    }
+}

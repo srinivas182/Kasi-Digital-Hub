@@ -125,3 +125,8 @@ language before switching any language on.
 - **A tax adviser's confirmation** of the starter rules and dates (CIPC annual return, turnover tax, VAT, EMP201, COIDA,
   B-BBEE affidavit, trading permit) and of public-holiday handling.
 - Wording of the **"not tax or legal advice"** note.
+
+## KasiBrand (Sprint 30)
+
+- Feedback on the **8 palettes and the templates** (ideally from a few hub entrepreneurs).
+- Whether designs should carry **"Made with KasiHub"** (subtle, or none).

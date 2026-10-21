@@ -12,6 +12,7 @@ import {
     LayoutGrid,
     Map,
     Package,
+    Palette,
     QrCode,
     Rocket,
     Settings,
@@ -46,7 +47,8 @@ export const NAV_ICONS: Record<string, LucideIcon> = {
     shield: ShieldCheck,
     store: Store,
     users: Users,
-    package: Package, // S29: KasiBiz stock
+    package: Package,
+    palette: Palette, // S30: KasiBrand // S29: KasiBiz stock
     share: Share2, // S29: KasiBiz summaries
     wallet: Wallet, // KasiBiz
 };

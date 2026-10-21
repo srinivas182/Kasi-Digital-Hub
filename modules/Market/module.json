@@ -27,7 +27,8 @@
             "staff": false,
             "access": {
                 "Market": "use",
-                "Biz": "use"
+                "Biz": "use",
+                "Brand": "use"
             },
             "permissions": [
                 "market.trade"

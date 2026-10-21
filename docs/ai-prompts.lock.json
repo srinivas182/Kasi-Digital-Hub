@@ -1,4 +1,8 @@
 {
+    "brand.tagline": {
+        "version": 1,
+        "sha256": "3ad94ceca33935420010d4006e85b9bc2f00cc7bbb521f097aa754014f53f411"
+    },
     "core.moderation": {
         "version": 1,
         "sha256": "a93d352c7a14ca10342f81df8183c27a42c1d9b77eebfcfd6e5aceb33ce24ebe"

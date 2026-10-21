@@ -7,6 +7,7 @@ namespace Modules\Market\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Modules\Core\Commerce\Fulfiller;
+use Modules\Core\Enterprise\BusinessProducts;
 use Modules\Core\Enterprise\BusinessSignals;
 use Modules\Core\Enterprise\BusinessTransactions;
 use Modules\Core\Enterprise\ProductStock;
@@ -21,6 +22,7 @@ use Modules\Market\Listeners\ApplyModerationDecision;
 use Modules\Market\Listeners\BankLetterVerified;
 use Modules\Market\Search\MarketSearchSource;
 use Modules\Market\Services\DisputesWaiting;
+use Modules\Market\Services\MarketBusinessProducts;
 use Modules\Market\Services\MarketProductStock;
 use Modules\Market\Services\MarketSignals;
 use Modules\Market\Services\MarketTransactions;
@@ -31,6 +33,7 @@ final class MarketServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ProductStock::class, MarketProductStock::class); // S29: shared stock
+        $this->app->bind(BusinessProducts::class, MarketBusinessProducts::class); // S30: for KasiBrand
         RegistersIndicators::add($this->app, [
             new EventIndicator('market.shops', ['market.shop.opened']),
             new EventIndicator('market.products', ['market.product.published']),

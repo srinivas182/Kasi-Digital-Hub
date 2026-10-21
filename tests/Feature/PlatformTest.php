@@ -11,7 +11,7 @@ it('reports the running version and enabled modules', function (): void {
         ->assertOk()
         ->assertJsonPath('name', 'KasiHub')
         ->assertJsonPath('version', trim((string) file_get_contents(base_path('VERSION'))))
-        ->assertJsonCount(15, 'modules'); // S24: + KasiMarket, S28: + KasiBiz
+        ->assertJsonCount(16, 'modules'); // S24: + KasiMarket, S28: + KasiBiz, S30: + KasiBrand
 });
 
 it('sends baseline security headers', function (): void {

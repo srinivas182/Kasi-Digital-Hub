@@ -122,8 +122,8 @@ return [
         'packages' => [
             'base' => ['HubOps', 'Work'],
             'growth' => ['HubOps', 'Work', 'Learn'],
-            'enterprise' => ['HubOps', 'Work', 'Learn', 'Start', 'Market', 'Biz'],
-            'full' => ['HubOps', 'Work', 'Learn', 'Start', 'Connect', 'Market', 'Biz'],
+            'enterprise' => ['HubOps', 'Work', 'Learn', 'Start', 'Market', 'Biz', 'Brand'],
+            'full' => ['HubOps', 'Work', 'Learn', 'Start', 'Connect', 'Market', 'Biz', 'Brand'],
         ],
     ],
 
@@ -296,11 +296,12 @@ return [
             'admin' => ['/admin', '/commercial', '/demo', '/horizon'],
             'market' => ['/market'],
             'biz' => ['/biz'],
+            'brand' => ['/brand'],
         ],
         // What a portal's own address opens.
         'homes' => [
             'my' => '/home', 'jobs' => '/jobs', 'learn' => '/learn/courses', 'start' => '/start', 'connect' => '/connect', 'hub' => '/hub-ops',
-            'partner' => '/partner', 'funder' => '/funder', 'region' => '/region', 'admin' => '/admin', 'market' => '/market', 'biz' => '/biz',
+            'partner' => '/partner', 'funder' => '/funder', 'region' => '/region', 'admin' => '/admin', 'market' => '/market', 'biz' => '/biz', 'brand' => '/brand',
         ],
         // Served on any host (checkout, payments, downloads): never redirected even inside an owned prefix.
         'shared' => ['/commercial/buy', '/commercial/orders', '/commercial/fake-pay', '/commercial/webhooks'],
