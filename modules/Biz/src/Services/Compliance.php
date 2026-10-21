@@ -47,11 +47,13 @@ final readonly class Compliance
     /** @param array<string, mixed> $data */
     public function saveProfile(string $businessId, User $by, array $data): void
     {
-        DB::table('biz_compliance_profiles')->updateOrInsert(['business_id' => $businessId], [
+        $row = [
             'registered_on' => $data['registered_on'] ?? null, 'turnover_tax' => (bool) ($data['turnover_tax'] ?? false), 'vat_registered' => (bool) ($data['vat_registered'] ?? false),
             'employs' => (bool) ($data['employs'] ?? false), 'bbbee_on' => $data['bbbee_on'] ?? null, 'permit_renewal_on' => $data['permit_renewal_on'] ?? null,
             'confirmed' => true, 'updated_at' => now(), 'created_at' => now(),
-        ]);
+        ];
+        // Atomic insert-or-update (S31): two saves at once for the same business can't both insert.
+        DB::table('biz_compliance_profiles')->upsert([['business_id' => $businessId, ...$row]], ['business_id'], array_values(array_diff(array_keys($row), ['created_at'])));
         $this->audit->record('biz.compliance_profile_saved', meta: ['business' => $businessId], actor: $by);
         $this->refresh($businessId);
     }

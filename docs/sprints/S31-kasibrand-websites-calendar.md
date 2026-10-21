@@ -28,6 +28,15 @@ Hair Studio (ADR-039).
 The reserved and blocked website names; whether sites show a small "Made with KasiHub" footer; website terms (what may
 be published).
 
+## CI follow-up
+
+- The first CI run hit the browser job's 10-minute limit: flaky retries of the KasiBiz browser test (each up to 2
+  minutes) on top of a ~200-test suite. Root cause of the flake: KasiBiz's compliance profile and KasiBrand's kit and
+  website were saved with update-or-insert, so two saves for the same business at the same moment (phone and desktop
+  in parallel - or two co-owners in production) could both insert and fail on the duplicate key. All four now use an
+  atomic upsert (tested on SQLite and MySQL).
+- The browser job is now two parallel jobs (phone, desktop), each well inside the 10-minute limit.
+
 ## Noted for Sprint 33 (stability)
 
 - `HubOpsAccessTest` "searches the check-in desk with several matches..." failed once on MySQL in the full run and

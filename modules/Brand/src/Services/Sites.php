@@ -94,7 +94,9 @@ final readonly class Sites
             $values['name'] = $name;
             $values['name_changed_at'] = $current?->name !== null ? now() : null;
         }
-        DB::table('brand_sites')->updateOrInsert(['business_id' => $businessId], [...$values, 'created_at' => $current->created_at ?? now()]);
+        $row = [...$values, 'created_at' => $current->created_at ?? now()];
+        // Atomic insert-or-update (S31): two saves at once for the same business can't both insert.
+        DB::table('brand_sites')->upsert([['business_id' => $businessId, ...$row]], ['business_id'], array_values(array_diff(array_keys($row), ['created_at'])));
         $this->forget($businessId);
         $this->audit->record('brand.site_saved', meta: ['business' => $businessId], actor: $by);
     }

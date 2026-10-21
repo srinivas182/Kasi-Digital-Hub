@@ -52,7 +52,7 @@ final readonly class Kits
     public function save(string $businessId, User $by, array $data, ?User $subject = null): void
     {
         $existed = DB::table('brand_kits')->where('business_id', $businessId)->exists();
-        DB::table('brand_kits')->updateOrInsert(['business_id' => $businessId], [
+        $row = [
             'logo_shape' => in_array($data['logo_shape'] ?? 'circle', self::SHAPES, true) ? ($data['logo_shape'] ?? 'circle') : 'circle',
             'logo_text' => isset($data['logo_text']) ? mb_substr(trim((string) $data['logo_text']), 0, 24) : null,
             'primary' => self::hex($data['primary']), 'secondary' => self::hex($data['secondary']),
@@ -60,7 +60,9 @@ final readonly class Kits
             'tagline' => isset($data['tagline']) && $data['tagline'] !== '' ? mb_substr(trim((string) $data['tagline']), 0, 60) : null,
             'contact' => json_encode(array_map('boolval', array_intersect_key($data['contact'] ?? [], array_flip(['whatsapp', 'area', 'hours'])))),
             'updated_at' => now(), 'created_at' => now(),
-        ]);
+        ];
+        // Atomic insert-or-update (S31): two saves at once for the same business can't both insert.
+        DB::table('brand_kits')->upsert([['business_id' => $businessId, ...$row]], ['business_id'], array_values(array_diff(array_keys($row), ['created_at'])));
         $this->audit->record('brand.kit_saved', meta: ['business' => $businessId], actor: $by);
         if (! $existed) {
             event(new KitSaved($subject ?? $by, $subject !== null ? $by->id : null, ['business' => $businessId]));
@@ -76,7 +78,9 @@ final readonly class Kits
         if (is_string($old)) {
             Storage::disk('public')->delete($old);
         }
-        DB::table('brand_kits')->updateOrInsert(['business_id' => $businessId], ['logo_kind' => 'upload', 'logo_path' => $path, 'updated_at' => now(), 'created_at' => now()]);
+        $row = ['logo_kind' => 'upload', 'logo_path' => $path, 'updated_at' => now(), 'created_at' => now()];
+        // Atomic insert-or-update (S31): two saves at once for the same business can't both insert.
+        DB::table('brand_kits')->upsert([['business_id' => $businessId, ...$row]], ['business_id'], array_values(array_diff(array_keys($row), ['created_at'])));
         $this->audit->record('brand.logo_uploaded', meta: ['business' => $businessId], actor: $by);
     }
 

@@ -217,11 +217,16 @@ jobs:
             - run: npm audit --omit=dev --audit-level=high
 
     e2e:
-        name: Browser tests (Playwright + axe, phone and desktop)
+        # S31: phone and desktop run as two parallel jobs, each well inside 10 minutes as the suite grows.
+        name: Browser tests (Playwright + axe, ${{ matrix.project }})
         needs: changes
         if: needs.changes.outputs.php == 'true' || needs.changes.outputs.js == 'true' || github.event_name == 'workflow_dispatch'
         runs-on: ubuntu-24.04
         timeout-minutes: 10
+        strategy:
+            fail-fast: false
+            matrix:
+                project: [phone, desktop]
         steps:
             - uses: actions/checkout@v5
             - uses: shivammathur/setup-php@v2
@@ -256,7 +261,7 @@ jobs:
             - run: npm run build
             - name: Test domain for portal subdomains (S23)
               run: echo "127.0.0.1 kasi.test my.kasi.test jobs.kasi.test learn.kasi.test start.kasi.test connect.kasi.test hub.kasi.test partner.kasi.test funder.kasi.test region.kasi.test admin.kasi.test market.kasi.test biz.kasi.test brand.kasi.test" | sudo tee -a /etc/hosts
-            - run: npx playwright test
+            - run: npx playwright test --project=${{ matrix.project }}
               env:
                   OCTANE: '1' # S22: the browser suite runs under Laravel Octane (Swoole), as production will
                   SUBDOMAINS: '1' # S23: portals on real subdomains (*.kasi.test), as production will
@@ -264,7 +269,7 @@ jobs:
               if: failure()
               uses: actions/upload-artifact@v4
               with:
-                  name: playwright-traces
+                  name: playwright-traces-${{ matrix.project }}
                   path: |
                       test-results
                       storage/logs
