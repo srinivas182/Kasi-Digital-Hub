@@ -11,6 +11,7 @@ Every event is written to the platform event log and can be used by any portal t
 | `admin.organisation.rejected` | National admin console | - | An organisation's verification was rejected, with a reason. |
 | `admin.organisation.verified` | National admin console | - | An organisation's details were checked and it was verified. |
 | `biz.entry.recorded` | KasiBiz | - | A business recorded money in or out in its KasiBiz cash book. |
+| `biz.obligation.done` | KasiBiz | - | A business marked a compliance deadline as done in KasiBiz. |
 | `connect.concern.raised` | KasiConnect | - | A safeguarding concern was reported (no details in the event). |
 | `connect.mentor.approved` | KasiConnect | - | A mentor passed vetting and was approved. |
 | `connect.mentorship.ended` | KasiConnect | - | A mentorship ended, with goals met. |

@@ -22,7 +22,8 @@
     "permissions": [],
     "events": {
         "publishes": [
-            "biz.entry.recorded"
+            "biz.entry.recorded",
+            "biz.obligation.done"
         ],
         "listens": []
     },
@@ -46,6 +47,21 @@
                 "label": "nav.biz.owed",
                 "href": "/biz/owed",
                 "icon": "users"
+            },
+            {
+                "label": "nav.biz.stock",
+                "href": "/biz/stock",
+                "icon": "package"
+            },
+            {
+                "label": "nav.biz.compliance",
+                "href": "/biz/compliance",
+                "icon": "calendar"
+            },
+            {
+                "label": "nav.biz.share",
+                "href": "/biz/share",
+                "icon": "share"
             }
         ]
     }

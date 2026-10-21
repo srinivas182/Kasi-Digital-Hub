@@ -84,6 +84,6 @@ it('tells partners only whether records are kept and a turnover band', function 
         entry($this, 'in', 900000, 'sales', 'cash', now()->subMonthsNoOverflow($ago)->toDateString());
     }
     $signals = (new BizSignals)->signals($this->business->id);
-    expect($signals)->toBe(['biz.keeps_records' => true, 'biz.turnover_band' => '5k_20k'])
+    expect($signals)->toBe(['biz.keeps_records' => true, 'biz.turnover_band' => '5k_20k', 'biz.compliance_up_to_date' => false, 'biz.tracks_stock' => false]) // S29: + compliance, stock
         ->and(app(BusinessFacts::class)->facts($this->business->id)['signals'])->toHaveKey('biz.keeps_records');
 });

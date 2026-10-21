@@ -13,21 +13,22 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\File;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Biz\Http\Concerns\ResolvesBusiness;
 use Modules\Biz\Models\Entry;
 use Modules\Biz\Services\Books;
 use Modules\Biz\Services\Owed;
-use Modules\Core\Assist\AssistedSession;
+use Modules\Biz\Services\Stock;
 use Modules\Core\Documents\Generation\PdfRenderer;
 use Modules\Core\Enterprise\BusinessFacts;
-use Modules\Core\Identity\Models\User;
-use Modules\Core\Structure\Models\HubModule;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /** KasiBiz (S28): the cash book, who owes what, the month summary and exports. */
 final class BooksController
 {
-    public function __construct(private readonly Books $books, private readonly Owed $owed, private readonly BusinessFacts $businesses, private readonly AssistedSession $assist) {}
+    use ResolvesBusiness;
+
+    public function __construct(private readonly Books $books, private readonly Owed $owed, private readonly BusinessFacts $businesses) {}
 
     public function index(Request $request): Response
     {
@@ -42,6 +43,10 @@ final class BooksController
 
         return Inertia::render('Biz/Books', [
             'business' => ['id' => $business['id'], 'name' => $business['name']],
+            // S29: home cards.
+            'lowStock' => array_values(array_map(static fn (array $i): string => $i['name'], array_filter(app(Stock::class)->items($business['id']), static fn (array $i): bool => $i['low']))),
+            'nextDeadline' => ($d = DB::table('biz_obligations')->where('business_id', $business['id'])->where('status', 'due')->orderBy('due_on')->first()) !== null
+                ? ['rule' => (string) $d->rule, 'due_on' => (string) $d->due_on, 'overdue' => (string) $d->due_on < now()->toDateString()] : null,
             'businesses' => array_map(static fn (array $b): array => ['id' => $b['id'], 'name' => $b['name']], $this->businesses->businessesOf($person)),
             'month' => $month,
             'summary' => $this->books->summary($business['id'], $month),
@@ -187,39 +192,6 @@ final class BooksController
         $m = (string) $request->query('month', now()->format('Y-m'));
 
         return preg_match('/^\d{4}-\d{2}$/', $m) === 1 ? $m : now()->format('Y-m');
-    }
-
-    /**
-     * The person whose books these are (in a hub assisted session, the person being helped) and the facilitator.
-     *
-     * @return array{0: User, 1: User|null}
-     */
-    private function who(Request $request): array
-    {
-        $user = $request->user();
-        abort_unless($user instanceof User, 401);
-        $helped = $this->assist->person($user);
-
-        return [$helped ?? $user, $helped !== null ? $user : null];
-    }
-
-    /** @return ($required is true ? array{id: string, name: string} : array{id: string, name: string}|null) */
-    private function business(Request $request, User $person, bool $required = true): ?array
-    {
-        $mine = $this->businesses->businessesOf($person);
-        $wanted = (string) $request->input('business', '');
-        $business = collect($mine)->firstWhere('id', $wanted) ?? ($mine[0] ?? null);
-        $available = $business !== null && $this->hubHasBiz($business['id'], $person);
-        abort_if($required && ! $available, 404);
-
-        return $available ? ['id' => (string) $business['id'], 'name' => (string) $business['name']] : null;
-    }
-
-    private function hubHasBiz(string $businessId, User $person): bool
-    {
-        $hubId = $this->businesses->facts($businessId)['hub_id'] ?? $person->home_hub_id;
-
-        return $hubId !== null && HubModule::query()->where('hub_id', $hubId)->where('module', 'Biz')->where('enabled', true)->exists();
     }
 
     private function attempt(callable $fn, string $ok): RedirectResponse

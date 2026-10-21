@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Biz\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Biz\Console\BizDailyCommand;
 use Modules\Biz\Services\BizSignals;
 use Modules\Core\Enterprise\BusinessSignals;
 use Modules\Core\Insights\EventIndicator;
@@ -17,12 +18,16 @@ final class BizServiceProvider extends ServiceProvider
         RegistersIndicators::add($this->app, [
             new EventIndicator('biz.entries', ['biz.entry.recorded']),
             new EventIndicator('biz.businesses_recording', ['biz.entry.recorded'], 'people'),
+            new EventIndicator('biz.obligations_done', ['biz.obligation.done']),
         ]);
         $this->app->tag([BizSignals::class], BusinessSignals::TAG);
     }
 
     public function boot(): void
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([BizDailyCommand::class]);
+        }
         $this->loadViewsFrom(__DIR__.'/../../resources/views', 'biz');
     }
 }

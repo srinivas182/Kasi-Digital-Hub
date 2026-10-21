@@ -2,6 +2,17 @@
 
 All notable changes to the Kasi Digital Hub platform. Versions follow `0.<sprint>.<patch>` until Release 1.
 
+## [0.29.0] - 2026-10-21 - Sprint 29: KasiBiz part 2 (stock, compliance, summaries)
+
+### Added
+- Stock with history, stock-takes and KasiMarket-linked quantities (core ProductStock contract); daily low-stock
+  messages; compliance calendar (CIPC, SARS turnover tax, VAT, EMP201, COIDA, B-BBEE, trading permit) with reminders;
+  shared summaries by 7-day links; partner signals "compliance up to date" and "tracks stock" (ADR-037). KasiBiz is
+  complete.
+
+### Fixed
+- KasiMarket notifications now appear under "business" in notification settings; missing menu icons; band labels.
+
 ## [0.28.0] - 2026-10-20 - Sprint 28: KasiBiz part 1 (money)
 
 ### Added

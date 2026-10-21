@@ -18,7 +18,7 @@ it('keeps key pages within their query budgets', function (): void {
     $this->seed(DemoSeeder::class);
     $budgets = [
         ['+27720000001', '/home', 32], ['+27720000001', '/work/jobs', 14], ['+27720000001', '/work/matches', 14], ['+27720000001', '/work/applications', 12],
-        ['+27720000002', '/learn/courses', 19], ['+27720000002', '/learn/my', 10], ['+27720000003', '/start', 17], ['+27720000003', '/support', 18],
+        ['+27720000002', '/learn/courses', 19], ['+27720000002', '/learn/my', 10], ['+27720000003', '/start', 17], ['+27720000003', '/support', 20] /* S29: eligibility includes KasiBiz signals (compliance, stock); measured 19 */,
         ['+27720000010', '/work/employer', 20], ['+27720000024', '/hub-ops', 28], ['+27720000020', '/hub-ops/check-in?q=Th', 20],
         ['+27720000030', '/funder', 12], ['+27720000023', '/region', 40] /* one grouped count per indicator + health signals */, ['+27720000040', '/admin', 18],
     ];

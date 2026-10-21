@@ -68,6 +68,12 @@ final class Eligibility
         if (! empty($c['min_market_orders'])) {
             $add('market_orders', (int) ($signals['market.orders_6m'] ?? 0) >= (int) $c['min_market_orders'], ['count' => (int) $c['min_market_orders']]);
         }
+        if (! empty($c['compliance_up_to_date'])) {
+            $add('compliance', (bool) ($signals['biz.compliance_up_to_date'] ?? false)); // S29
+        }
+        if (! empty($c['tracks_stock'])) {
+            $add('tracks_stock', (bool) ($signals['biz.tracks_stock'] ?? false)); // S29
+        }
         if (! empty($c['min_shop_rating'])) {
             $add('shop_rating', ($signals['market.rating'] ?? null) !== null && (float) $signals['market.rating'] >= (float) $c['min_shop_rating'], ['rating' => (string) $c['min_shop_rating']]);
         }

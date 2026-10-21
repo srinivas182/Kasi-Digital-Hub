@@ -12,7 +12,7 @@ final class MarketNotification extends KasiNotification
 {
     public const KEY = 'market_update';
 
-    public const CATEGORY = 'market';
+    public const CATEGORY = 'business'; // a notification-settings category (config kasi.notifications.categories)
 
     public const WHATSAPP_TEMPLATE = 'kasihub_market_update';
 

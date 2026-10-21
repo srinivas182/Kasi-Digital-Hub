@@ -10,14 +10,17 @@ import {
     Home,
     Landmark,
     LayoutGrid,
-    type LucideIcon,
     Map,
+    Package,
     QrCode,
     Rocket,
     Settings,
+    Share2,
     ShieldCheck,
     Store,
+    type LucideIcon,
     Users,
+    Wallet,
 } from 'lucide-react';
 
 /**
@@ -43,6 +46,9 @@ export const NAV_ICONS: Record<string, LucideIcon> = {
     shield: ShieldCheck,
     store: Store,
     users: Users,
+    package: Package, // S29: KasiBiz stock
+    share: Share2, // S29: KasiBiz summaries
+    wallet: Wallet, // KasiBiz
 };
 
 export function navIcon(name: string | null | undefined): LucideIcon {

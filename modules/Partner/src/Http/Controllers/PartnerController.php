@@ -137,7 +137,8 @@ final class PartnerController
             'criteria.hub_ids' => ['array'], 'criteria.turnover' => ['array'], 'criteria.steps' => ['array'], 'criteria.age_min' => ['nullable', 'integer', 'min:18', 'max:120'],
             'criteria.age_max' => ['nullable', 'integer', 'min:18', 'max:120'], 'criteria.min_readiness' => ['nullable', 'integer', 'min:0', 'max:100'],
             'criteria.has_shop' => ['nullable', 'boolean'], 'criteria.keeps_records' => ['nullable', 'boolean'], 'criteria.min_market_orders' => ['nullable', 'integer', 'min:0', 'max:100000'],
-            'criteria.min_shop_rating' => ['nullable', 'numeric', 'min:1', 'max:5'], // S27: KasiMarket signals
+            'criteria.min_shop_rating' => ['nullable', 'numeric', 'min:1', 'max:5'],
+            'criteria.compliance_up_to_date' => ['nullable', 'boolean'], 'criteria.tracks_stock' => ['nullable', 'boolean'], // S29: KasiBiz signals // S27: KasiMarket signals
             'documents' => ['array'], 'documents.*' => [Rule::in((array) config('kasi.documents.types'))],
         ]);
         if (Offers::chargesFee($data['title']."\n".$data['description'])) {

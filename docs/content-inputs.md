@@ -119,3 +119,9 @@ language before switching any language on.
 
 - Confirm the **categories and plain-language wording** (ideally with a few hub entrepreneurs).
 - Whether the **monthly summary PDF** should carry Kasi branding or be neutral for banks.
+
+## KasiBiz compliance calendar (Sprint 29)
+
+- **A tax adviser's confirmation** of the starter rules and dates (CIPC annual return, turnover tax, VAT, EMP201, COIDA,
+  B-BBEE affidavit, trading permit) and of public-holiday handling.
+- Wording of the **"not tax or legal advice"** note.

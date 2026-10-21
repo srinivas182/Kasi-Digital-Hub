@@ -26,6 +26,8 @@ interface EntryRow {
 
 interface Props {
     business: { id: string; name: string };
+    lowStock: string[];
+    nextDeadline: { rule: string; due_on: string; overdue: boolean } | null;
     businesses: { id: string; name: string }[];
     month: string;
     summary: {
@@ -54,6 +56,8 @@ const shift = (month: string, by: number) => {
 /** KasiBiz books (S28): two-tap money in / out, the month at a glance, the cash book. */
 export default function Books({
     business,
+    lowStock = [],
+    nextDeadline = null,
     businesses,
     month,
     summary: s,
@@ -132,6 +136,25 @@ export default function Books({
                         ))}
                     </Select>
                 )}
+            </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <Link href="/biz/stock" className="border-line bg-surface hover:bg-surface-muted rounded-lg border p-3">
+                    <span className="text-fg-muted block text-sm">{t('biz.home.low_stock')}</span>
+                    <span className="text-fg font-semibold">
+                        {lowStock.length > 0 ? lowStock.slice(0, 3).join(', ') : t('biz.home.stock_ok')}
+                    </span>
+                </Link>
+                <Link
+                    href="/biz/compliance"
+                    className="border-line bg-surface hover:bg-surface-muted rounded-lg border p-3"
+                >
+                    <span className="text-fg-muted block text-sm">{t('biz.home.next_deadline')}</span>
+                    <span className={`font-semibold ${nextDeadline?.overdue ? 'text-danger-text' : 'text-fg'}`}>
+                        {nextDeadline
+                            ? `${t(`biz.compliance.rule.${nextDeadline.rule}`)} · ${formatDate(nextDeadline.due_on)}`
+                            : t('biz.home.no_deadline')}
+                    </span>
+                </Link>
             </div>
             {flash.status && (
                 <div className="mt-3">

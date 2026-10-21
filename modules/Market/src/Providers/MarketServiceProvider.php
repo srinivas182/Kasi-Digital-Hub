@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Core\Commerce\Fulfiller;
 use Modules\Core\Enterprise\BusinessSignals;
 use Modules\Core\Enterprise\BusinessTransactions;
+use Modules\Core\Enterprise\ProductStock;
 use Modules\Core\Events\DocumentVerified;
 use Modules\Core\Events\ModerationDecided;
 use Modules\Core\Insights\EventIndicator;
@@ -20,6 +21,7 @@ use Modules\Market\Listeners\ApplyModerationDecision;
 use Modules\Market\Listeners\BankLetterVerified;
 use Modules\Market\Search\MarketSearchSource;
 use Modules\Market\Services\DisputesWaiting;
+use Modules\Market\Services\MarketProductStock;
 use Modules\Market\Services\MarketSignals;
 use Modules\Market\Services\MarketTransactions;
 use Modules\Market\Services\OrderPayments;
@@ -28,6 +30,7 @@ final class MarketServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(ProductStock::class, MarketProductStock::class); // S29: shared stock
         RegistersIndicators::add($this->app, [
             new EventIndicator('market.shops', ['market.shop.opened']),
             new EventIndicator('market.products', ['market.product.published']),
